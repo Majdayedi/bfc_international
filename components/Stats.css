@@ -1,0 +1,71 @@
+.stats {
+  background: #fff;
+  color: #204383;
+  padding: 10rem 0;
+  border-top: 1px solid #f3f4f6;
+}
+
+.stats__container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .stats__container {
+    padding: 0 3rem;
+  }
+}
+
+.stats__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3rem;
+}
+
+@media (min-width: 768px) {
+  .stats__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+  }
+}
+
+.stats__item {
+  border-left: 1px solid rgba(32, 67, 131, 0.1);
+  padding-left: 2rem;
+}
+
+@media (min-width: 768px) {
+  .stats__item {
+    padding-left: 2.5rem;
+  }
+}
+
+.stats__label {
+  display: block;
+  color: #9ca3af;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.stats__value {
+  display: flex;
+  align-items: baseline;
+}
+
+.stats__number {
+  font-size: clamp(2.5rem, 5vw, 6rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.stats__suffix {
+  font-size: clamp(1.75rem, 4vw, 3.5rem);
+  font-weight: 900;
+  color: #99cdb3;
+  margin-left: 0.5rem;
+}

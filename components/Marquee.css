@@ -1,0 +1,100 @@
+.marquee {
+  background: #fff;
+  border-bottom: 1px solid #f3f4f6;
+  padding: 5rem 0;
+  overflow: hidden;
+}
+
+.marquee__header {
+  max-width: 80rem;
+  margin: 0 auto 2.5rem;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .marquee__header {
+    padding: 0 3rem;
+  }
+}
+
+.marquee__eyebrow {
+  font-size: 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  font-weight: 700;
+  color: #204383;
+}
+
+.marquee__track {
+  position: relative;
+  display: flex;
+  overflow-x: hidden;
+}
+
+.marquee__row {
+  display: flex;
+  white-space: nowrap;
+  padding: 1rem 0;
+  animation: marquee 40s linear infinite;
+}
+
+.marquee__row:hover {
+  animation-play-state: paused;
+}
+
+.marquee__group {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  padding: 0 3rem;
+}
+
+@media (min-width: 768px) {
+  .marquee__group {
+    gap: 6rem;
+  }
+}
+
+.marquee__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #204383;
+  cursor: default;
+  transition: color 0.3s ease;
+}
+
+.marquee__item:hover {
+  color: #99cdb3;
+}
+
+.marquee__icon {
+  width: 3rem;
+  height: 3rem;
+  stroke-width: 1.5;
+}
+
+@media (min-width: 768px) {
+  .marquee__icon {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+.marquee__name {
+  font-size: clamp(1.875rem, 3vw, 3.75rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
