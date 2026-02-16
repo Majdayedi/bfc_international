@@ -14,6 +14,7 @@ import { Menu } from './components/Menu';
 import { ArticlesPage } from './components/ArticlesPage';
 import { ArticleDetailPage } from './components/ArticleDetailPage';
 import { ContactPage } from './components/ContactPage';
+import { AboutUsPage } from './components/AboutUsPage.tsx';
 import './App.css';
 
 const App: React.FC = () => {
@@ -77,6 +78,15 @@ const App: React.FC = () => {
         />
         <Route path="/articles" element={<ArticlesPage />} />
         <Route path="/articles/ai-fintech" element={<ArticleDetailPage />} />
+        <Route
+          path="/who-we-are/about-us"
+          element={
+            <>
+              <AboutUsPage />
+              <Footer />
+            </>
+          }
+        />
         <Route
           path="/contact"
           element={
