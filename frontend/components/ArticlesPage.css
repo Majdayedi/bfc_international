@@ -182,7 +182,7 @@
 }
 
 .article-card {
-  background: #fff;
+  background: #ffffff00;
   border-radius: 0rem;
   border: 1px solid rgba(32, 67, 131, 0.08);
   overflow: hidden;
@@ -254,6 +254,7 @@
   background: rgba(255, 255, 255, 0.92);
   box-shadow: 0 8px 20px rgba(32, 67, 131, 0.2);
   overflow: hidden;
+  
 }
 
 .article-card__flag img {

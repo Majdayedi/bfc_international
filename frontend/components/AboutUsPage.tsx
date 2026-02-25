@@ -57,11 +57,13 @@ export const AboutUsPage: React.FC = () => {
       >
         <div className="about-hero__overlay" />
         <div className="about-hero__content">
-          <p className="about-hero__eyebrow">BFC INTERNATIONAL & ACADEMY</p>
+          <p className="about-hero__eyebrow">(01) SINCE 2012</p>
           <h1 className="about-hero__title">
-            ACTEUR DE
+            Discover
             <br />
-            VOTRE SUCCÈS
+            Excellence <span className="about-hero__title-accent">in</span>
+            <br />
+            Innovation.
           </h1>
           <span className="about-hero__line" />
         </div>
