@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dynamic Persona Wheel</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#7c3aed;--muted:#9aa4b2;--glass:rgba(255,255,255,0.04)}
+    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,system-ui,Arial;color:#e6eef6;background:linear-gradient(180deg,var(--bg),#071023)}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px}
+    .card{width:100%;max-width:1000px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:16px;padding:24px;box-shadow:0 6px 24px rgba(2,6,23,0.6)}
+    .header{display:flex;align-items:center;gap:16px;margin-bottom:12px}
+    .title{font-size:20px;font-weight:600}
+    .subtitle{color:var(--muted);font-size:13px}
+    .content{display:flex;gap:20px;align-items:center}
+    .wheel-area{flex:1;display:flex;align-items:center;justify-content:center}
+    .side{width:320px}
+    .panel{background:var(--card);padding:14px;border-radius:10px;color:#dbe7ff}
+    .traits{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    .trait{background:var(--glass);padding:8px;border-radius:8px;color:var(--muted);font-size:13px}
+    .selected{border:1px solid rgba(255,255,255,0.06);box-shadow:inset 0 1px rgba(255,255,255,0.02)}
+    .controls{display:flex;gap:8px;margin-top:12px}
+    button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#cfe6ff;padding:8px 10px;border-radius:8px;cursor:pointer}
+    button:hover{border-color:var(--accent);box-shadow:0 6px 18px rgba(124,58,237,0.12)}
+    svg{max-width:520px;height:auto;display:block}
+    .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .dot{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:6px}
+    @media (max-width:880px){.content{flex-direction:column}.side{width:100%}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="header">
+        <div>
+          <div class="title">Dynamic Persona Wheel</div>
+          <div class="subtitle">Click segments to view details. Hover to highlight.</div>
+        </div>
+      </div>
+      <div class="content">
+        <div class="wheel-area">
+          <div id="wheelContainer"></div>
+        </div>
+        <div class="side">
+          <div class="panel">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="font-weight:600">Selected</div>
+              <div id="selectedIndex" style="color:var(--muted)">None</div>
+            </div>
+            <div id="selectedName" style="font-size:18px;margin-top:8px;font-weight:700">—</div>
+            <div id="selectedDesc" style="color:var(--muted);margin-top:8px;font-size:13px">Choose a segment to reveal persona details.</div>
+            <div class="traits" id="traitList"></div>
+            <div class="controls">
+              <button id="shuffleBtn">Shuffle</button>
+              <button id="rotateBtn">Rotate</button>
+            </div>
+            <div class="legend" id="legend"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample data for wheel segments
+    const segments = [
+      {name:'Innovator',color:'#7c3aed',desc:'Thrives on new ideas and rapid experimentation.',traits:['Curious','Bold','Prototype-first']},
+      {name:'Caretaker',color:'#0ea5a4',desc:'Focuses on empathy, support and long-term wellbeing.',traits:['Empathetic','Reliable','Patient']},
+      {name:'Strategist',color:'#ef4444',desc:'Plans long-term, balances risks and opportunities.',traits:['Analytical','Foresight','Decisive']},
+      {name:'Connector',color:'#f59e0b',desc:'Builds relationships and networks to get things done.',traits:['Sociable','Connector','Persuasive']},
+      {name:'Maker',color:'#06b6d4',desc:'Loves building tangible outcomes and iterating.',traits:['Hands-on','Resourceful','Persistent']},
+      {name:'Advocate',color:'#ef77ff',desc:'Champions causes and influences culture.',traits:['Persuasive','Principled','Voiceful']}
+    ];
+
+    const size = 520;
+    const center = size/2;
+    const radius = 200;
+
+    function createWheel(data){
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(svgNS,'svg');
+      svg.setAttribute('viewBox',`0 0 ${size} ${size}`);
+      svg.setAttribute('aria-label','Persona wheel');
+      const group = document.createElementNS(svgNS,'g');
+      group.setAttribute('transform',`translate(${center},${center})`);
+      const total = data.length;
+      let startAngle = -Math.PI/2; // start at top
+      data.forEach((d,i)=>{
+        const angle = (2*Math.PI)/total;
+        const end = startAngle + angle;
+        const x1 = Math.cos(startAngle)*radius;
+        const y1 = Math.sin(startAngle)*radius;
+        const x2 = Math.cos(end)*radius;
+        const y2 = Math.sin(end)*radius;
+        const large = angle>Math.PI?1:0;
+        const path = document.createElementNS(svgNS,'path');
+        const dAttr = `M 0 0 L ${x1} ${y1} A ${radius} ${radius} 0 ${large} 1 ${x2} ${y2} Z`;
+        path.setAttribute('d',dAttr);
+        path.setAttribute('fill',d.color);
+        path.setAttribute('data-index',i);
+        path.style.transition='transform 250ms ease, filter 200ms ease';
+        path.style.cursor='pointer';
+        path.addEventListener('mouseenter',()=>highlight(i,true));
+        path.addEventListener('mouseleave',()=>highlight(i,false));
+        path.addEventListener('click',()=>select(i));
+        group.appendChild(path);
+
+        // label
+        const mid = startAngle + angle/2;
+        const lx = Math.cos(mid)*(radius*0.62);
+        const ly = Math.sin(mid)*(radius*0.62);
+        const text = document.createElementNS(svgNS,'text');
+        text.setAttribute('x',lx);
+        text.setAttribute('y',ly+4);
+        text.setAttribute('text-anchor','middle');
+        text.setAttribute('fill','rgba(255,255,255,0.95)');
+        text.setAttribute('font-size','12');
+        text.setAttribute('font-family','Inter,Arial');
+        text.style.pointerEvents='none';
+        text.textContent = d.name;
+        group.appendChild(text);
+
+        startAngle = end;
+      });
+
+      // center circle
+      const centerCircle = document.createElementNS(svgNS,'circle');
+      centerCircle.setAttribute('r',radius*0.25);
+      centerCircle.setAttribute('fill','rgba(255,255,255,0.03)');
+      centerCircle.setAttribute('stroke','rgba(255,255,255,0.03)');
+      group.appendChild(centerCircle);
+      svg.appendChild(group);
+      svg.id = 'personaWheel';
+      return svg;
+    }
+
+    function render(){
+      const container = document.getElementById('wheelContainer');
+      container.innerHTML='';
+      const wheel = createWheel(segments);
+      container.appendChild(wheel);
+      const legend = document.getElementById('legend');
+      legend.innerHTML='';
+      segments.forEach((s,i)=>{
+        const el = document.createElement('div');
+        el.style.display='flex';el.style.alignItems='center';
+        const dot = document.createElement('span');dot.className='dot';dot.style.background=s.color;
+        const lbl = document.createElement('span');lbl.style.color='var(--muted)';lbl.style.fontSize='13px';lbl.textContent=s.name;
+        el.appendChild(dot);el.appendChild(lbl);legend.appendChild(el);
+      });
+    }
+
+    let current = null;
+    function select(i){
+      current = i;
+      const sel = segments[i];
+      document.getElementById('selectedName').textContent = sel.name;
+      document.getElementById('selectedDesc').textContent = sel.desc;
+      document.getElementById('selectedIndex').textContent = `#${i+1}`;
+      const list = document.getElementById('traitList'); list.innerHTML='';
+      sel.traits.forEach(t=>{ const d=document.createElement('div'); d.className='trait selected'; d.textContent=t; list.appendChild(d); });
+      // subtle pop on chosen segment
+      const paths = document.querySelectorAll('#personaWheel path');
+      paths.forEach(p=>{ p.style.transform='scale(1)'; p.style.filter='none'; });
+      const chosen = document.querySelector(`#personaWheel path[data-index='${i}']`);
+      if(chosen){ chosen.style.transform='scale(1.03)'; chosen.style.filter='drop-shadow(0 6px 18px rgba(0,0,0,0.6))'; }
+    }
+
+    function highlight(i,on){
+      const p = document.querySelector(`#personaWheel path[data-index='${i}']`);
+      if(!p) return;
+      p.style.transform = on ? 'scale(1.02)' : (current==i ? 'scale(1.03)' : 'scale(1)');
+      p.style.filter = on ? 'brightness(1.06)' : (current==i ? 'drop-shadow(0 6px 18px rgba(0,0,0,0.6))' : 'none');
+    }
+
+    // shuffle segments
+    function shuffle(){
+      for(let i=segments.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));[segments[i],segments[j]]=[segments[j],segments[i]];
+      }
+      current=null;document.getElementById('selectedName').textContent='—';document.getElementById('selectedDesc').textContent='Choose a segment to reveal persona details.';document.getElementById('selectedIndex').textContent='None';document.getElementById('traitList').innerHTML='';render();
+    }
+
+    // rotate wheel CSS animation
+    let rotating=false;
+    function toggleRotate(){
+      const g = document.querySelector('#personaWheel g');
+      if(!g) return;
+      if(!rotating){
+        g.style.transition='transform 6s linear';
+        g.style.transform='rotate(360deg)';
+        setTimeout(()=>{ g.style.transition='none'; g.style.transform='rotate(0deg)'; rotating=false; },6000);
+        rotating=true;
+      }
+    }
+
+    document.getElementById('shuffleBtn').addEventListener('click',shuffle);
+    document.getElementById('rotateBtn').addEventListener('click',toggleRotate);
+
+    // initial render
+    render();
+  </script>
+</body>
+</html>

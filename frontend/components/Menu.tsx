@@ -27,8 +27,9 @@ const MENU_ITEMS: MenuItem[] = [
     href: '#who-we-are',
     subPages: [
       { label: 'About Us', href: '/who-we-are/about-us' },
-      { label: 'History', href: '#history' },
-      { label: 'Our Projects', href: '#our-projects' },
+      { label: 'History', href: '/who-we-are/history' },
+      { label: 'Our References', href: '/who-we-are/our-projects' },
+      { label: 'Our Articles', href: '/who-we-are/our-articles' }
     ],
   },
   {

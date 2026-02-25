@@ -15,6 +15,8 @@ import { ArticlesPage } from './components/ArticlesPage';
 import { ArticleDetailPage } from './components/ArticleDetailPage';
 import { ContactPage } from './components/ContactPage';
 import { AboutUsPage } from './components/AboutUsPage.tsx';
+import { OurProjectsPage } from './components/OurProjectsPage.tsx';
+import { HistoryPage } from './components/HistoryPage.tsx';
 import './App.css';
 
 const App: React.FC = () => {
@@ -55,7 +57,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="app">
+    <div className={`app ${isMenuOpen ? 'menu-open' : ''}`}>
       <Navbar onOpenMenu={() => toggleMenu(true)} />
       
       <Routes>
@@ -76,13 +78,31 @@ const App: React.FC = () => {
             </>
           }
         />
-        <Route path="/articles" element={<ArticlesPage />} />
+        <Route path="/who-we-are/our-articles" element={<ArticlesPage />} />
         <Route path="/articles/ai-fintech" element={<ArticleDetailPage />} />
         <Route
           path="/who-we-are/about-us"
           element={
             <>
               <AboutUsPage />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/who-we-are/our-projects"
+          element={
+            <>
+              <OurProjectsPage />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/who-we-are/history"
+          element={
+            <>
+              <HistoryPage />
               <Footer />
             </>
           }

@@ -1,0 +1,1038 @@
+﻿  /* Hide year progress bar when menu overlay is open */
+  .menu.menu--open ~ .hi-bar,
+  .menu.menu--open + .hi-bar,
+  .menu.menu--open .hi-bar {
+    display: none !important;
+  }
+
+  /* Strong rule: hide bar when app has menu-open class (works regardless of DOM order) */
+  .app.menu-open .hi-bar {
+    display: none !important;
+  }
+  /* ================================================================
+    Notre Histoire — HistoryPage.css
+    Website palette: #204383 (navy) · #99cdb3 (mint) · #fff
+    ================================================================ */
+
+  /* ── Base ───────────────────────────────────────────────────────── */
+  .hi-page {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #fff;
+    overflow-x: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  .hi-page--on {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s, background-color 0.6s ease;
+  }
+
+  /* Common token */
+  .hi-eyebrow {
+    display: block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    color: #99cdb3;
+    margin-bottom: 2rem;
+  }
+  .hi-eyebrow--light {
+    color: rgba(153, 205, 179, 0.8);
+  }
+
+  .hi-divider {
+    width: 6rem;
+    height: 3px;
+    background: linear-gradient(90deg, #204383, rgba(32,67,131,0.2));
+    border-radius: 2px;
+    margin-top: 2rem;
+    flex-shrink: 0;
+  }
+
+  /* ================================================================
+    WHITE INTRO OVERLAY
+    ================================================================ */
+  .hi-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 190;
+    background: #fff;
+    pointer-events: none;
+    transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity: 1;
+  }
+  .hi-overlay--out  { opacity: 0; }
+  .hi-overlay--gone { display: none; }
+
+  /* ================================================================
+    UNIFIED TIMELINE BAR
+    Center-anchored: starts in the middle of the screen,
+    transitions into the center of the Navbar as a glass pill.
+    ================================================================ */
+  .hi-bar {
+    position: fixed;
+    z-index: 200;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: min(920px, 92vw);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      top        1s   cubic-bezier(0.76, 0, 0.24, 1),
+      transform  1s   cubic-bezier(0.76, 0, 0.24, 1),
+      width      1s   cubic-bezier(0.76, 0, 0.24, 1),
+      padding    1s   cubic-bezier(0.76, 0, 0.24, 1),
+      background 0.7s ease,
+      box-shadow 0.7s ease,
+      border-radius 0.7s ease,
+      opacity    0.5s ease;
+  }
+
+  /* Hide progress bar when menu overlay is open */
+  .menu--open ~ .hi-bar,
+  .menu--open .hi-bar {
+    display: none !important;
+  }
+
+  /* Phase 1: show centered on screen */
+  .hi-bar--show {
+    opacity: 1;
+  }
+
+  /* Phase 2+: becomes a compact pill inside the navbar */
+  .hi-bar--compact {
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    width: min(680px, 80vw);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border: 1px solid rgba(32, 67, 131, 0.06);
+    box-shadow:
+      0 10px 40px rgba(32, 67, 131, 0.10),
+      0 2px 8px rgba(32, 67, 131, 0.04);
+    border-radius: 999px;
+    padding: 0.65rem 1.4rem 1rem;
+    pointer-events: auto;
+    transition:
+      top        1s   cubic-bezier(0.76, 0, 0.24, 1),
+      left       1s   cubic-bezier(0.76, 0, 0.24, 1),
+      transform  1s   cubic-bezier(0.76, 0, 0.24, 1),
+      width      1s   cubic-bezier(0.76, 0, 0.24, 1),
+      padding    1s   cubic-bezier(0.76, 0, 0.24, 1),
+      opacity    0.5s ease;
+  }
+
+  .hi-bar__inner {
+    position: relative;
+    width: 100%;
+  }
+  .hi-bar--compact .hi-bar__inner {
+    padding: 0;
+  }
+
+  /* ── Track + fills ── */
+  .hi-bar__track {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 12px);
+    height: 2px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  /* Track remains visible when compact (thin line at top) */
+
+  /* Intro fill (scaleX driven by dotCount via inline style) */
+  .hi-bar__fill-intro {
+    position: absolute;
+    inset: 0;
+    background: #99cdb3;
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Scroll progress — milestone-aware fill inside the compact pill */
+  .hi-bar__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    width: 100%;              /* scaleX controls progress */
+    background: #99cdb3;
+    border-radius: 0 2px 2px 0;
+    transform: scaleX(0);
+    transform-origin: left center;
+    will-change: transform, background;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), background 0.5s ease;
+    display: none;
+  }
+  .hi-bar--compact .hi-bar__progress {
+    display: block;
+  }
+
+  /* ── Items flex row ── */
+  .hi-bar__items {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    z-index: 2;
+    padding-bottom: 0;
+  }
+  .hi-bar--compact .hi-bar__items {
+    padding-bottom: 0;
+    align-items: center;
+  }
+
+  .hi-bar__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ─ Year label ─ */
+  .hi-bar__year {
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #204383;
+    line-height: 1;
+    margin-bottom: 0.55rem;
+    opacity: 0;
+    transform: translateY(16px);
+    font-size: clamp(2rem, 4.5vw, 3.4rem);
+    transition:
+      opacity 0.4s ease,
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      font-size   1s cubic-bezier(0.76, 0, 0.24, 1),
+      margin      1s cubic-bezier(0.76, 0, 0.24, 1),
+      color      0.6s ease;
+  }
+  .hi-bar--compact .hi-bar__year {
+    font-size: 0.62rem;
+    margin-bottom: 0.2rem;
+    margin-top: 0.15rem;
+    color: #204383;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    font-family: ui-monospace, monospace;
+    opacity: 0.85;
+  }
+  .hi-bar__year--on {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Active year highlight in compact bar */
+  .hi-bar--compact .hi-bar__item--active .hi-bar__year {
+    color: #204383;
+    opacity: 1;
+    font-weight: 800;
+    position: relative;
+  }
+  .hi-bar--compact .hi-bar__item--active .hi-bar__year::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #99cdb3;
+  }
+
+  /* ─ Dot ─ */
+  .hi-bar__dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    flex-shrink: 0;
+    opacity: 0;
+    transform: scale(0);
+    transition:
+      opacity 0.35s ease,
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      width        1s cubic-bezier(0.76, 0, 0.24, 1),
+      height       1s cubic-bezier(0.76, 0, 0.24, 1),
+      border-width 1s ease;
+  }
+  .hi-bar__dot--on {
+    opacity: 1;
+    transform: scale(1);
+    background: #204383;
+  }
+  /* Compact: no dots — bar background fill is the progress indicator */
+  .hi-bar--compact .hi-bar__dot {
+    display: none;
+  }
+
+
+  /* ================================================================
+    HERO
+    ================================================================ */
+  .hi-hero-alt {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(7rem, 12vw, 12rem) clamp(1.5rem, 4vw, 3.5rem);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 85%, rgba(153,205,179,0.06) 0%, transparent 100%),
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(32,67,131,0.03) 0%, transparent 100%),
+      #fff;
+  }
+  .hi-hero-alt__inner {
+    max-width: 80rem;
+    position: relative;
+    z-index: 1;
+  }
+  .hi-hero-alt__line {
+    width: 6rem;
+    height: 0.25rem;
+    background: linear-gradient(90deg, #99cdb3, #99cdb3);
+    margin: 0 auto 2.5rem;
+    border-radius: 999px;
+  }
+  .hi-hero-alt__eyebrow {
+    display: inline-block;
+    padding: 0.65rem 1.5rem;
+    border-radius: 999px;
+    border: 1px solid rgba(32, 67, 131, 0.08);
+    background: rgba(32, 67, 131, 0.03);
+    color: #204383;
+    font-family: ui-monospace, monospace;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 2.6rem;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .hi-hero-alt__title {
+    margin: 0 0 2.4rem;
+    font-size: clamp(3.6rem, 9.5vw, 8rem);
+    font-weight: 900;
+    line-height: 0.88;
+    letter-spacing: -0.035em;
+    color: #204383;
+  }
+  .hi-hero-alt__title-em {
+    font-style: italic;
+    background: linear-gradient(135deg, #99cdb3 30%, #6bb89a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 300;
+  }
+  .hi-hero-alt__subtitle {
+    margin: 0 auto 4rem;
+    font-size: clamp(1rem, 2.2vw, 1.35rem);
+    color: #6b7280;
+    line-height: 1.8;
+    max-width: 42rem;
+    font-weight: 300;
+  }
+  .hi-hero-alt__scroll {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    color: rgba(32, 67, 131, 0.30);
+    transition: color 0.3s ease;
+  }
+  .hi-hero-alt__scroll:hover {
+    color: rgba(32, 67, 131, 0.60);
+  }
+  .hi-hero-alt__scroll-line {
+    width: 1px;
+    height: 56px;
+    background: linear-gradient(to bottom, rgba(32, 67, 131, 0.22), transparent);
+  }
+  .hi-hero-alt__scroll-text {
+    font-family: ui-monospace, monospace;
+    font-size: 0.58rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+  }
+  .hi-hero-alt__bg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+    animation: hi-bg-drift 30s ease-in-out infinite alternate;
+  }
+  @keyframes hi-bg-drift {
+    from { transform: scale(1) rotate(0deg); }
+    to   { transform: scale(1.04) rotate(2deg); }
+  }
+  .hi-hero-alt__bg img {
+    width: 110%;
+    height: 110%;
+    object-fit: contain;
+  }
+
+  @keyframes hi-fade-in {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes hi-scale-in {
+    from { transform: scaleX(0); opacity: 0; }
+    to { transform: scaleX(1); opacity: 1; }
+  }
+  @keyframes hi-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+  .animate-fade-in {
+    animation: hi-fade-in 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    opacity: 0;
+  }
+  .animate-scale-in {
+    animation: hi-scale-in 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    transform-origin: center;
+  }
+  .animate-float {
+    animation: hi-float 2.6s ease-in-out infinite;
+  }
+  .delay-200 { animation-delay: 0.2s; }
+  /* (Old .hi-hero styles removed — using .hi-hero-alt instead) */
+
+  /* ================================================================
+    MILESTONE SECTIONS
+    ================================================================ */
+  .hi-ms {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(3rem, 6vw, 7rem);
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: clamp(5rem, 9vw, 9rem) clamp(1.5rem, 3vw, 3rem);
+    border-bottom: 1px solid rgba(32, 67, 131, 0.06);
+    /* reveal */
+    opacity: 0;
+    transform: translateY(48px);
+    transition: opacity 0.9s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hi-ms--on {
+    opacity: 1;
+    transform: none;
+  }
+  .hi-ms--on .hi-ms__text {
+    animation: hi-ms-text-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+  }
+  .hi-ms--on .hi-ms__img-wrap {
+    animation: hi-ms-img-in 1s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+  }
+  @keyframes hi-ms-text-in {
+    from { opacity: 0; transform: translateX(-24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes hi-ms-img-in {
+    from { opacity: 0; transform: translateX(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateX(0) scale(1); }
+  }
+  .hi-ms--rev.hi-ms--on .hi-ms__text {
+    animation-name: hi-ms-text-in-rev;
+  }
+  .hi-ms--rev.hi-ms--on .hi-ms__img-wrap {
+    animation-name: hi-ms-img-in-rev;
+  }
+  @keyframes hi-ms-text-in-rev {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes hi-ms-img-in-rev {
+    from { opacity: 0; transform: translateX(-24px) scale(0.97); }
+    to   { opacity: 1; transform: translateX(0) scale(1); }
+  }
+  /* Alt: swap columns */
+  .hi-ms--rev .hi-ms__text     { order: 2; }
+  .hi-ms--rev .hi-ms__img-wrap { order: 1; }
+
+  /* ── Text ── */
+  .hi-ms__text {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .hi-ms__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.5rem;
+  }
+  .hi-ms__loc {
+    font-family: ui-monospace, monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #99cdb3;
+    position: relative;
+    padding-left: 1.2rem;
+  }
+  .hi-ms__loc::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #99cdb3;
+  }
+
+  /* Big watermark year */
+  .hi-ms__year-bg {
+    position: absolute;
+    top: -0.3em;
+    right: 0;
+    font-size: clamp(6rem, 13vw, 11rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.06em;
+    color: rgba(32, 67, 131, 0.04);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+  }
+  .hi-ms--rev .hi-ms__year-bg {
+    right: auto;
+    left: 0;
+  }
+
+  .hi-ms__title {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #204383;
+  }
+
+  /* override hi-divider color inside section */
+  .hi-ms .hi-divider {
+    background: linear-gradient(90deg, #99cdb3, rgba(153,205,179,0.2));
+  }
+
+  .hi-ms__desc {
+    margin: 2rem 0 0;
+    font-size: clamp(0.9rem, 1.3vw, 1rem);
+    color: #6b7280;
+    line-height: 1.8;
+    font-weight: 400;
+    max-width: 480px;
+  }
+
+  .hi-ms__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+    padding: 0.75rem 1.8rem;
+    border-radius: 999px;
+    border: 1.5px solid rgba(32, 67, 131, 0.12);
+    color: #204383;
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: ui-monospace, monospace;
+    letter-spacing: 0.15em;
+    background: #fff;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hi-ms__cta::after {
+    content: '\2192';
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+  .hi-ms__cta:hover {
+    background: #204383;
+    color: #fff;
+    border-color: #204383;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(32, 67, 131, 0.20);
+  }
+  .hi-ms__cta:hover::after {
+    transform: translateX(3px);
+  }
+  .hi-ms__cta:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(32, 67, 131, 0.15);
+  }
+
+  /* ── Image ── */
+  .hi-ms__img-wrap {
+    position: relative;
+  }
+  .hi-ms__img-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(ellipse at center, rgba(153, 205, 179, 0.12), transparent 70%);
+    border-radius: 32px;
+    z-index: 0;
+  }
+  .hi-ms__img {
+    position: relative;
+    z-index: 1;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+      0 20px 64px rgba(32, 67, 131, 0.10),
+      0 4px 16px rgba(32, 67, 131, 0.06);
+    aspect-ratio: 4 / 3;
+  }
+  .hi-ms__img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(32,67,131,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 2;
+  }
+  .hi-ms__img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hi-ms__img:hover img {
+    transform: scale(1.06);
+  }
+
+  /* ================================================================
+    CLOSING SECTION
+    ================================================================ */
+  .hi-close {
+    background: linear-gradient(165deg, #1a3a72 0%, #204383 50%, #2a4f94 100%);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(6rem, 12vw, 12rem) clamp(1.5rem, 3vw, 3rem);
+  }
+  .hi-close__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 840px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hi-close__h2 {
+    margin: 0;
+    font-size: clamp(3.4rem, 9vw, 7rem);
+    font-weight: 900;
+    line-height: 0.88;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .hi-close__h2 em {
+    font-style: italic;
+    background: linear-gradient(135deg, #99cdb3, #7cbfa3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hi-close__line {
+    width: 8rem;
+    height: 0.375rem;
+    background: linear-gradient(90deg, rgba(153,205,179,0.5), rgba(153,205,179,0.15));
+    border-radius: 2px;
+    margin: 2.5rem 0;
+  }
+  .hi-close__body {
+    font-size: clamp(1rem, 1.5vw, 1.12rem);
+    color: rgba(255, 255, 255, 0.60);
+    line-height: 1.8;
+    font-weight: 300;
+    max-width: 620px;
+  }
+  .hi-close__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 3rem;
+    padding: 0.85rem 2.2rem;
+    border-radius: 999px;
+    border: 1.5px solid rgba(153, 205, 179, 0.35);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    font-family: ui-monospace, monospace;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hi-close__cta:hover {
+    background: rgba(153, 205, 179, 0.18);
+    border-color: #99cdb3;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(153, 205, 179, 0.20);
+  }
+  .hi-close__deco {
+    position: absolute;
+    bottom: -0.18em;
+    right: -0.04em;
+    font-size: clamp(12rem, 30vw, 26rem);
+    font-weight: 900;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.02);
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.06em;
+    z-index: 1;
+  }
+
+  /* ================================================================
+    SPHERE — INTRO 3D GLOBE (phases 1-2)
+    A CSS preserve-3d globe with logos orbiting as satellites.
+    Collapses toward the right edge on exit → morphs into the wheel.
+    ================================================================ */
+
+  /* Positioning shell */
+  .hi-sphere {
+    position: fixed;
+    left: 50%;
+    top: 52%;            /* slightly lower so bar text stays legible */
+    transform: translate(-50%, -50%);
+    z-index: 400;        /* TOP of stack — above bar (200) and everything */
+    pointer-events: none;
+    opacity: 0;
+    transition:
+      opacity   0.6s ease,
+      left      1.0s cubic-bezier(0.76, 0, 0.24, 1),
+      transform 1.0s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  .hi-sphere--on   { opacity: 0.92; }
+  /* Exit: collapse to the right wheel position */
+  .hi-sphere--exit {
+    left: calc(100% - 30px);
+    transform: translate(-50%, -50%) scale(0.1);
+    opacity: 0;
+  }
+
+  /* Atmospheric glow behind the sphere */
+  .hi-sphere__glow {
+    position: absolute;
+    inset: -60px;
+    background: radial-gradient(
+      circle,
+      rgba(153, 205, 179, 0.30) 0%,
+      rgba(32,  67, 131, 0.18) 45%,
+      transparent 70%
+    );
+    border-radius: 50%;
+    filter: blur(36px);
+    animation: sphereGlowPulse 4s ease-in-out infinite alternate;
+  }
+  @keyframes sphereGlowPulse {
+    from { opacity: 0.6; }
+    to   { opacity: 1;   }
+  }
+
+  /* Perspective container */
+  .hi-sphere__scene {
+    width: 360px;
+    height: 360px;
+    perspective: 900px;
+    perspective-origin: 50% 50%;
+  }
+
+  /* Continuously rotating ball */
+  .hi-sphere__ball {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: sphereRotate 10s linear infinite;
+  }
+  .hi-sphere--exit .hi-sphere__ball {
+    animation-play-state: paused;
+  }
+
+  @keyframes sphereRotate {
+    from { transform: rotateY(0deg)   rotateX(14deg); }
+    to   { transform: rotateY(360deg) rotateX(14deg); }
+  }
+
+  /* Translucent core */
+  .hi-sphere__core {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 260px; height: 260px;
+    margin: -130px 0 0 -130px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 38% 35%,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(32, 67, 131, 0.10)  50%,
+      rgba(32, 67, 131, 0.04) 100%
+    );
+    border: 1px solid rgba(32, 67, 131, 0.10);
+    transform: translateZ(0px);
+  }
+
+  /* Wireframe rings */
+  .hi-sphere__ring {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 310px; height: 310px;
+    margin: -155px 0 0 -155px;
+    border-radius: 50%;
+    border: 1px solid rgba(32, 67, 131, 0.12);
+    box-sizing: border-box;
+    transform-style: preserve-3d;
+  }
+  .hi-sphere__ring--eq { transform: rotateX(90deg); }
+  .hi-sphere__ring--m1 { transform: rotateY(55deg);  }
+  .hi-sphere__ring--m2 { transform: rotateY(-55deg); }
+
+  /* Individual logo bubbles */
+  .hi-sphere__logo {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 66px; height: 66px;
+    margin: -33px 0 0 -33px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid rgba(32, 67, 131, 0.14);
+    box-shadow: 0 5px 22px rgba(0, 0, 0, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    /* animate each logo in as the bar dot builds */
+    opacity: 0;
+    scale: 0.4;
+    transition: opacity 0.5s ease, scale 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .hi-sphere__logo--on {
+    opacity: 1;
+    scale: 1;
+  }
+  .hi-sphere__logo img {
+    width: 68%;
+    height: 68%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  /* ================================================================
+    RESPONSIVE
+    ================================================================ */
+  @media (max-width: 900px) {
+    .hi-bar__year {
+      font-size: clamp(1.1rem, 3.5vw, 2rem);
+    }
+    .hi-ms {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+    .hi-ms--rev .hi-ms__text,
+    .hi-ms--rev .hi-ms__img-wrap {
+      order: unset;
+    }
+    .hi-ms__year-bg { font-size: 5.5rem; }
+    .hi-ms__img { border-radius: 16px; }
+    .hi-hero-alt__title { font-size: clamp(2.8rem, 8vw, 5rem); }
+  }
+
+  @media (max-width: 600px) {
+    .hi-bar--lifted { top: 56px; }
+    .hi-bar__year { font-size: clamp(0.9rem, 2.5vw, 1.4rem); }
+    .hi-wheel  { display: none; }
+    .hi-sphere { display: none; }
+    .hi-hero-alt {
+      padding: clamp(5rem, 8vw, 7rem) 1.25rem;
+    }
+    .hi-ms__cta {
+      width: 100%;
+      justify-content: center;
+    }
+    .hi-close {
+      min-height: 60vh;
+      padding: 4rem 1.25rem;
+    }
+    .hi-close__h2 {
+      font-size: clamp(2.4rem, 8vw, 4rem);
+    }
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .hi-sphere__ball  { animation: none !important; }
+    .hi-sphere__glow  { animation: none !important; }
+    .hi-hero-alt__bg  { animation: none !important; }
+  }
+
+  /* ================================================================
+    HALF-WHEEL
+    ─ A 480×480 virtual disc with center at the container's LEFT edge
+      (= 200px from the right edge of the viewport).
+    ─ clip-path hides everything right of the centre → left half shown.
+    ─ Items are positioned via JS (RAF loop) using translate on each div.
+    ================================================================ */
+  .hi-wheel {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    /* Container is 280px wide; disc centre at left:280px (right edge of viewport)
+      so the left-half arc (radius 220px) peeks in ~200px from the right edge */
+    width: 320px;
+    height: 600px;
+    overflow: visible;        /* allow glow outside; clipping via scroll offset */
+    clip-path: inset(0 0 0 0);/* no clip — items naturally exit off-container */
+    z-index: 20;              /* above page sections, below bar pill (200) */
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.9s ease 0.4s;
+  }
+  .hi-wheel--on {
+    opacity: 1;
+  }
+
+  /* SVG arc — same coordinate system as the disc (480×480, centre 240 240) */
+  .hi-wheel__arc {
+    position: absolute;
+    /* disc centre aligns to the right edge of the 280px container */
+    right: -240px;  /* shift SVG so its centre (240px from left of SVG) sits at container right edge */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 480px;
+    height: 480px;
+    pointer-events: none;
+  }
+
+  /* Each logo lives here; JS positions via inline transform */
+  .hi-wheel__item {
+    position: absolute;
+    /* centre = disc centre = left:280px, vertical centre of container */
+    left: 320px;
+    top: 50%;
+    width: 102px;
+    height: 102px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #fff;
+    border: 2.5px solid rgba(32, 67, 131, 0.15);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.10);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform, opacity;
+    transition: border-color 0.35s ease, box-shadow 0.35s ease;
+  }
+  .hi-wheel__item img {
+    width: 82%;
+    height: 82%;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+  .hi-wheel__item--active {
+    border-color: #204383;
+    box-shadow:
+      0 6px 28px rgba(32, 67, 131, 0.25),
+      0 0 0 4px rgba(153, 205, 179, 0.18);
+    z-index: 2;
+  }
+
+  /* Label that sits at the left edge of the container */
+  .hi-wheel__label {
+    position: absolute;
+    left: 0;
+    top: calc(50% + 130px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    padding-left: 10px;
+    pointer-events: none;
+  }
+  .hi-wheel__label-year {
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #204383;
+    font-family: ui-monospace, monospace;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .hi-wheel__label-title {
+    font-size: 0.56rem;
+    font-weight: 600;
+    color: #6b7280;
+    white-space: nowrap;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (min-width: 1100px) {
+    .hi-ms {
+      margin-left: clamp(2rem, 6vw, 6rem);
+      margin-right: auto;
+      padding-right: clamp(10rem, 22vw, 22rem);
+    }
+    .hi-close__inner {
+      margin-left: clamp(2rem, 6vw, 6rem);
+      margin-right: auto;
+      text-align: left;
+      align-items: flex-start;
+      padding-right: clamp(10rem, 22vw, 22rem);
+    }
+  }
