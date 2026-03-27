@@ -375,9 +375,9 @@ export const OurProjectsPage: React.FC = () => {
 
           {/* Intro title overlay */}
           <div className="pw-intro" ref={introRef}>
-            <h1 className="pw-intro__title">
+            <h1 className="pw-intro__title1">
               Our Top<br />
-              <span className="pw-intro__title-stroke">References</span>
+              <span className="pw-intro__title-stroke1">References</span>
             </h1>
             <div className="pw-intro__line" />
             <p className="pw-intro__sub">Over 50 projects worldwide.</p>
@@ -387,7 +387,7 @@ export const OurProjectsPage: React.FC = () => {
           <div className="pw-cta" ref={ctaRef} style={{ opacity: 0 }}>
             <h2 className="pw-cta__title">
               Interested<br />
-              <span className="pw-cta__title-stroke">for more?</span>
+              <span className="pw-cta__title-stroke">in more?</span>
             </h2>
             <div className="pw-cta__line" />
             <div className="pw-cta__scroll-hint">

@@ -1,0 +1,218 @@
+﻿:root {
+  --rd-navy: #204383;
+  --rd-teal: #26c0af;
+  --rd-blue: #299bcd;
+  --rd-light: #f5f7f9;
+  --rd-white: #ffffff;
+  --rd-gray: #4a5568;
+}
+
+.rd-page {
+  font-family: 'Montserrat', sans-serif;
+  min-height: 100vh;
+  background-color: var(--rd-light);
+  padding: 140px 5% 100px;
+  color: var(--rd-gray);
+  overflow: hidden;
+}
+
+.rd-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Split Layout */
+.rd-split-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+@media (min-width: 900px) {
+  .rd-split-layout {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* ──────── LEFT: TEXT ──────── */
+.rd-text-section {
+  flex: 1;
+  max-width: 650px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.rd-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(21, 34, 67, 0.05);
+  color: var(--rd-navy);
+  border: 1px solid rgba(21, 34, 67, 0.1);
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.rd-back-btn:hover {
+  background: var(--rd-teal);
+  color: #fff;
+  border-color: var(--rd-teal);
+  transform: translateX(-4px);
+}
+
+.rd-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rd-eyebrow {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rd-teal);
+  animation: heroPulse 3s infinite ease-in-out;
+}
+
+@keyframes heroPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.rd-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--rd-navy);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.rd-divider {
+  width: 60px;
+  height: 4px;
+  background: var(--rd-teal);
+  border-radius: 2px;
+  margin: 8px 0;
+}
+
+.rd-subtitle {
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-weight: 600;
+  color: var(--rd-navy);
+  margin: 0;
+}
+
+.rd-desc {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--rd-gray);
+  margin-top: 10px;
+}
+
+/* Glass Card */
+.rd-glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 15px 35px rgba(21, 34, 67, 0.05);
+  margin-top: 20px;
+}
+
+.rd-glass-title {
+  color: var(--rd-navy);
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.rd-glass-card p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* ──────── RIGHT: IMAGE ──────── */
+.rd-image-section {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  max-width: 500px;
+}
+
+@media (max-width: 900px) {
+  .rd-image-section {
+    max-width: 100%;
+    justify-content: center;
+  }
+}
+
+.rd-logo-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  padding: 24px;
+  transform: translateZ(0);
+}
+
+.rd-photo {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rd-logo-wrapper:hover .rd-photo {
+  transform: scale(1.05);
+}
+
+/* ──────── ANIMATIONS ──────── */
+.rd-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rd-reveal.rd-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Sequence delays */
+.rd-eyebrow.rd-reveal { transition-delay: 0.1s; }
+.rd-title.rd-reveal { transition-delay: 0.2s; }
+.rd-divider.rd-reveal { transition-delay: 0.3s; }
+.rd-subtitle.rd-reveal { transition-delay: 0.4s; }
+.rd-desc.rd-reveal { transition-delay: 0.5s; }
+.rd-glass-card.rd-reveal { transition-delay: 0.6s; }
+.rd-image-section.rd-reveal { transition-delay: 0.4s; }
+
+/* Not found */
+.rd-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
