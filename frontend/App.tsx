@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Marquee } from './components/Marquee';
@@ -17,6 +17,12 @@ import { ContactPage } from './components/ContactPage';
 import { AboutUsPage } from './components/AboutUsPage.tsx';
 import { OurProjectsPage } from './components/OurProjectsPage.tsx';
 import { HistoryPage } from './components/HistoryPage.tsx';
+import { BfcAcademy } from './components/BfcAcademy';
+import CourseDetail from './components/CourseDetail';
+import { ServiceDetail } from './components/ServiceDetail';
+import { RepresentativeDetail } from './components/RepresentativeDetail';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { AdminDashboard } from './components/AdminDashboard';
 import './App.css';
 
 const App: React.FC = () => {
@@ -47,8 +53,7 @@ const App: React.FC = () => {
   }, [location]);
 
   const toggleMenu = (show: boolean) => {
-    console.log('toggleMenu called with:', show);
-    setIsMenuOpen(show);
+     setIsMenuOpen(show);
     if (show) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -58,8 +63,10 @@ const App: React.FC = () => {
 
   return (
     <div className={`app ${isMenuOpen ? 'menu-open' : ''}`}>
-      <Navbar onOpenMenu={() => toggleMenu(true)} />
-      
+      {!location.pathname.startsWith('/admin') && (
+        <Navbar onOpenMenu={() => toggleMenu(true)} />
+      )}
+
       <Routes>
         <Route
           path="/"
@@ -116,9 +123,33 @@ const App: React.FC = () => {
             </>
           }
         />
+        <Route path="/bfc-academy" element={<Navigate to="/standard-training" replace />} />
+        <Route path="/standard-training" element={<ErrorBoundary><BfcAcademy /></ErrorBoundary>} />
+        <Route path="/course/:title" element={<ErrorBoundary><CourseDetail /></ErrorBoundary>} />
+        <Route
+          path="/services/:serviceId"
+          element={
+            <>
+              <ErrorBoundary><ServiceDetail /></ErrorBoundary>
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/representatives/:id"
+          element={
+            <>
+              <ErrorBoundary><RepresentativeDetail /></ErrorBoundary>
+              <Footer />
+            </>
+          }
+        />
+        <Route path="/admin" element={<ErrorBoundary><AdminDashboard /></ErrorBoundary>} />
       </Routes>
-      
-      <Menu isOpen={isMenuOpen} onClose={() => toggleMenu(false)} />
+
+      {!location.pathname.startsWith('/admin') && (
+        <Menu isOpen={isMenuOpen} onClose={() => toggleMenu(false)} />
+      )}
     </div>
   );
 };
