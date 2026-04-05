@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { X, ChevronRight } from 'lucide-react';
 import bfcLogo from '../src/assets/bfc.png';
 import ici from '../src/assets/certif/ici.png';
-import irm from '../src/assets/certif/irm.png';
+import irm from '../src/assets/certif/IRM.png';
 import GII from '../src/assets/certif/global_innovation_insititute.png';
 import './Menu.css';
 

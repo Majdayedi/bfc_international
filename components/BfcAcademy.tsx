@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ShieldCheck, ArrowUpRight, Star, Clock } from "lucide-react";
 import { Link } from 'react-router-dom';
 import ici from '../src/assets/certif/ici.png';
-import irm from '../src/assets/certif/irm.png';
+import irm from '../src/assets/certif/IRM.png';
 import GII from '../src/assets/certif/global_innovation_insititute.png';
 import bfcLogo from '../src/assets/bfc.png';
 import './BfcAcademy.css';

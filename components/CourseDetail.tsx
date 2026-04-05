@@ -12,7 +12,7 @@ import {
   UsersRound,
 } from 'lucide-react';
 import ici from '../src/assets/certif/ici.png';
-import irm from '../src/assets/certif/irm.png';
+import irm from '../src/assets/certif/IRM.png';
 import bfcLogo from '../src/assets/bfc.png';
 import './CourseDetail.css';
 
