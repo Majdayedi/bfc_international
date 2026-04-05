@@ -2,7 +2,7 @@
 import './HistoryPage.css';
 import bfcLogo    from '../src/assets/bfc.png';
 import MGIBFCImg  from '../src/assets/MGI-BFC.png';
-import guineeLogo from '../src/assets/bfc_guinée.png';
+import guineeLogo from '../src/assets/bfc.png';
 import senegalLogo from '../src/assets/bfc_senegal.png';
 import congoLogo  from '../src/assets/bfc_congo.png';
 import mauritaniaLogo from '../src/assets/bfc_mauritania.png';

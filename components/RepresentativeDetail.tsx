@@ -4,7 +4,7 @@ import './RepresentativeDetail.css';
 
 import bfcCongo from '../src/assets/bfc_congo.png';
 import bfcSenegal from '../src/assets/bfc_senegal.png';
-import bfcGuinee from '../src/assets/bfc_guinée.png';
+import bfcGuinee from '../src/assets/bfc.png';
 import bfcMauritania from '../src/assets/bfc_mauritania.png';
 import bfcTunisia from '../src/assets/MGI-BFC.png';
 import reandaLogo from '../src/assets/reanda.png';
