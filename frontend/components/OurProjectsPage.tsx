@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './OurProjectsPage.css';
 
 /* ─── Types & Data ─────────────────────────────────────────────────── */
-interface Project {
+export interface Project {
   id: number;
   title: string;
   category: string;
+  client: string;
   country: string;
   flag: string;
   year: string;
@@ -14,102 +16,656 @@ interface Project {
   imageUrl: string;
 }
 
-const PROJECTS: Project[] = [
+export const PROJECTS: Project[] = [
   {
     id: 1,
-    title: 'Digital Transformation of Public Finance Systems',
-    category: 'Advisory',
-    country: 'Democratic Republic of Congo',
-    flag: 'https://flagcdn.com/w40/cd.png',
-    year: '2023',
+    title: 'Study on the formalization of MSMEs in the Republic of Benin',
+    category: 'Global Strategy',
+    client: 'ADPME',
+    country: 'Benin',
+    flag: 'https://flagcdn.com/w40/bj.png',
+    year: '2025 - Ongoing',
     description:
-      'End-to-end advisory mandate to modernise budget-execution workflows and implement IFMIS across three ministries.',
-    accent: '#30aeb7',
-    imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop',
+      'Developing a national strategy to transition MSMEs from informal to formal sectors, with benchmarking, consultations, and operational recommendations.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 2,
-    title: 'Pan-African SME Capacity Building Programme',
-    category: 'Academy',
-    country: 'Senegal',
-    flag: 'https://flagcdn.com/w40/sn.png',
-    year: '2024',
+    title: 'Technical assistance for PKI legal framework and e-certification',
+    category: 'Digital Trust',
+    client: 'Ministry of Digital Transformation (MTNMA)',
+    country: 'Mauritania',
+    flag: 'https://flagcdn.com/w40/mr.png',
+    year: '2025 - Ongoing',
     description:
-      'Designed and delivered a 12-month blended-learning curriculum for 340 SME leaders across Francophone West Africa.',
+      'Analysis of institutional and technical prerequisites, regulatory updates, digital signature use cases, and business plan for PKI exploitation.',
     accent: '#243c8a',
-    imageUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=800&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 3,
-    title: 'Statutory Audit — Telecoms Joint Venture',
-    category: 'Audit',
-    country: 'Tunisia',
-    flag: 'https://flagcdn.com/w40/tn.png',
-    year: '2023',
+    title: 'Design and implementation of the Information System',
+    category: 'ICT',
+    client: 'SONAPI SA',
+    country: 'Guinea',
+    flag: 'https://flagcdn.com/w40/gn.png',
+    year: '2025 - Ongoing',
     description:
-      'Independent audit of a joint-venture entity at the intersection of two major regional telecoms operators.',
-    accent: '#e05b3e',
-    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop',
+      'Digitalization of internal operations including HR management, project optimization, real estate assets, archive dematerialization, and tender tracking.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 4,
-    title: 'Transfer Pricing Documentation & Defence',
-    category: 'Tax & Legal',
-    country: 'Guinea',
-    flag: 'https://flagcdn.com/w40/gn.png',
-    year: '2022',
+    title: 'Setup of a Risk Management Cell for the Saudi Government',
+    category: 'Organizational Management',
+    client: 'Royal Office',
+    country: 'Saudi Arabia',
+    flag: 'https://flagcdn.com/w40/sa.png',
+    year: '2025 - Ongoing',
     description:
-      'Prepared master-file / local-file documentation and represented the client before the national tax authority.',
-    accent: '#f59e0b',
-    imageUrl: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=800&auto=format&fit=crop',
+      'Support mission to establish a dedicated risk management structure and governance mechanisms at government level.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1554224154-22dec7ec8818?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 5,
-    title: 'Full-Scope Payroll & HR Outsourcing',
-    category: 'Outsourcing',
+    title: 'Strategic retreat for FNCT (Project Tanmia Baladia)',
+    category: 'Strategy / Organizational Management',
+    client: 'Expertise France',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2025',
+    description:
+      'Conceptualization and facilitation of a strategic retreat focused on governance models, service diversification, and strategic priorities.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 6,
+    title: 'Strategic plan for private investment and APIP business plan',
+    category: 'Global Strategy',
+    client: 'APIP (Project PDACG)',
+    country: 'Guinea',
+    flag: 'https://flagcdn.com/w40/gn.png',
+    year: '2024 - Ongoing',
+    description:
+      'Entrepreneurship ecosystem analysis and roadmap of reforms and projects to improve private investment and APIP positioning over five years.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1664575602554-2087b04935a5?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 7,
+    title: 'Feasibility study for a digital addressing system',
+    category: 'ICT / Feasibility Study',
+    client: 'AMRTP',
+    country: 'Mali',
+    flag: 'https://flagcdn.com/w40/ml.png',
+    year: '2025 - Ongoing',
+    description:
+      'Legal and technical diagnosis with benchmarking and implementation roadmap for a national digital addressing information system.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1573164574472-797cdf4a583a?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 8,
+    title: 'Strategic diagnosis and governance evaluation of Boutilimit hospital',
+    category: 'Institutional Governance',
+    client: 'Hamad Ben Khalifa Hospital',
     country: 'Mauritania',
     flag: 'https://flagcdn.com/w40/mr.png',
     year: '2024',
     description:
-      'Ongoing payroll management, regulatory compliance and HR administration for a multinational retail group.',
-    accent: '#7c3aed',
-    imageUrl: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=800&auto=format&fit=crop',
+      'Roadmap development to improve governance efficiency with maturity assessment based on COSO principles.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800&auto=format&fit=crop',
   },
   {
-    id: 6,
-    title: 'IFRS Transition & Financial Reporting',
-    category: 'Advisory',
-    country: 'Kenya',
-    flag: 'https://flagcdn.com/w40/ke.png',
+    id: 9,
+    title: 'Modernization and operationalization of CILSS platforms',
+    category: 'ICT / Institutional',
+    client: 'AGRHYMET (World Bank Group)',
+    country: 'Niger',
+    flag: 'https://flagcdn.com/w40/ne.png',
+    year: '2024',
+    description:
+      'Definition of implementation frameworks and resource mobilization for the regional climate center and related ECOWAS/CILSS structures.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 10,
+    title: 'Mapping the SME and Startup ecosystem',
+    category: 'Global Strategy',
+    client: 'EBRD (BERD)',
+    country: 'Ivory Coast',
+    flag: 'https://flagcdn.com/w40/ci.png',
+    year: '2024',
+    description:
+      'Market and stakeholder mapping mission for Tunisian SMEs in Ivory Coast, including DFI and agency landscape analysis.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 11,
+    title: 'Revision of central regional financial market shareholding structures',
+    category: 'Institutional Governance',
+    client: 'CREPMF (AMF-UMOA)',
+    country: 'Ivory Coast',
+    flag: 'https://flagcdn.com/w40/ci.png',
+    year: '2022-2024',
+    description:
+      'Evaluation of restructuring options and definition of governance-oriented models to achieve reform objectives.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 12,
+    title: 'Transformation strategy for financial and postal services',
+    category: 'Global Strategy',
+    client: 'CAMPOST',
+    country: 'Cameroon',
+    flag: 'https://flagcdn.com/w40/cm.png',
+    year: '2024',
+    description:
+      'Strategic diagnosis, trend benchmarking, and investment roadmap for a five-year transformation program.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 13,
+    title: 'Implementation of an Anti-Corruption Management System (SMAC)',
+    category: 'Institutional Governance',
+    client: 'Municipality of Tunis',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2023',
+    description:
+      'ISO 37001 gap analysis, stakeholder risk assessment, governance design, and implementation of monitoring and alert tools.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 14,
+    title: 'Development of management procedures manuals',
+    category: 'Organizational Management',
+    client: 'SOGUIPAH SA',
+    country: 'Guinea',
+    flag: 'https://flagcdn.com/w40/gn.png',
+    year: '2023',
+    description:
+      'Organizational diagnosis and drafting of administrative, financial, and accounting procedures with role clarification and training.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 15,
+    title: 'Go to Market strategy and startup internationalization',
+    category: 'Global Strategy',
+    client: 'Connect Innov',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2023',
+    description:
+      'Design of tailored market expansion strategies and operational action plans for startup international growth.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 16,
+    title: 'Strategic and digital transformation program',
+    category: 'Management',
+    client: 'Select Hardware Company',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2023',
+    description:
+      'Maturity assessment, SWOT/PESTEL analysis, and organizational redesign including structures, roles, and HR management model.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 17,
+    title: 'Strategic transformation and modernization of the post office',
+    category: 'Global Strategy',
+    client: 'La Poste du Benin (Ministry of Digital)',
+    country: 'Benin',
+    flag: 'https://flagcdn.com/w40/bj.png',
     year: '2022',
     description:
-      'Guided a listed manufacturing company through the full IFRS adoption journey, including training of finance staff.',
-    accent: '#16a34a',
+      'Benchmarking and strategy formulation for modernization, investment planning, and change management.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 18,
+    title: 'Economic models for PKI exploitation',
+    category: 'Digital Trust',
+    client: 'ASSI',
+    country: 'Benin',
+    flag: 'https://flagcdn.com/w40/bj.png',
+    year: '2021-2022',
+    description:
+      'Definition of stakeholder value propositions, market study, financial model, and communication roadmap for PKI deployment.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 19,
+    title: 'Framework and inspection procedures for trust service providers',
+    category: 'Digital Trust',
+    client: 'Ministry of Digitalization',
+    country: 'Benin',
+    flag: 'https://flagcdn.com/w40/bj.png',
+    year: '2022',
+    description:
+      'Institutional architecture design, digital code analysis, international benchmarking, and methodology notes for inspections.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1489533119213-66a5cd877091?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 20,
+    title: 'Digitalization of business processes',
+    category: 'ICT / TIC',
+    client: 'AMI Commerciale',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2022',
+    description:
+      'Maturity and compliance assessment, IT risk mapping, and digital transformation planning with training and change management.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 21,
+    title: 'National strategy for the conference economy',
+    category: 'Global Strategy',
+    client: 'ANEC',
+    country: 'Niger',
+    flag: 'https://flagcdn.com/w40/ne.png',
+    year: '2021-2022',
+    description:
+      'Five-year plan for MICE development, destination positioning, job impact analysis, and operational marketing roadmap.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 22,
+    title: 'Training on startup internationalization and economic intelligence',
+    category: 'Training',
+    client: 'Wiki Start Up',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2022',
+    description:
+      'Training mission focused on startup internationalization capabilities and economic intelligence, including Pitch Day jury support.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1515169067868-5387ec356754?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 23,
+    title: 'Organizational review and strategic plan',
+    category: 'Strategy / Governance',
+    client: 'AZIZA',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2021',
+    description:
+      'Functional diagnosis and governance redesign with updated structures, job descriptions, and strategic framing.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 24,
+    title: 'Organizational audit and review',
+    category: 'Organizational Management',
+    client: 'TTI & ELECSA',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2021',
+    description:
+      'Control environment assessment and restructuring scenarios with governance and role updates.',
+    accent: '#243c8a',
     imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop',
   },
   {
-    id: 7,
-    title: 'Anti-Money Laundering Compliance Review',
-    category: 'Audit',
-    country: 'Ghana',
-    flag: 'https://flagcdn.com/w40/gh.png',
-    year: '2023',
+    id: 25,
+    title: 'Functional audit and procedures manual update',
+    category: 'Organizational Management',
+    client: 'Initiative Munathara',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2021',
     description:
-      'Independent AML/CFT compliance review for a regional bank against FATF recommendations and local regulation.',
-    accent: '#0891b2',
-    imageUrl: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=800&auto=format&fit=crop',
+      'Internal control diagnosis and risk identification leading to a revised and operational procedures manual.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=800&auto=format&fit=crop',
   },
   {
-    id: 8,
-    title: 'Reanda International Certification Programme',
-    category: 'Academy',
-    country: 'Nigeria',
-    flag: 'https://flagcdn.com/w40/ng.png',
-    year: '2024',
+    id: 26,
+    title: 'Rationalization of electronic signature services',
+    category: 'Digital Trust',
+    client: 'Ministry of Finance (Finance Computer Center)',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2021',
     description:
-      'Launched the first West-African cohort of the Reanda-accredited Audit & Assurance certification, training 80 professionals.',
-    accent: '#be123c',
-    imageUrl: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=800&auto=format&fit=crop',
+      'Maturity and compliance review of e-signature services, with organizational and risk analysis recommendations.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 27,
+    title: 'Assistance in setting up a private PKI',
+    category: 'Digital Trust',
+    client: 'NG Technologies',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2021',
+    description:
+      'Technical and financial feasibility assessment and action plan for private PKI implementation.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 28,
+    title: 'Integration of online e-signatures in business declarations',
+    category: 'Digital Trust',
+    client: 'National Business Registry (RNE)',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2021',
+    description:
+      'Integration project for secure electronic signatures within business declaration workflows.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 29,
+    title: 'Support for PAJESS social entrepreneurship project',
+    category: 'Training / Strategy',
+    client: 'ILO (OIT)',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2021',
+    description:
+      'Review and support of 11 projects through business model evaluation and business plan reinforcement.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 30,
+    title: 'Technical assistance for risk management and internal audit',
+    category: 'Risk / Audit / Training',
+    client: 'SOTUGAR (World Bank)',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2020-2021',
+    description:
+      'Creation of risk and audit units, governance documentation, and team training in risk assessment and audit planning.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1554224154-26032ffc0d07?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 31,
+    title: 'Business model design and startup support',
+    category: 'Global Strategy',
+    client: 'Various Startups (Kalys, Etakwin, Gofield)',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2018-2021',
+    description:
+      'Support on business plans, legal structuring, patent strategy, and Startup Label acquisition.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 32,
+    title: 'M&A support (acquisitions and divestments)',
+    category: 'Finance / Operations',
+    client: 'UGFS North Africa',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2015-2021',
+    description:
+      'Strategic analysis and due diligence support for transactions, including structuring options and risk reporting.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1554224155-1696413565d3?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 33,
+    title: 'Organizational review and job description development',
+    category: 'Organizational Management',
+    client: 'SOROUBAT International',
+    country: 'Ivory Coast',
+    flag: 'https://flagcdn.com/w40/ci.png',
+    year: '2020',
+    description:
+      'SWOT-based organizational review, role distribution, org chart updates, and change management planning.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 34,
+    title: 'Dematerialization and OCDS module development',
+    category: 'ICT',
+    client: 'TUNEPS (E-Procurement)',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2020',
+    description:
+      'Digital maturity evaluation with IT risk and compliance assessment supporting e-procurement modernization.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 35,
+    title: 'Dematerialization of asset declarations',
+    category: 'ICT',
+    client: 'INLUCC (Anti-Corruption Authority)',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2020',
+    description:
+      'Digital maturity and architecture assessment with technical specifications and change support.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 36,
+    title: 'Strategic study for digital needs in local communities',
+    category: 'Global Strategy',
+    client: 'Solidar Tunisie',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2020',
+    description:
+      'Municipal digital diagnostics and design of project sheets with economic models for priority initiatives.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 37,
+    title: 'Assistance for Electronic Document Management (GED)',
+    category: 'ICT',
+    client: 'Lumiere Logistique',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2020',
+    description:
+      'Governance and process diagnosis supporting strategic planning for GED deployment.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 38,
+    title: 'Setup of an Internal Audit cell',
+    category: 'Organizational Management',
+    client: 'Slama Freres',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2020',
+    description:
+      'Design of audit organization, roles, KPIs, and internal audit charter.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 39,
+    title: 'Legislative support and Think Tank animation',
+    category: 'State / Government',
+    client: 'Solidar Tunisie',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2020',
+    description:
+      'Legislative proposal support across finance acts, Startup Act, and business climate reform.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1523289333742-be1143f6b766?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 40,
+    title: 'Organizational structure and strategic plan',
+    category: 'Institutional Governance',
+    client: 'NGO Benin Action',
+    country: 'Benin',
+    flag: 'https://flagcdn.com/w40/bj.png',
+    year: '2018-2020',
+    description:
+      'Design of organization and HR allocation framework with strategic plan deployment support.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 41,
+    title: 'Support for ERP implementation',
+    category: 'ICT / TIC',
+    client: 'AMI (Industrial Workshops)',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2019-2020',
+    description:
+      'Support from requirements to tendering and delivery governance during ERP rollout and organizational transformation.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 42,
+    title: 'Strategic audit and development plan',
+    category: 'Global Strategy',
+    client: 'CML (Mining)',
+    country: 'Ivory Coast',
+    flag: 'https://flagcdn.com/w40/ci.png',
+    year: '2019',
+    description:
+      'Environmental and competitive analysis with valuation insights and strategic objective framework for development.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 43,
+    title: 'Internal control system maturity evaluation',
+    category: 'Organizational Management',
+    client: 'CSM-GIAS (Holland Group)',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2019',
+    description:
+      'Maturity-based review including competency diagnosis, governance note, and operational department audit.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1554224154-26032fced8bd?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 44,
+    title: 'Risk mapping',
+    category: 'Organizational Management',
+    client: 'CML (Mining)',
+    country: 'Ivory Coast',
+    flag: 'https://flagcdn.com/w40/ci.png',
+    year: '2019',
+    description:
+      'Managerial capacity building with risk identification, prioritization, and governance of risk ownership.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1474631245212-32dc3c8310c6?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 45,
+    title: 'Tender support for SI integrator (Sage solutions)',
+    category: 'ICT',
+    client: 'Rose Blanche Group',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2019',
+    description:
+      'Support in defining tender requirements and selection criteria for systems integration solutions.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1518773553398-650c184e0bb3?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 46,
+    title: 'Support for Electronic Document Management (GED)',
+    category: 'ICT',
+    client: 'RedGO',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2019',
+    description:
+      'Participation in acceptance planning and impact analysis of GED implementation on operational workflows.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 47,
+    title: 'Organizational audit',
+    category: 'Organizational Management',
+    client: 'VILAVI',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2018',
+    description:
+      'COSO-oriented audit of governance and performance management indicators.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 48,
+    title: 'Operational audit and procedures manual',
+    category: 'Organizational Management',
+    client: 'RedGO (Henkel Distributor)',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2017-2018',
+    description:
+      'Governance and competency diagnosis translated into an updated operational procedures framework.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 49,
+    title: 'Organizational audit of the Treasury department',
+    category: 'Organizational Management',
+    client: 'AZIZA',
+    country: 'Tunisia',
+    flag: 'https://flagcdn.com/w40/tn.png',
+    year: '2015',
+    description:
+      'Department restructuring to improve efficiency with role formalization and procedures documentation.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1554224155-1696413565d3?q=80&w=800&auto=format&fit=crop',
+  },
+  {
+    id: 50,
+    title: 'Accounting and financial procedures manual for 5 public establishments',
+    category: 'Organizational Management',
+    client: 'State of Djibouti',
+    country: 'Djibouti',
+    flag: 'https://flagcdn.com/w40/dj.png',
+    year: '2010',
+    description:
+      'Operational and task-distribution audit supporting procedures manuals for multiple public entities.',
+    accent: '#243c8a',
+    imageUrl: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=800&auto=format&fit=crop',
   },
 ];
 
@@ -127,10 +683,12 @@ function mapRange(value: number, inMin: number, inMax: number, outMin: number, o
   return lerp(outMin, outMax, t);
 }
 
+const SLIDER_PROJECTS = PROJECTS.slice(0, 3); // Only show the first 3 on the slider
+
 const VH_PER_ITEM = 150;
 const SMOOTH_FACTOR = 0.04;
 const INTRO_VH = 120;
-const CTA_AFTER = 8;
+const CTA_AFTER = SLIDER_PROJECTS.length; // triggers after the last slide
 const CTA_VH = 120;
 
 const CATEGORIES = ['All', ...Array.from(new Set(PROJECTS.map((p) => p.category)))];
@@ -138,8 +696,10 @@ const COUNTRIES = ['All', ...Array.from(new Set(PROJECTS.map((p) => p.country)))
 
 /* ─── Component ────────────────────────────────────────────────────── */
 export const OurProjectsPage: React.FC = () => {
+  const navigate = useNavigate();
+
   /* ── Project slides state & refs ────────────────────────────────── */
-  const totalItems = PROJECTS.length;
+  const totalItems = SLIDER_PROJECTS.length;
   const scrollHeight = totalItems * VH_PER_ITEM + INTRO_VH + CTA_VH;
 
   const driverRef = useRef<HTMLDivElement>(null);
@@ -174,6 +734,7 @@ export const OurProjectsPage: React.FC = () => {
     const matchesSearch =
       !q ||
       p.title.toLowerCase().includes(q) ||
+      p.client.toLowerCase().includes(q) ||
       p.country.toLowerCase().includes(q) ||
       p.category.toLowerCase().includes(q) ||
       p.description.toLowerCase().includes(q);
@@ -360,11 +921,15 @@ export const OurProjectsPage: React.FC = () => {
     return () => obs.disconnect();
   }, []);
 
-  const project = PROJECTS[activeIndex];
+  const project = SLIDER_PROJECTS[activeIndex];
   const titleWords = project.title.split(' ');
   const midpoint = Math.ceil(titleWords.length / 2);
   const titleLine1 = titleWords.slice(0, midpoint).join(' ');
   const titleLine2 = titleWords.slice(midpoint).join(' ');
+
+  const openProjectArticle = (target: Project) => {
+    navigate(`/who-we-are/our-projects/${target.id}`);
+  };
 
   return (
     <main className="projects-page">
@@ -401,7 +966,7 @@ export const OurProjectsPage: React.FC = () => {
 
           {/* Progress bar */}
           <div className="pw-progress-bar" ref={progressBarRef}>
-            {PROJECTS.map((_, i) => (
+            {SLIDER_PROJECTS.map((_, i) => (
               <div key={i} className="pw-progress-segment">
                 <div
                   className="pw-progress-fill"
@@ -436,9 +1001,14 @@ export const OurProjectsPage: React.FC = () => {
                 />
                 <span className="pw-project-country">{project.country}</span>
                 <span className="pw-project-year">{project.year}</span>
+                <span className="pw-project-year">{project.client}</span>
               </div>
 
-              <button className="pw-discover-btn">
+              <button
+                className="pw-discover-btn"
+                onClick={() => openProjectArticle(project)}
+                type="button"
+              >
                 <span>View Details</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12" />
@@ -451,7 +1021,7 @@ export const OurProjectsPage: React.FC = () => {
           {/* Images (right) */}
           <div className="pw-wheel-section" ref={wheelSectionRef}>
             <div className="pw-wheel-container">
-              {PROJECTS.map((p, i) => (
+              {SLIDER_PROJECTS.map((p, i) => (
                 <div
                   key={p.id}
                   className="pw-wheel-item"
@@ -580,7 +1150,15 @@ export const OurProjectsPage: React.FC = () => {
                     <span className="pw-card__year">{p.year}</span>
                   </div>
                   <h3 className="pw-card__title">{p.title}</h3>
+                  <p className="pw-card__desc"><strong>Client:</strong> {p.client}</p>
                   <p className="pw-card__desc">{p.description}</p>
+                  <button
+                    className="pw-card__article-btn"
+                    type="button"
+                    onClick={() => openProjectArticle(p)}
+                  >
+                    Read Article
+                  </button>
                 </div>
               </div>
             ))}

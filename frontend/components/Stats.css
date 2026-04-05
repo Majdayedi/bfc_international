@@ -11,6 +11,14 @@
   padding: 0 1.5rem;
 }
 
+.stats__title {
+  text-align: center;
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 3rem;
+}
+
 @media (min-width: 768px) {
   .stats__container {
     padding: 0 3rem;

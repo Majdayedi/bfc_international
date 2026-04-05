@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>Europe’s Economic Strength — BFC Consulting</title>
+		<style>
+			/* Converted from ArticleDetailPage.css — inline for single-file output */
+			.article-detail {
+				min-height: 100vh;
+				background: #f4f2ed;
+				color: #1f2629;
+				--hero-progress: 0;
+			}
+
+			.article-detail__progress {
+				position: sticky;
+				top: 0;
+				z-index: 30;
+				height: 4px;
+				background: rgba(31, 38, 41, 0.08);
+			}
+
+			.article-detail__progress span {
+				display: block;
+				height: 100%;
+				background: #1f6f5c;
+				transform-origin: left center;
+				transform: scaleX(0);
+				transition: transform 0.1s linear;
+			}
+
+			.article-detail__hero {
+				position: relative;
+				min-height: 100vh;
+				display: flex;
+				align-items: flex-end;
+				padding: 6.5rem 1.5rem 3.5rem;
+				overflow: hidden;
+				isolation: isolate;
+			}
+
+			.article-detail__hero-media {
+				position: absolute;
+				inset: 0;
+				z-index: 1;
+				overflow: hidden;
+			}
+
+			.article-detail__hero-media img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				filter: saturate(0.85) brightness(0.9);
+				transform: scale(calc(1 - (var(--hero-progress) * 0.05))) translateY(calc(var(--hero-progress) * -18px));
+				transition: transform 0.2s ease-out;
+			}
+
+			.article-detail__hero-panel {
+				position: relative;
+				z-index: 2;
+				max-width: 72rem;
+				margin: 0 auto;
+				padding: 2.5rem 2.5rem 2rem;
+				border-radius: 2rem;
+				background: rgba(255, 255, 255, 0.92);
+				backdrop-filter: blur(12px);
+				box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+				transform: translateY(calc(var(--hero-progress) * -24px));
+				opacity: calc(1 - (var(--hero-progress) * 0.12));
+				transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+			}
+
+			.article-detail__hero-top {
+				display: flex;
+				flex-wrap: wrap;
+				align-items: center;
+				gap: 1rem 1.5rem;
+			}
+
+			.article-detail__back {
+				display: inline-flex;
+				align-items: center;
+				background: rgba(31, 38, 41, 0.08);
+				color: #1f2629;
+				padding: 0.6rem 1.2rem;
+				border-radius: 9999px;
+				text-decoration: none;
+				font-weight: 700;
+				letter-spacing: 0.2em;
+				text-transform: uppercase;
+				font-size: 0.7rem;
+				backdrop-filter: blur(6px);
+			}
+
+			.article-detail__eyebrow {
+				font-size: 0.7rem;
+				text-transform: uppercase;
+				letter-spacing: 0.3em;
+				font-weight: 700;
+				color: rgba(31, 38, 41, 0.6);
+			}
+
+			.article-detail__meta {
+				display: flex;
+				gap: 1rem;
+				margin-top: 1.2rem;
+				font-size: 0.75rem;
+				text-transform: uppercase;
+				letter-spacing: 0.2em;
+				color: rgba(31, 38, 41, 0.6);
+				flex-wrap: wrap;
+			}
+
+			.article-detail__title {
+				margin-top: 1rem;
+				font-size: clamp(2.6rem, 6vw, 5.2rem);
+				font-weight: 600;
+				letter-spacing: -0.02em;
+			}
+
+			.article-detail__subtitle {
+				margin-top: 1rem;
+				max-width: 40rem;
+				font-size: 1.125rem;
+				color: rgba(31, 38, 41, 0.75);
+			}
+
+			.article-detail__hero-stats {
+				margin-top: 2rem;
+				display: grid;
+				gap: 1rem;
+				grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+				background: rgba(31, 38, 41, 0.05);
+				border-radius: 1.5rem;
+				padding: 1.5rem;
+				box-shadow: inset 0 0 0 1px rgba(31, 38, 41, 0.08);
+			}
+
+			.article-detail__stat-value {
+				font-size: 1.6rem;
+				font-weight: 700;
+				margin-bottom: 0.25rem;
+			}
+
+			.article-detail__stat-label {
+				font-size: 0.75rem;
+				text-transform: uppercase;
+				letter-spacing: 0.18em;
+				color: rgba(31, 38, 41, 0.6);
+			}
+
+			.article-detail__body {
+				max-width: 80rem;
+				margin: 0 auto;
+				padding: 4rem 1.5rem;
+				display: grid;
+				grid-template-columns: 1fr;
+				gap: 2.5rem;
+			}
+
+			@media (min-width: 1024px) {
+				.article-detail__body {
+					grid-template-columns: 2.2fr 1fr;
+				}
+			}
+
+			.article-detail__content {
+				background: #fff;
+				padding: 2.5rem;
+				border-radius: 2rem;
+				box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+				line-height: 1.8;
+			}
+
+			.article-detail__reveal {
+				opacity: 0;
+				transform: translateY(24px);
+				transition: opacity 0.7s ease, transform 0.7s ease;
+			}
+
+			.article-detail__reveal.is-visible {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			.article-detail__lead {
+				font-size: 1.2rem;
+				font-weight: 600;
+				margin-bottom: 2rem;
+			}
+
+			.article-detail__callout {
+				background: rgba(31, 111, 92, 0.08);
+				padding: 1.5rem;
+				border-radius: 1.2rem;
+				margin: 2rem 0;
+				border: 1px solid rgba(31, 111, 92, 0.22);
+			}
+
+			.article-detail__slides {
+				display: grid;
+				grid-auto-flow: column;
+				grid-auto-columns: minmax(240px, 1fr);
+				gap: 1.5rem;
+				overflow-x: auto;
+				padding-bottom: 1rem;
+				scroll-snap-type: x mandatory;
+				scrollbar-width: none;
+			}
+
+			.article-detail__slide {
+				scroll-snap-align: start;
+				background: rgba(31, 38, 41, 0.05);
+				border-radius: 1.5rem;
+				padding: 1.5rem;
+				min-height: 180px;
+				box-shadow: inset 0 0 0 1px rgba(31, 38, 41, 0.08);
+			}
+
+			.article-detail__author {
+				margin-top: 2.5rem;
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				background: rgba(31, 38, 41, 0.05);
+				padding: 1.5rem;
+				border-radius: 1.2rem;
+			}
+
+			.article-detail__author-avatar {
+				width: 52px;
+				height: 52px;
+				border-radius: 50%;
+				background: #1f2629;
+				color: #fff;
+				display: grid;
+				place-items: center;
+				font-weight: 800;
+				letter-spacing: 0.1em;
+			}
+
+			.article-detail__card {
+				background: #fff;
+				padding: 1.75rem;
+				border-radius: 1.5rem;
+				box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+			}
+
+			.article-detail__toc-link {
+				display: block;
+				color: rgba(31, 38, 41, 0.8);
+				text-decoration: none;
+				font-weight: 600;
+				margin-bottom: 0.75rem;
+			}
+
+			.article-detail__toc-link:hover { color: #1f6f5c; }
+
+			.article-detail__cta { padding: 3rem 1.5rem 5rem; }
+
+			.article-detail__cta-inner {
+				max-width: 70rem;
+				margin: 0 auto;
+				background: #1f2629;
+				color: #fff;
+				border-radius: 2rem;
+				padding: 2.5rem;
+				display: flex;
+				flex-direction: column;
+				gap: 1.5rem;
+				align-items: flex-start;
+			}
+
+			.article-detail__cta-button {
+				display: inline-flex;
+				align-items: center;
+				padding: 0.9rem 1.6rem;
+				border-radius: 9999px;
+				background: #7ef473;
+				color: #1f2629;
+				text-decoration: none;
+				font-weight: 800;
+				text-transform: uppercase;
+				letter-spacing: 0.2em;
+				font-size: 0.75rem;
+			}
+
+			@media (min-width: 768px) {
+				.article-detail__hero { padding: 7rem 2.5rem 4rem; }
+				.article-detail__hero-panel { padding: 3rem 3rem 2.5rem; }
+			}
+		</style>
+	</head>
+	<body>
+		<article class="article-detail">
+			<div class="article-detail__progress"><span></span></div>
+
+			<header class="article-detail__hero">
+				<div class="article-detail__hero-media">
+					<img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2400&auto=format&fit=crop" alt="Economic outlook and leadership">
+				</div>
+
+				<div class="article-detail__hero-panel">
+					<div class="article-detail__hero-top">
+						<a href="/articles" class="article-detail__back">Back to Articles</a>
+						<span class="article-detail__eyebrow">Research report</span>
+					</div>
+
+					<h1 class="article-detail__title">Europe’s Economic Strength: A Shared Mandate for Leaders and Citizens</h1>
+					<p class="article-detail__subtitle">A new BFC survey signals rising concern about competitiveness—and outlines the near‑term actions that build confidence, productivity, and resilience.</p>
+
+					<div class="article-detail__meta">
+						<span>12 min read</span>
+						<span>February 3, 2026</span>
+						<span>By BFC Insights</span>
+					</div>
+
+					<div class="article-detail__hero-stats">
+						<div>
+							<p class="article-detail__stat-value">71%</p>
+							<p class="article-detail__stat-label">Leaders cite competitiveness as a top-three risk</p>
+						</div>
+						<div>
+							<p class="article-detail__stat-value">2.4x</p>
+							<p class="article-detail__stat-label">Faster growth in regions investing in digital skills</p>
+						</div>
+						<div>
+							<p class="article-detail__stat-value">$520B</p>
+							<p class="article-detail__stat-label">Annual investment gap to reach global peers</p>
+						</div>
+					</div>
+				</div>
+			</header>
+
+			<section class="article-detail__body">
+				<div class="article-detail__content">
+					<p class="article-detail__lead article-detail__reveal">Across the region, executives and citizens are converging on the same message: economic strength is the foundation of security, social cohesion, and innovation. The question is which actions land fastest.</p>
+
+					<div class="article-detail__callout article-detail__reveal">
+						<p class="article-detail__callout-title">Executive summary</p>
+						<p>Confidence rises when public and private leaders align on investment priorities, address energy volatility, and accelerate productivity through digital enablement and skills.</p>
+					</div>
+
+					<h2 id="alignment" class="article-detail__reveal">1. The alignment signal</h2>
+					<p>The strongest insight from the survey is not a single metric—it’s the convergence of perspectives. Leaders and citizens prioritize the same economic outcomes: higher productivity, resilient supply chains, and predictable energy costs.</p>
+
+					<div class="article-detail__insights article-detail__reveal">
+						<div>
+							<h3>Shared priorities</h3>
+							<ul>
+								<li>Competitiveness and innovation capacity.</li>
+								<li>Energy security and price stability.</li>
+								<li>Workforce readiness for new industries.</li>
+							</ul>
+						</div>
+						<div>
+							<h3>Confidence builders</h3>
+							<ul>
+								<li>Visible infrastructure upgrades.</li>
+								<li>Faster permitting and regulatory clarity.</li>
+								<li>Public‑private investment pipelines.</li>
+							</ul>
+						</div>
+					</div>
+
+					<h2 id="productivity" class="article-detail__reveal">2. Closing the productivity gap</h2>
+					<p>Productivity growth has lagged global peers. Leaders see three immediate levers: modernization of industrial assets, digitization of public services, and scaled adoption of AI‑assisted workflows.</p>
+
+					<blockquote class="article-detail__reveal">“Competitiveness accelerates when policy, capital, and talent move together—not in sequence.”</blockquote>
+
+					<h2 id="energy" class="article-detail__reveal">3. Energy and industrial resilience</h2>
+					<p>Volatility in energy prices is a decisive factor in investment decisions. Companies are prioritizing diversified energy contracts, grid modernization, and localized supplier networks to reduce exposure.</p>
+
+					<h2 id="talent" class="article-detail__reveal">4. Talent and technology at scale</h2>
+					<p>Skills availability is the most cited constraint to growth. The fastest wins come from partnerships that combine vocational programs, reskilling incentives, and AI toolkits embedded in daily work.</p>
+
+					<div class="article-detail__divider"></div>
+
+					<div class="article-detail__slides article-detail__reveal">
+						<div class="article-detail__slide">
+							<p class="article-detail__slide-label">Focus area</p>
+							<h3>Investment momentum</h3>
+							<p>Targeted capital in grid modernization and digital infrastructure builds confidence quickly.</p>
+						</div>
+						<div class="article-detail__slide">
+							<p class="article-detail__slide-label">Focus area</p>
+							<h3>Industrial competitiveness</h3>
+							<p>Reshoring critical capabilities lowers exposure to volatility and supply shocks.</p>
+						</div>
+						<div class="article-detail__slide">
+							<p class="article-detail__slide-label">Focus area</p>
+							<h3>Workforce readiness</h3>
+							<p>Scaled training programs shorten time‑to‑productivity for new technologies.</p>
+						</div>
+					</div>
+
+					<h2 id="roadmap" class="article-detail__reveal">Implementation roadmap</h2>
+					<ol class="article-detail__roadmap article-detail__reveal">
+						<li><strong>First 100 days:</strong> Launch a competitiveness dashboard and fund pilot programs in digital infrastructure.</li>
+						<li><strong>6 months:</strong> Align energy contracts, incentives, and industrial policy around resilience.</li>
+						<li><strong>12 months:</strong> Scale workforce programs and AI enablement across priority sectors.</li>
+					</ol>
+
+					<div class="article-detail__author article-detail__reveal">
+						<div class="article-detail__author-avatar">BI</div>
+						<div>
+							<p class="article-detail__author-name">BFC Insights</p>
+							<p class="article-detail__author-role">Economic Competitiveness Practice</p>
+						</div>
+					</div>
+				</div>
+
+				<aside class="article-detail__sidebar">
+					<div class="article-detail__card article-detail__reveal">
+						<p class="article-detail__card-label">In this article</p>
+						<a href="#alignment" class="article-detail__toc-link">The alignment signal</a>
+						<a href="#productivity" class="article-detail__toc-link">Closing the productivity gap</a>
+						<a href="#energy" class="article-detail__toc-link">Energy and industrial resilience</a>
+						<a href="#talent" class="article-detail__toc-link">Talent and technology at scale</a>
+						<a href="#roadmap" class="article-detail__toc-link">Implementation roadmap</a>
+					</div>
+
+					<div class="article-detail__card article-detail__reveal">
+						<p class="article-detail__takeaways-label">Key takeaways</p>
+						<ul>
+							<li>Competitiveness is the top shared priority across leaders and citizens.</li>
+							<li>Energy affordability and industrial resilience dominate risk perceptions.</li>
+							<li>Digital infrastructure and skills are viewed as the fastest levers.</li>
+						</ul>
+					</div>
+
+					<div class="article-detail__card article-detail__reveal">
+						<p class="article-detail__card-label">Related</p>
+						<a href="/articles" class="article-detail__related-link">The Next Decade of Industrial Policy</a>
+						<a href="/articles" class="article-detail__related-link">Rebuilding Energy Confidence</a>
+					</div>
+				</aside>
+			</section>
+
+			<section class="article-detail__cta">
+				<div class="article-detail__cta-inner">
+					<div>
+						<p class="article-detail__cta-eyebrow">Continue exploring</p>
+						<h3>Read more from the BFC competitiveness series</h3>
+					</div>
+					<a href="/articles" class="article-detail__cta-button">View all articles</a>
+				</div>
+			</section>
+		</article>
+
+		<script>
+			// Scroll and reveal behavior converted from React hooks
+			(function () {
+				const progressBar = document.querySelector('.article-detail__progress span');
+				const article = document.querySelector('.article-detail');
+
+				function updateProgress() {
+					const scrollTop = window.scrollY || document.documentElement.scrollTop;
+					const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+					const progress = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
+					if (progressBar) progressBar.style.transform = `scaleX(${progress})`;
+
+					const heroDistance = Math.max(window.innerHeight * 0.65, 1);
+					const heroScroll = Math.min(scrollTop / heroDistance, 1);
+					if (article) article.style.setProperty('--hero-progress', String(heroScroll));
+				}
+
+				let ticking = false;
+				function onScroll() {
+					if (!ticking) {
+						window.requestAnimationFrame(() => {
+							updateProgress();
+							ticking = false;
+						});
+						ticking = true;
+					}
+				}
+
+				updateProgress();
+				window.addEventListener('scroll', onScroll, { passive: true });
+
+				// Intersection reveal
+				const elements = Array.from(document.querySelectorAll('.article-detail__reveal'));
+				const observer = new IntersectionObserver(
+					(entries) => {
+						entries.forEach((entry) => {
+							if (entry.isIntersecting) entry.target.classList.add('is-visible');
+						});
+					},
+					{ threshold: 0.15 }
+				);
+				elements.forEach((el) => observer.observe(el));
+
+				// Smooth anchor link behavior for TOC
+				document.querySelectorAll('.article-detail__toc-link').forEach((link) => {
+					link.addEventListener('click', (e) => {
+						e.preventDefault();
+						const href = (e.currentTarget && e.currentTarget.getAttribute('href')) || '#';
+						const target = document.querySelector(href);
+						if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+					});
+				});
+			})();
+		</script>
+	</body>
+</html>

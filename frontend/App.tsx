@@ -16,6 +16,7 @@ import { ArticleDetailPage } from './components/ArticleDetailPage';
 import { ContactPage } from './components/ContactPage';
 import { AboutUsPage } from './components/AboutUsPage.tsx';
 import { OurProjectsPage } from './components/OurProjectsPage.tsx';
+import { ProjectArticlePage } from './components/ProjectArticlePage';
 import { HistoryPage } from './components/HistoryPage.tsx';
 import { BfcAcademy } from './components/BfcAcademy';
 import CourseDetail from './components/CourseDetail';
@@ -101,6 +102,15 @@ const App: React.FC = () => {
           element={
             <>
               <OurProjectsPage />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/who-we-are/our-projects/:projectId"
+          element={
+            <>
+              <ProjectArticlePage />
               <Footer />
             </>
           }

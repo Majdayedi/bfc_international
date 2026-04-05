@@ -553,32 +553,45 @@
     max-width: 480px;
   }
 
-  .hi-ms__cta {
+  .hi-ms__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .hi-ms__cta,
+  .hi-ms__contact-cta {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    margin-top: 2.5rem;
     padding: 0.75rem 1.8rem;
     border-radius: 999px;
     border: 1.5px solid rgba(32, 67, 131, 0.12);
-    color: #204383;
     font-size: 0.68rem;
     font-weight: 700;
     font-family: ui-monospace, monospace;
-    letter-spacing: 0.15em;
-    background: #fff;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
+
+  .hi-ms__cta {
+    color: #204383;
+    background: #fff;
+  }
+
   .hi-ms__cta::after {
     content: '\2192';
     display: inline-block;
     transition: transform 0.3s ease;
   }
+
   .hi-ms__cta:hover {
     background: #204383;
     color: #fff;
@@ -586,12 +599,37 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(32, 67, 131, 0.20);
   }
+
   .hi-ms__cta:hover::after {
     transform: translateX(3px);
   }
-  .hi-ms__cta:active {
+
+  .hi-ms__cta:active,
+  .hi-ms__contact-cta:active {
     transform: translateY(0);
     box-shadow: 0 4px 12px rgba(32, 67, 131, 0.15);
+  }
+
+  .hi-ms__contact-cta {
+    background: #204383;
+    color: #fff;
+    border-color: #204383;
+  }
+
+  .hi-ms__contact-cta:hover {
+    background: #163266;
+    border-color: #163266;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(32, 67, 131, 0.25);
+  }
+
+  .hi-ms__flag {
+    display: inline-block;
+    height: 1.25em;
+    margin-left: 0.5em;
+    vertical-align: baseline;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   /* ── Image ── */
@@ -893,7 +931,12 @@
     .hi-hero-alt {
       padding: clamp(5rem, 8vw, 7rem) 1.25rem;
     }
-    .hi-ms__cta {
+    .hi-ms__actions {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .hi-ms__cta,
+    .hi-ms__contact-cta {
       width: 100%;
       justify-content: center;
     }
@@ -929,7 +972,7 @@
     position: fixed;
     right: 0;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) translateX(20px);
     /* Container is 280px wide; disc centre at left:280px (right edge of viewport)
       so the left-half arc (radius 220px) peeks in ~200px from the right edge */
     width: 320px;
@@ -939,10 +982,16 @@
     z-index: 20;              /* above page sections, below bar pill (200) */
     pointer-events: none;
     opacity: 0;
-    transition: opacity 0.9s ease 0.4s;
+    transition: opacity 0.6s ease, transform 0.6s ease;
   }
   .hi-wheel--on {
     opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+  .hi-wheel.hi-wheel--hidden {
+    opacity: 0;
+    transform: translateY(-50%) translateX(40px);
+    pointer-events: none;
   }
 
   /* SVG arc — same coordinate system as the disc (480×480, centre 240 240) */

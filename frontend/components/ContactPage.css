@@ -431,6 +431,22 @@
   box-shadow: 0 0 0 4px rgba(153, 205, 179, 0.25);
 }
 
+.contact-phone-input {
+  display: flex;
+  width: 100%;
+}
+
+.contact-phone-prefix {
+  width: 100px;
+  background: #f8f9fc !important;
+  border-right: 1px solid rgba(21, 50, 90, 0.1) !important;
+  padding-right: 0.5rem !important;
+}
+
+.contact-phone-input input {
+  flex: 1;
+}
+
 .contact-form__actions {
   display: flex;
   flex-direction: column;

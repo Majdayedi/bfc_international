@@ -277,11 +277,6 @@
   }
 }
 
-/* Make sure cards are visible once projected section is visible */
-.proj-anim.is-visible .project-card {
-  /* animation handles visibility */
-}
-
 .project-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
@@ -1237,8 +1232,30 @@
   line-height: 1.55;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.pw-card__article-btn {
+  margin-top: 0.9rem;
+  align-self: flex-start;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #243c8a;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.42rem 0.72rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pw-card__article-btn:hover {
+  border-color: #243c8a;
+  background: #243c8a;
+  color: #fff;
 }
 
 /* ── Responsive cards ─────── */

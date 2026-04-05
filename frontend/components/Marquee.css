@@ -37,7 +37,7 @@
   display: flex;
   white-space: nowrap;
   padding: 1rem 0;
-  animation: marquee 40s linear infinite;
+  animation: marquee 160s linear infinite;
 }
 
 .marquee__row:hover {
@@ -66,8 +66,16 @@
   transition: color 0.3s ease;
 }
 
-.marquee__item:hover {
-  color: #99cdb3;
+.marquee__logo-image {
+  height: 60px;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.marquee__item:hover .marquee__logo-image {
+  transform: scale(1.05);
 }
 
 .marquee__icon {

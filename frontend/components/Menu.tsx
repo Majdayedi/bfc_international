@@ -1,8 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { X, ChevronRight } from 'lucide-react';
 import bfcLogo from '../src/assets/bfc.png';
+import ici from '../src/assets/certif/ici.png';
+import irm from '../src/assets/certif/irm.png';
+import GII from '../src/assets/certif/global_innovation_insititute.png';
 import './Menu.css';
 
 interface MenuProps {
@@ -13,6 +16,18 @@ interface MenuProps {
 interface SubPage {
   label: string;
   href: string;
+  course?: {
+    title: string;
+    institution: string;
+    programs: string;
+    accreditation: string;
+    intake: string;
+    language: string;
+    imageUrl: string;
+    isAccredited: boolean;
+    certificationDescription: string;
+    description: string;
+  };
 }
 
 interface MenuItem {
@@ -47,8 +62,8 @@ const MENU_ITEMS: MenuItem[] = [
     label: 'Our Services',
     href: '#services',
     subPages: [
-      { label: 'Tax and Legal', href: '/services/tax-legal' },
       { label: 'Consulting', href: '/services/consulting' },
+      { label: 'Tax and Legal', href: '/services/tax-legal' },
       { label: 'Accounting Expertise', href: '/services/accounting-expertise' },
       { label: 'Audit', href: '/services/audit' },
       { label: 'Outsourcing', href: '/services/outsourcing' },
@@ -58,30 +73,100 @@ const MENU_ITEMS: MenuItem[] = [
     label: 'BFC Academy',
     href: '/standard-training',
     subPages: [
-      { label: 'International Certifications', href: '#international-certifications' },
-      { label: 'Standard Training', href: '/standard-training' },
+      { label: 'International Certifications', href: '/standard-training' },
+      {
+        label: 'IRM - Fundamentals of Risk Management',
+        href: '/course/Fundamentals%20of%20Risk%20Management',
+        course: {
+          title: 'Fundamentals of Risk Management',
+          institution: 'Institute of Risk Management London',
+          programs: '5+ Tracks',
+          accreditation: 'Global',
+          intake: 'Sept 2025',
+          language: 'English',
+          imageUrl: irm,
+          isAccredited: true,
+          certificationDescription:
+            'Professionally aligned risk management pathway covering governance, enterprise risk frameworks, treatment plans, and decision-oriented reporting practices.',
+          description:
+            'Master the core principles and tools of modern enterprise risk management with an implementation-focused learning track.',
+        },
+      },
+      {
+        label: 'ICI - Certified Internal Control Specialist',
+        href: '/course/Certified%20Internal%20Control%20Specialist',
+        course: {
+          title: 'Certified Internal Control Specialist',
+          institution: 'Internal Control Institute USA',
+          programs: '3+ Tracks',
+          accreditation: 'International',
+          intake: 'Oct 2025',
+          language: 'English',
+          imageUrl: ici,
+          isAccredited: true,
+          certificationDescription:
+            'International internal control certification focused on COSO-aligned controls, governance maturity, and operational assurance.',
+          description:
+            'Build practical internal control capabilities for governance, risk mitigation, and operational performance management.',
+        },
+      },
+      {
+        label: 'GII - Certified Innovation Professional',
+        href: '/course/Certified%20Innovation%20Professional',
+        course: {
+          title: 'Certified Innovation Professional',
+          institution: 'Global Innovation Institute USA & BFC',
+          programs: '8+ Tracks',
+          accreditation: 'Industry Standard',
+          intake: 'Rolling',
+          language: 'English',
+          imageUrl: GII,
+          isAccredited: true,
+          certificationDescription:
+            'Innovation-focused certification designed to structure innovation strategy, governance, and measurable transformation outcomes.',
+          description:
+            'Learn to build innovation systems, prioritize opportunities, and manage execution from concept to measurable business value.',
+        },
+      },
+      { label: 'All Trainings', href: '/standard-training' },
     ],
   },
   {
-    label: 'Contact',
-    href: '#contact',
-    subPages: [
-      { label: 'Contact Us', href: '/contact' },
-      { label: 'Join Us', href: '/contact#join-us' },
-    ],
+    label: 'Contact US',
+    href: '/contact',
+   
   },
 ];
 
 export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const location = useLocation();
+
+  const isItemActive = (item: MenuItem) => {
+    if (item.href === location.pathname || item.href === location.pathname + location.hash) return true;
+    if (item.subPages) {
+      return item.subPages.some(sp => sp.href === location.pathname || sp.href === location.pathname + location.hash);
+    }
+    return false;
+  };
+
+  const isSubPageActive = (subPage: SubPage) => {
+    return subPage.href === location.pathname || subPage.href === location.pathname + location.hash;
+  };
 
   useEffect(() => {
     if (!isOpen) {
       setExpandedIndex(null);
       setHoveredIndex(null);
+    } else {
+      // Auto-expand the menu item that matches the current page
+      const currentIndex = MENU_ITEMS.findIndex(item => isItemActive(item));
+      if (currentIndex !== -1 && MENU_ITEMS[currentIndex].subPages) {
+        setExpandedIndex(currentIndex);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, location.pathname, location.hash]);
 
   return (
     <div className={`menu ${isOpen ? 'menu--open' : 'menu--closed'}`}>
@@ -118,6 +203,8 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
                 expandedIndex === null && hoveredIndex === i ? 'menu__item--hovered' : ''
               } ${
                 isOpen ? 'menu__item--open' : 'menu__item--closed'
+              } ${
+                isItemActive(item) ? 'menu__item--current' : ''
               }`;
 
               if (item.subPages) {
@@ -219,9 +306,10 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
                   {MENU_ITEMS[expandedIndex].label}
                 </div>
                 {MENU_ITEMS[expandedIndex].subPages?.map((subPage, j) => {
+                  const isActive = isSubPageActive(subPage);
                   const subItemClassName = `menu__subitem ${
                     expandedIndex !== null ? 'menu__subitem--open' : 'menu__subitem--closed'
-                  }`;
+                  } ${isActive ? 'menu__subitem--current' : ''}`;
 
                   const subItemStyle = {
                     transitionDelay: `${300 + j * 80}ms`,
@@ -242,6 +330,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
                       <Link
                         key={subPage.label}
                         to={subPage.href}
+                        state={subPage.course ? { course: subPage.course } : undefined}
                         onClick={onClose}
                         className={subItemClassName}
                         style={subItemStyle}

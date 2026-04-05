@@ -7,10 +7,10 @@ import './Stats.css';
 gsap.registerPlugin(ScrollTrigger);
 
 const STATS = [
-  { label: 'Happy Clients', value: 250, suffix: '+' },
-  { label: 'Countries', value: 35, suffix: '' },
-  { label: 'Projects', value: 1200, suffix: '+' },
-  { label: 'Team Members', value: 80, suffix: '+' },
+  { label: 'Offices', value: 140, suffix: '+' },
+  { label: 'Countries', value: 58, suffix: '+' },
+  { label: 'prefoessionals', value: 5000, suffix: '+' },
+  { label: 'Global rank', value: 23, suffix: '' },
 ];
 
 export const Stats: React.FC = () => {
@@ -44,6 +44,7 @@ export const Stats: React.FC = () => {
   return (
     <section className="stats" ref={containerRef}>
       <div className="stats__container">
+        <h2 className="stats__title">Reanda International - Our Network</h2>
         <div className="stats__grid">
           {STATS.map((stat, i) => (
             <div key={i} className="stats__item">

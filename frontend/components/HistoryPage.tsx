@@ -1,11 +1,20 @@
 ﻿import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './HistoryPage.css';
 import bfcLogo    from '../src/assets/bfc.png';
-import africaImg  from '../src/assets/africa.png';
+import MGIBFCImg  from '../src/assets/MGI-BFC.png';
 import guineeLogo from '../src/assets/bfc_guinée.png';
 import senegalLogo from '../src/assets/bfc_senegal.png';
 import congoLogo  from '../src/assets/bfc_congo.png';
 import mauritaniaLogo from '../src/assets/bfc_mauritania.png';
+import senegalimg from '../src/assets/history/senegal.png';
+import guineeimg from '../src/assets/history/guinee.png';
+import congoimg from '../src/assets/history/congo.png';
+import tunisiaimg from '../src/assets/history/tunisia.png';
+import tunisiaimg2 from '../src/assets/history/tunisia2.png';
+
+import coming  from '../src/assets/history/coming-soon.png';
+import { g } from 'framer-motion/client';
+
 
 /* ─── Data ──────────────────────────────────────────────────── */
 interface Milestone {
@@ -15,6 +24,7 @@ interface Milestone {
   img: string;
   desc: string;
   logo: string;
+  flag?: string;
 }
 
 /* Background colour for each milestone — interpolated as you scroll */
@@ -31,50 +41,56 @@ const MS: Milestone[] = [
   {
     year: '2010',
     title: 'MGI BFC',
-    location: 'Tunis, Tunisie',
-    img: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200&auto=format&fit=crop',
-    desc: "MGI BFC est la structure mère. C'est un cabinet d'expertise comptable et d'audit, fondé en 2010 et basé à Tunis. MGI BFC est membre du réseau international MGI WORLDWIDE — l'un des 20 premiers réseaux internationaux de conseil et d'audit dans le monde.",
-    logo: bfcLogo,
+    location: 'Tunis, Tunisia',
+    img: tunisiaimg,
+    desc: "MGI BFC is the parent entity. It is an accounting and audit firm founded in 2010 and based in Tunis. MGI BFC is a member of the international MGI WORLDWIDE network, one of the top 20 global consulting and audit networks.",
+    logo: MGIBFCImg,
+    flag: 'https://flagcdn.com/w80/tn.png',
   },
   {
     year: '2020',
     title: 'BFC International & Academy',
-    location: 'Afrique / France / Canada',
-    img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1200&auto=format&fit=crop',
-    desc: "BFC International & Academy, fondé en 2020, est un cabinet de consulting et de formation. Partenaire de l'IRM et de l'ICI en Afrique, il offre également des services d'Outsourcing en France et au Canada.",
-    logo: africaImg,
+    location: 'Tunisia',
+    img: tunisiaimg2,
+    desc: "Founded in 2020, BFC International & Academy is a consulting and training firm. As a partner of IRM and ICI in Africa, it also provides outsourcing services in France and Canada.",
+    logo: bfcLogo,
+    flag: 'https://flagcdn.com/w80/tn.png',
   },
   {
     year: '2022',
-    title: 'BFC Guinée',
-    location: 'Conakry, Guinée',
-    img: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=1200&auto=format&fit=crop',
-    desc: "Notre structure commence ses extensions avec la création de BFC Guinée en 2022. Cette entité est créée pour servir la sous-région et assurer la proximité de nos experts pour répondre aux besoins de nos clients.",
+    title: 'BFC Guinea',
+    location: 'Conakry, Guinea',
+    img: guineeimg,
+    desc: "Our expansion began with the launch of BFC Guinea in 2022. This entity was created to serve the sub-region and ensure closer expert support to meet client needs.",
     logo: guineeLogo,
+    flag: 'https://flagcdn.com/w80/gn.png',
   },
   {
     year: '2022',
-    title: 'BFC Sénégal',
-    location: 'Dakar, Sénégal',
-    img: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1200&auto=format&fit=crop',
-    desc: "BFC Sénégal vient renforcer davantage notre présence en Afrique de l'Ouest. Ce cabinet offre une gamme de services variée liée à l'IT, au management, à la formation et à l'organisation.",
+    title: 'BFC Senegal',
+    location: 'Dakar, Senegal',
+    img: senegalimg,
+    desc: "BFC Senegal further strengthened our presence in West Africa. The firm offers a wide range of services related to IT, management, training, and organizational development.",
     logo: senegalLogo,
+    flag: 'https://flagcdn.com/w80/sn.png',
   },
   {
     year: '2023',
     title: 'BFC Bassin du Congo',
-    location: 'Afrique Centrale',
-    img: 'https://images.unsplash.com/photo-1605902711622-cfb43c4437b5?q=80&w=1200&auto=format&fit=crop',
-    desc: "BFC étend son empreinte au Bassin du Congo. Le cabinet intègre l'Afrique centrale en offrant des services de consulting et de formation de haut niveau.",
+    location: 'Kinshasa, Congo rdc',
+    img: congoimg,
+    desc: "BFC expanded its footprint into the Congo Basin. The firm entered Central Africa by delivering high-level consulting and training services.",
     logo: congoLogo,
+    flag: 'https://flagcdn.com/w80/cg.png',
   },
   {
     year: '2025',
-    title: 'En cours…',
-    location: 'Afrique',
-    img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop',
-    desc: "BFC poursuit son expansion stratégique sur le continent africain, développant de nouveaux partenariats locaux et internationaux au service du développement durable.",
+    title: 'In Progress...',
+    location: 'Mauritania ,Saudi Arabia, China and more ',
+    img: coming,
+    desc: "BFC continues its strategic expansion across the world, developing new local and international partnerships that support sustainable development.",
     logo: mauritaniaLogo,
+    flag: false,
   },
 ];
 
@@ -99,6 +115,8 @@ export const HistoryPage: React.FC = () => {
   /* ── Wheel refs (smooth scroll-driven, no React re-renders on scroll) ── */
   const [activeMsIdx, setActiveMsIdx] = useState(0);
   const activeMsIdxRef  = useRef(0);
+  const [wheelHidden, setWheelHidden] = useState(false);
+  const wheelHiddenRef  = useRef(false);
   const wheelItemRefs   = useRef<(HTMLDivElement | null)[]>([]);
   const wheelTargetRef  = useRef(0);   // target rotation degrees
   const wheelRotRef     = useRef(0);   // current lerped rotation
@@ -202,6 +220,14 @@ export const HistoryPage: React.FC = () => {
           const g = Math.round(MS_COLORS[lo][1] + (MS_COLORS[hi][1] - MS_COLORS[lo][1]) * t);
           const b = Math.round(MS_COLORS[lo][2] + (MS_COLORS[hi][2] - MS_COLORS[lo][2]) * t);
           page.style.backgroundColor = `rgb(${r},${g},${b})`;
+        }
+
+        // Hide wheel near the bottom of the page (when footer approaches)
+        const docHeight = document.documentElement.scrollHeight;
+        const scrolledToBottom = window.scrollY + window.innerHeight >= docHeight - 250;
+        if (scrolledToBottom !== wheelHiddenRef.current) {
+          wheelHiddenRef.current = scrolledToBottom;
+          setWheelHidden(scrolledToBottom);
         }
       }
 
@@ -362,7 +388,7 @@ export const HistoryPage: React.FC = () => {
       {/* ═══════════════════════════════════════════════
           HALF-WHEEL — fixed on right side, scroll-driven
       ═══════════════════════════════════════════════ */}
-      <div className={`hi-wheel ${phase >= 3 ? 'hi-wheel--on' : ''}`}>
+      <div className={`hi-wheel ${phase >= 3 ? 'hi-wheel--on' : ''} ${wheelHidden ? 'hi-wheel--hidden' : ''}`}>
         {/* Decorative arc */}
         <svg
           className="hi-wheel__arc"
@@ -418,18 +444,18 @@ export const HistoryPage: React.FC = () => {
           <div className="hi-hero-alt__line animate-scale-in delay-200" />
 
             <span className="hi-hero-alt__eyebrow animate-fade-in">
-              BFC Group — Excellence & Intégrité
+              BFC Group - Excellence & Integrity
           </span>
 
             <h1 className="hi-hero-alt__title animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              Bâtir <br />
-            <span className="hi-hero-alt__title-em">l'avenir</span> <br />
-            du continent
+              Building <br />
+            <span className="hi-hero-alt__title-em">the future</span> <br />
+            of the region
           </h1>
 
             <p className="hi-hero-alt__subtitle animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              De Tunis au Bassin du Congo, BFC tisse un réseau d'excellence au service du
-              développement africain depuis 2010.
+              From Tunis to the Congo Basin, BFC has been building a network of excellence
+              to serve regional development since 2010.
           </p>
 
           <div className="hi-hero-alt__scroll animate-float" style={{ animationDelay: '0.8s' }}>
@@ -461,12 +487,26 @@ export const HistoryPage: React.FC = () => {
                 <span className="hi-ms__loc">{m.location}</span>
               </div>
               <div className="hi-ms__year-bg" aria-hidden="true">{m.year}</div>
-              <h2 className="hi-ms__title">{m.title}</h2>
+              <h2 className="hi-ms__title">
+                {m.title}
+                {m.flag && (
+                  <img
+                    src={m.flag}
+                    alt={`${m.title} flag`}
+                    className="hi-ms__flag"
+                  />
+                )}
+              </h2>
               <div className="hi-divider" />
               <p className="hi-ms__desc">{m.desc}</p>
-              <button className="hi-ms__cta" type="button">
-                See More
-              </button>
+              <div className="hi-ms__actions">
+                <button className="hi-ms__cta" type="button">
+                  See More
+                </button>
+                <button className="hi-ms__contact-cta" type="button" onClick={() => window.location.href = '/contact'}>
+                  Contact our Country Manager
+                </button>
+              </div>
             </div>
 
             {/* Image */}
@@ -479,24 +519,7 @@ export const HistoryPage: React.FC = () => {
         ))}
 
         {/* ── Closing vision section ── */}
-        <section className="hi-close">
-          <div className="hi-close__inner">
-            <span className="hi-eyebrow hi-eyebrow--light">Notre Vision</span>
-            <h2 className="hi-close__h2">
-              Vers <em>l'africanisation</em><br />intégrale
-            </h2>
-            <div className="hi-close__line" />
-            <p className="hi-close__body">
-              Nous bâtissons aujourd'hui les fondations d'une Afrique souveraine,
-              où l'expertise locale et l'excellence internationale se rejoignent
-              pour créer un avenir prospère et durable.
-            </p>
-            <a href="/contact" className="hi-close__cta">
-              Nous Contacter
-            </a>
-          </div>
-          <div className="hi-close__deco" aria-hidden="true">A</div>
-        </section>
+        
 
       </main>
     </>
