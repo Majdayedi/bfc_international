@@ -32,62 +32,62 @@ const servicesData: Record<string, ServiceData> = {
   'tax-legal': {
     title: 'Tax and Legal',
     subtitle: '',
-    description: 'Ce que nous offrons à nos clients en matière de fiscalité et légal.',
+    description: 'What we deliver to our clients in tax and legal advisory.',
     isGrid: false,
-    isImageGrid: true,
+    isCleanCardGrid: true,
     boxes: [
       {
         id: '01',
-        title: 'Fiscalité des entreprises',
-        items: ['Analyse approfondie de la fiscalité', 'Stratégie fiscale d\'entreprise', 'Déclarations fiscales'],
+        title: 'Corporate Tax',
+        items: ['In-depth tax analysis', 'Corporate tax strategy', 'Tax returns and filings'],
         image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '02',
-        title: 'Fiscalité indirecte',
-        items: ['Assistance en TVA et taxes locales', 'Conformité douanière', 'Optimisation des taxes indirectes'],
+        title: 'Indirect Tax',
+        items: ['VAT and local tax assistance', 'Customs compliance', 'Indirect tax optimization'],
         image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '03',
-        title: 'Fiscalité immobilière',
-        items: ['Évaluation des actifs immobiliers', 'Structuration de l\'investissement', 'Taxes foncières'],
+        title: 'Real Estate Tax',
+        items: ['Real estate asset assessment', 'Investment structuring', 'Property tax management'],
         image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '04',
-        title: 'Fusions et acquisitions',
-        items: ['Fiscalité du patrimoine', 'Due diligence fiscale', 'Intégration post-fusion'],
+        title: 'Mergers and Acquisitions',
+        items: ['Asset tax structuring', 'Tax due diligence', 'Post-merger integration support'],
         image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '05',
-        title: 'Structuration internationale',
-        items: ['Couvrant la succursale ou la filiale', 'La résidence', 'Les prix de transfert'],
+        title: 'International Structuring',
+        items: ['Branch or subsidiary structuring', 'Tax residency advisory', 'Transfer pricing strategy'],
         image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '06',
-        title: 'Impôt salarial',
-        items: ['Gestion des paies', 'Conformité sociale', 'Expatriation et mobilité internationale'],
+        title: 'Payroll Tax',
+        items: ['Payroll management', 'Social contribution compliance', 'Expatriation and global mobility'],
         image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '07',
-        title: 'Processus d\'optimisation',
-        items: ['Restructuration', 'Optimisation fiscales', 'Modélisation financière'],
+        title: 'Optimization Processes',
+        items: ['Restructuring support', 'Tax optimization', 'Financial modeling'],
         image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '08',
-        title: 'Examens et conformité',
-        items: ['Examens fiscaux', 'Diligence raisonnable', 'Revue de conformité'],
+        title: 'Reviews and Compliance',
+        items: ['Tax reviews', 'Due diligence', 'Compliance review'],
         image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '09',
-        title: 'Assistance et litiges',
-        items: ['Assistance dans les audits', 'Litiges fiscaux', 'Négociations avec les autorités'],
+        title: 'Assistance and Disputes',
+        items: ['Audit assistance', 'Tax dispute management', 'Negotiations with authorities'],
         image: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=500&q=80'
       }
     ]
@@ -95,201 +95,201 @@ const servicesData: Record<string, ServiceData> = {
   'audit': {
     title: 'Audit',
     subtitle: '',
-    description: 'Ce que nous offrons à nos clients en matière d\'audit.',
+    description: 'What we deliver to our clients in audit and assurance.',
     isGrid: false,
-    isImageGrid: true,
+    isCleanCardGrid: true,
     boxes: [
       {
         id: '01',
-        title: 'Audit juridique',
-        items: ['Audit juridique et contractuel'],
+        title: 'Legal Audit',
+        items: ['Legal and contractual audit'],
         image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '02',
-        title: 'Vérification de projets',
-        items: ['Vérification publique du projet', 'Vérification de l\'approvisionnement'],
+        title: 'Project Verification',
+        items: ['Public project verification', 'Procurement verification'],
         image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '03',
-        title: 'Conformité et fraude',
-        items: ['Vérification de la conformité', 'Vérification de la fraude'],
+        title: 'Compliance and Fraud',
+        items: ['Compliance verification', 'Fraud audit and investigation'],
         image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '04',
-        title: 'Comptes consolidés',
-        items: ['Audit des comptes consolidés en IAS/IFRS'],
+        title: 'Consolidated Accounts',
+        items: ['Audit of consolidated accounts under IAS/IFRS'],
         image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '05',
-        title: 'Systèmes d\'information',
-        items: ['Vérification des systèmes d\'information'],
+        title: 'Information Systems',
+        items: ['Information systems assurance and verification'],
         image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '06',
-        title: 'Stratégie financière',
-        items: ['Vérification de la stratégie financière'],
+        title: 'Financial Strategy',
+        items: ['Financial strategy review and verification'],
         image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '07',
-        title: 'Missions d\'examen',
-        items: ['Procédures convenues', 'Examen limité'],
+        title: 'Review Engagements',
+        items: ['Agreed-upon procedures', 'Limited review engagements'],
         image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '08',
-        title: 'Audit interne',
-        items: ['Services de vérification spéciale', 'Audit interne'],
+        title: 'Internal Audit',
+        items: ['Special assurance services', 'Internal audit services'],
         image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=500&q=80'
       }
     ]
   },
   'accounting-expertise': {
-    title: 'Comptabilité et tenue de livres',
+    title: 'Accounting and Bookkeeping',
     subtitle: '',
-    description: 'Ce que nous offrons à nos clients en comptabilité.',
+    description: 'What we deliver to our clients in accounting and finance operations.',
     isGrid: false,
-    isImageGrid: true,
+    isCleanCardGrid: true,
     boxes: [
       {
         id: '01',
-        title: 'Gestion des comptes',
-        items: ['Gestion des comptes et supervision comptable'],
+        title: 'Account Management',
+        items: ['Account management and accounting supervision'],
         image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '02',
-        title: 'Déclarations fiscales',
-        items: ['Préparation et contrôle des déclarations fiscales'],
+        title: 'Tax Filings',
+        items: ['Preparation and review of tax filings'],
         image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '03',
-        title: 'Gestion de la paie',
-        items: ['Gestion de la paie et préparation des déclarations sociales'],
+        title: 'Payroll Management',
+        items: ['Payroll processing and social declaration preparation'],
         image: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '04',
-        title: 'Support Juridique',
-        items: ['Rédaction des documents juridiques', 'Secrétariat juridique', 'Services juridiques généraux'],
+        title: 'Legal Support',
+        items: ['Drafting legal documents', 'Corporate legal secretariat', 'General legal support services'],
         image: 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '05',
-        title: 'Rapports financiers',
-        items: ['Comptabilité et rapports financiers', 'Consolidation et rapports'],
+        title: 'Financial Reporting',
+        items: ['Accounting and financial reporting', 'Consolidation and reporting'],
         image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '06',
-        title: 'Gestion de trésorerie',
-        items: ['Finances générales', 'Gestion de la trésorerie', 'Rapprochements bancaires', 'Analyse des flux de trésorerie'],
+        title: 'Treasury Management',
+        items: ['General finance support', 'Treasury management', 'Bank reconciliations', 'Cash flow analysis'],
         image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '07',
-        title: 'Gestion budgétaire',
-        items: ['Préparation des états financiers', 'Préparation du budget et rapports', 'Préparation des documents d\'audit'],
+        title: 'Budget Management',
+        items: ['Financial statement preparation', 'Budget preparation and reporting', 'Audit documentation preparation'],
         image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=500&q=80'
       },
       {
         id: '08',
-        title: 'Systèmes comptables',
-        items: ['Mise en place comptabilité générale', 'Mise en place comptabilité analytique', 'Paramétrage des logiciels comptables'],
+        title: 'Accounting Systems',
+        items: ['General ledger setup', 'Cost accounting setup', 'Accounting software configuration'],
         image: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?auto=format&fit=crop&w=500&q=80'
       }
     ]
   },
   'consulting': {
-    title: 'Services Consulting',
+    title: 'Consulting Services',
     subtitle: '',
-    description: 'Nous vous accompagnons avec une expertise pointue à travers nos divisions stratégiques et technologiques.',
+    description: 'We support your growth through advanced expertise across strategic and technology-focused divisions.',
     isCleanCardGrid: true,
     categories: [
       {
-        name: 'Consulting En Stratégie',
+        name: 'Strategy Consulting',
         boxes: [
           {
             id: '01',
-            title: 'Management Organisationnel',
-            items: ['Organisation et opérationnalisation', 'Gouvernance, risques, conformité', 'Audit et contrôle internes, Fraude'],
+            title: 'Organizational Management',
+            items: ['Organization design and operating model execution', 'Governance, risk and compliance', 'Internal audit, internal control, and fraud risk'],
             image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=500&q=80'
           },
           {
             id: '02',
-            title: 'Stratégie d\'Innovation',
-            items: ['Système de gestion de l\'innovation', 'Modèle d\'affaires d\'innovation', 'Carte du parcours client'],
+            title: 'Innovation Strategy',
+            items: ['Innovation management system', 'Innovation business model design', 'Customer journey mapping'],
             image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=500&q=80'
           },
           {
             id: '03',
-            title: 'Ecosystème Entrepreneurial',
-            items: ['Développement des écosystèmes', 'Assistance technique', 'Coaching entrepreneurial'],
+            title: 'Entrepreneurial Ecosystem',
+            items: ['Ecosystem development', 'Technical assistance', 'Entrepreneurship coaching'],
             image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=500&q=80'
           },
           {
             id: '04',
-            title: 'Stratégie Globale',
-            items: ['Développement d\'une stratégie', 'Capital Humain HR', 'Modèle économique'],
+            title: 'Global Strategy',
+            items: ['Strategy development', 'Human capital strategy', 'Business model design'],
             image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=500&q=80'
           },
           {
             id: '05',
-            title: 'Advisory Transaction',
-            items: ['Etude d\'éligibilité & Rentabilité', 'Conception des projets', 'Négociations avec les fonds'],
+            title: 'Transaction Advisory',
+            items: ['Eligibility and profitability studies', 'Project structuring and design', 'Negotiations with funding institutions'],
             image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=500&q=80'
           },
           {
             id: '06',
-            title: 'Stratégie Organisationnelle',
-            items: ['Vision et positionnement', 'Culture and Change Management', 'Gestion de la performance'],
+            title: 'Organizational Strategy',
+            items: ['Vision and positioning', 'Culture and change management', 'Performance management'],
             image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=500&q=80'
           },
           {
             id: '07',
-            title: 'Mobilisation des Fonds',
-            items: ['Restructuration financière', 'Modélisation financière', 'Cession & Due diligence'],
+            title: 'Fundraising Advisory',
+            items: ['Financial restructuring', 'Financial modeling', 'Divestiture and due diligence'],
             image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=500&q=80'
           },
           {
             id: '08',
-            title: 'Etats & Gov',
-            items: ['Etudes stratégiques', 'Conception de politique publique', 'Mapping des écosystèmes'],
+            title: 'Public Sector and Government',
+            items: ['Strategic studies', 'Public policy design', 'Ecosystem mapping'],
             image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80'
           },
           {
             id: '09',
-            title: 'Environnement d\'Investissement',
-            items: ['Modélisation des écosystèmes', 'Etude de l\'environnement', 'Etudes de marché / sectorielles'],
+            title: 'Investment Environment',
+            items: ['Ecosystem modeling', 'Business environment assessment', 'Market and sector studies'],
             image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=500&q=80'
           }
         ]
       },
       {
-        name: 'Consulting En IT',
+        name: 'IT Consulting',
         boxes: [
           {
             id: '10',
-            title: 'Technologies de l\'information',
-            items: ['Stratégie et Gouvernance IT', 'Transformation digitale', 'Cybersécurité'],
+            title: 'Information Technology',
+            items: ['IT strategy and governance', 'Digital transformation', 'Cybersecurity'],
             image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=500&q=80'
           },
           {
             id: '11',
-            title: 'Confiance Numérique',
-            items: ['Modélisation d\'écosystème PKI', 'Implementation PKI', 'Conseil en Projets e-gov'],
+            title: 'Digital Trust',
+            items: ['PKI ecosystem modeling', 'PKI implementation', 'e-Government project advisory'],
             image: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff0f?auto=format&fit=crop&w=500&q=80'
           },
           {
             id: '12',
-            title: 'Services IA',
-            items: ['Conseil stratégique en IA', 'Gouvernance et développement avec IA', 'Cybersécurité et IA éthique'],
+            title: 'AI Services',
+            items: ['AI strategy advisory', 'AI governance and development', 'Cybersecurity and ethical AI'],
             image: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=500&q=80'
           }
         ]
@@ -297,23 +297,24 @@ const servicesData: Record<string, ServiceData> = {
     ]
   },
   'outsourcing': {
-    title: 'Département outsourcing',
-    subtitle: 'Simplifiez, Externalisez, Réussissez !',
-    description: 'Grâce à notre département outsourcing, nous offrons des services de sous-traitance pour garantir l\'efficacité de votre activité avec la qualité escomptée, vous laissant ainsi de l\'espace pour la croissance de votre cabinet.',
+    title: 'Outsourcing Department',
+    subtitle: 'Simplify, Outsource, Succeed!',
+    description: 'Through our outsourcing department, we provide high-quality operational support services so your teams can focus on strategic growth.',
     isGrid: false,
+    isCleanCardGrid: true,
     stats: [
-      { label: 'Références', sub: 'Nous offrons les services Outsourcing en France et au Canada' }
     ],
     boxes: [
       {
         id: '01',
-        title: 'Equipe',
-        items: ['Notre équipe est composée de professionnels chevronnés et dynamiques.']
+        title: 'Our Team',
+        items: ['Our team is made up of seasoned and agile professionals committed to reliable delivery.'],
+        image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80'
       },
       {
         id: '02',
         title: 'Services',
-        items: ['Tenue comptable', 'Mission de compilation']
+        items: ['Bookkeeping', 'Compilation engagements', 'Back-office accounting support']
       }
     ]
   }
@@ -330,9 +331,9 @@ export const ServiceDetail: React.FC = () => {
   if (!serviceId || !servicesData[serviceId]) {
     return (
       <div className="sd-page sd-not-found">
-        <h2>Service non trouvé</h2>
+        <h2>Service not found</h2>
         <button className="sd-back-btn" onClick={() => navigate('/')}>
-          <ArrowLeft size={16} /> Retour à l'accueil
+          <ArrowLeft size={16} /> Back to home
         </button>
       </div>
     );
@@ -384,7 +385,7 @@ export const ServiceDetail: React.FC = () => {
                     ))}
                   </ul>
                 ) : (
-                  <p className="sd-overlay-text">Plus de détails prochainement.</p>
+                  <p className="sd-overlay-text">More details coming soon.</p>
                 )}
               </div>
             </div>
@@ -396,6 +397,39 @@ export const ServiceDetail: React.FC = () => {
       ))}
     </div>
   );
+
+  const renderOutsourcingLayout = (boxes: ServiceBox[]) => {
+    const teamBox = boxes.find((box) => box.id === '01') ?? boxes[0];
+    const servicesBox = boxes.find((box) => box.id === '02') ?? boxes[1];
+    const teamImage = teamBox?.image || 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80';
+
+    return (
+      <div className="sd-outsourcing-layout">
+        <article className="sd-outsourcing-team-card" style={{ backgroundImage: `url(${teamImage})` }}>
+          <div className="sd-outsourcing-team-overlay" />
+          <div className="sd-outsourcing-team-content">
+            <span className="sd-outsourcing-kicker">Outsourcing Unit</span>
+            <h3>{teamBox?.title || 'Our Team'}</h3>
+            {(teamBox?.items || []).map((item, idx) => (
+              <p key={idx}>{item}</p>
+            ))}
+          </div>
+        </article>
+
+        <aside className="sd-outsourcing-services-panel">
+          <h3>{servicesBox?.title || 'Services'}</h3>
+          <ul className="sd-outsourcing-services-list">
+            {(servicesBox?.items || []).map((item, idx) => (
+              <li key={idx}>
+                <ChevronRight className="sd-outsourcing-service-icon" size={16} />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      </div>
+    );
+  };
 
   const renderGrid = (boxes: ServiceBox[]) => (
     <div className="sd-grid">
@@ -484,7 +518,17 @@ export const ServiceDetail: React.FC = () => {
               </div>
             ) : (
               <>
-                {data.boxes && (data.isCleanCardGrid ? renderCleanCardGrid(data.boxes) : data.isImageGrid ? renderImageGrid(data.boxes) : data.isGrid ? renderGrid(data.boxes) : renderList(data.boxes))}
+                {data.boxes && (
+                  serviceId === 'outsourcing'
+                    ? renderOutsourcingLayout(data.boxes)
+                    : data.isCleanCardGrid
+                      ? renderCleanCardGrid(data.boxes)
+                      : data.isImageGrid
+                        ? renderImageGrid(data.boxes)
+                        : data.isGrid
+                          ? renderGrid(data.boxes)
+                          : renderList(data.boxes)
+                )}
               </>
             )}
           {/* Subscription Banner - Frosted Glass Style */}

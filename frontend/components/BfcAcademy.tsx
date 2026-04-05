@@ -2,9 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ShieldCheck, ArrowUpRight, Star, Clock } from "lucide-react";
 import { Link } from 'react-router-dom';
-import amor from '../src/assets/amor.png';
-
-import nadia from '/src/assets/nadia.png';
+import ici from '../src/assets/certif/ici.png';
+import irm from '../src/assets/certif/irm.png';
+import GII from '../src/assets/certif/global_innovation_insititute.png';
+import bfcLogo from '../src/assets/bfc.png';
 import './BfcAcademy.css';
 
 const certData = [
@@ -15,7 +16,8 @@ const certData = [
     programs: "5+ Tracks",
     accreditation: "Global",
     intake: "Sept 2025",
-    description: "The world's leading professional body for enterprise risk management. We provide qualifications, training, and resources to help you manage risk effectively."
+    description: "The world's leading professional body for enterprise risk management. We provide qualifications, training, and resources to help you manage risk effectively.",
+    imageUrl: irm
   },
   {
     id: "02",
@@ -24,7 +26,8 @@ const certData = [
     programs: "3+ Tracks",
     accreditation: "International",
     intake: "Oct 2025",
-    description: "Focused on the design, implementation, and assessment of internal control systems. Our certifications are recognized by major regulatory bodies worldwide."
+    description: "Focused on the design, implementation, and assessment of internal control systems. Our certifications are recognized by major regulatory bodies worldwide.",
+    imageUrl: ici
   },
   {
     id: "03",
@@ -33,8 +36,201 @@ const certData = [
     programs: "8+ Tracks",
     accreditation: "Industry Standard",
     intake: "Rolling",
-    description: "Advanced certification for IT professionals specializing in audit, control, and security. Master the complexities of modern information systems."
+    description: "Advanced certification for IT professionals specializing in audit, control, and security. Master the complexities of modern information systems.",
+    imageUrl: GII
   }
+];
+
+interface TrainingReference {
+  id: number;
+  institution: string;
+  country: string;
+  year: string;
+  course: string;
+  mission?: string;
+  location?: string;
+  topics?: string;
+}
+
+const trainingReferences: TrainingReference[] = [
+  {
+    id: 1,
+    institution: 'Internal Control Institute (ICI - USA)',
+    country: 'Tunisia / Sub-Saharan Africa',
+    year: 'From 2020',
+    mission: 'Animation of certifying training in Internal Control.',
+    course: 'Certified Internal Control Specialist (CICS).',
+    location: 'Tunisia and Sub-Saharan Africa.',
+  },
+  {
+    id: 2,
+    institution: 'Institute of Risk Management (IRM - London)',
+    country: 'Tunisia / Sub-Saharan Africa',
+    year: 'From 2018',
+    mission: 'Animation of certifying training in Risk Management.',
+    course: 'Fundamentals of Risk Management.',
+    location: 'Tunisia and Sub-Saharan Africa.',
+  },
+  {
+    id: 3,
+    institution: 'ARPT',
+    country: 'Guinea',
+    year: '2024',
+    course: 'CICS - Intensive Workshop on Internal Control.',
+    topics:
+      'Evaluating control effectiveness; risk measurement; Sarbanes-Oxley impact; COSO framework application.',
+  },
+  {
+    id: 4,
+    institution: 'SONAPI',
+    country: 'Guinea',
+    year: '2024',
+    course: 'CICS - Certification Program.',
+    topics: 'Internal control intensive workshop; risk evaluation; corporate governance practices.',
+  },
+  {
+    id: 5,
+    institution: 'CCIN',
+    country: 'Niger',
+    year: '2024',
+    course: 'CICS - Certification Program.',
+    topics: 'Internal control effectiveness; COSO framework; governance review.',
+  },
+  {
+    id: 6,
+    institution: 'Business Advice & Assurance B2A',
+    country: 'Tunisia',
+    year: '2024',
+    course: 'CICS - Certification Program.',
+  },
+  {
+    id: 7,
+    institution: 'INPS',
+    country: 'Mali',
+    year: '2024',
+    course: 'CICS - Certification Program.',
+  },
+  {
+    id: 8,
+    institution: 'Islamic Bank of Niger',
+    country: 'Niger',
+    year: '2024',
+    course: 'Fundamentals of Risk Management (COSO, IRM, ISO 31000).',
+    topics: 'Risk mapping; treatment; continuity plans; risk reporting.',
+  },
+  {
+    id: 9,
+    institution: 'Ooredoo',
+    country: 'Tunisia',
+    year: '2023',
+    course: 'How to conduct a Risk Assessment.',
+  },
+  {
+    id: 10,
+    institution: 'Poulina Group Holding',
+    country: 'Tunisia',
+    year: '2023',
+    course: 'Fundamentals of Risk Management (COSO, IRM, ISO 31000).',
+  },
+  {
+    id: 11,
+    institution: 'Societe Coin Bleu',
+    country: 'Tunisia',
+    year: '2023',
+    course: 'Fundamentals of Risk Management.',
+  },
+  {
+    id: 12,
+    institution: 'INPS',
+    country: 'Mali',
+    year: '2023',
+    course: 'Fundamentals of Risk Management.',
+  },
+  {
+    id: 13,
+    institution: 'Banque Malienne de Solidarite (BMS)',
+    country: 'Mali',
+    year: '2023',
+    course: 'Fundamentals of Risk Management.',
+  },
+  {
+    id: 14,
+    institution: 'WaterAid',
+    country: 'Mali',
+    year: '2023',
+    course: 'Fundamentals of Risk Management (NGO sector).',
+  },
+  {
+    id: 15,
+    institution: 'Energie du Mali - SA',
+    country: 'Mali',
+    year: '2023',
+    course: 'Fundamentals of Risk Management.',
+  },
+  {
+    id: 16,
+    institution: 'GRC Conseil',
+    country: 'Mali',
+    year: '2023',
+    course: 'Fundamentals of Risk Management.',
+  },
+  {
+    id: 17,
+    institution: 'Banque Atlantique',
+    country: 'Ivory Coast',
+    year: '2022',
+    course: 'CICS certification for administrators and managers.',
+  },
+  {
+    id: 18,
+    institution: 'OMA Group',
+    country: 'Senegal',
+    year: '2022',
+    course: 'Fundamentals of Risk Management.',
+  },
+  {
+    id: 19,
+    institution: 'BHS',
+    country: 'Senegal',
+    year: '2022',
+    course: 'Fundamentals of Risk Management.',
+  },
+  {
+    id: 20,
+    institution: 'Vista Banque',
+    country: 'Guinea',
+    year: '2022',
+    course: 'Fundamentals of Risk Management.',
+  },
+  {
+    id: 21,
+    institution: 'ACS-Burkina SA',
+    country: 'Burkina Faso',
+    year: '2022',
+    course: 'Fundamentals of Risk Management.',
+  },
+  {
+    id: 22,
+    institution: 'Central Bank of the Republic of Guinea (BCRG)',
+    country: 'Guinea',
+    year: '2021',
+    course: 'Fundamentals of Risk Management (COSO/ISO 31000).',
+    topics: 'Risk concepts; mapping; treatment; continuity; reporting.',
+  },
+  {
+    id: 23,
+    institution: 'BSIC',
+    country: 'Senegal',
+    year: '2021',
+    course: 'Fundamentals of Risk Management.',
+  },
+  {
+    id: 24,
+    institution: 'CIAGE',
+    country: 'Ivory Coast',
+    year: '2021',
+    course: 'Fundamentals of Risk Management.',
+  },
 ];
 
 function CertificateCard({ item, index, total }: { item: typeof certData[0], index: number, total: number, key?: string | number }) {
@@ -62,7 +258,7 @@ function CertificateCard({ item, index, total }: { item: typeof certData[0], ind
         
         <div className="certificate-header">
           <div className="certificate-icon">
-            <ShieldCheck size={28} />
+            <img src={item.imageUrl} alt={item.title} className="certificate-photo" />
           </div>
           <div>
             <h3 className="certificate-title">
@@ -155,68 +351,68 @@ export const BfcAcademy: React.FC = () => {
   const pageSize = 4; // cards per page — show 2x2 on each page
 
   // Data groups (kept inline as before)
-  const groups = [
-    {
-      title: 'Fundamentals & Risk Management',
-      items: [
-        'Fundamentals of Risk Management — Institute of Risk Management of London',
-        'Risk Essentials Masterclass — Institute of Risk Management of London',
-        'Senior Risk Masterclass — Institute of Risk Management of London',
-        'Management des risques financiers et bancaires',
-      ],
-    },
-    {
-      title: 'Internal Control',
-      items: [
-        'Certified Internal Control Specialist — Internal Control Institute of USA',
-        'Certified Internal Control Professional — Internal Control Institute of USA',
-        'Positionner le contrôle interne face aux enjeux actuels des entreprises',
-        'Mettre en œuvre un dispositif de contrôle interne efficace et performant',
-      ],
-    },
-    {
-      title: "Technologie de l'information",
-      items: [
-        'Gestion des risques informatiques',
-        'Management des projets IT',
-        'Digitalisation du process métier',
-      ],
-    },
-    {
-      title: 'Capacités managériales',
-      items: [
-        'Management stratégique',
-        'Management des projets',
-        "La communication efficace au sein de l'équipe",
-        'Management circonstanciel',
-        'Excellence opérationnelle',
-      ],
-    },
-    {
-      title: 'Innovation',
-      items: [
-        'Certified Innovation Professional — Global Innovation Institute USA & BFC',
-      ],
-    },
-    {
-      title: 'Investissements',
-      items: [
-        'Comprendre les marchés financiers',
-        "Comment construire une politique d'investissement et gérer les investissements",
-      ],
-    },
-    {
-      title: 'Audit',
-      items: [
-        "S’initier à l’audit interne",
-        'Maitriser le cadre de référence de l’audit interne : IPPF',
-        'Gouvernance et éthique des affaires',
-        "Auditer l'environnement de contrôle",
-        "Management de la fonction d’audit interne",
-        'La fraude et le contrôle',
-      ],
-    },
-  ];
+ const groups = [
+  {
+    title: 'Fundamentals & Risk Management',
+    items: [
+      'Fundamentals of Risk Management — Institute of Risk Management London',
+      'Risk Essentials Masterclass — Institute of Risk Management London',
+      'Senior Risk Masterclass — Institute of Risk Management London',
+      'Financial and Banking Risk Management',
+    ],
+  },
+  {
+    title: 'Internal Control',
+    items: [
+      'Certified Internal Control Specialist — Internal Control Institute USA',
+      'Certified Internal Control Professional — Internal Control Institute USA',
+      'Positioning Internal Control in Today’s Business Challenges',
+      'Implementing an Effective and Efficient Internal Control System',
+    ],
+  },
+  {
+    title: 'Information Technology',
+    items: [
+      'IT Risk Management',
+      'IT Project Management',
+      'Business Process Digitalization',
+    ],
+  },
+  {
+    title: 'Managerial Skills',
+    items: [
+      'Strategic Management',
+      'Project Management',
+      'Effective Team Communication',
+      'Situational Leadership',
+      'Operational Excellence',
+    ],
+  },
+  {
+    title: 'Innovation',
+    items: [
+      'Certified Innovation Professional — Global Innovation Institute USA & BFC',
+    ],
+  },
+  {
+    title: 'Investments',
+    items: [
+      'Understanding Financial Markets',
+      'Building and Managing Investment Strategies',
+    ],
+  },
+  {
+    title: 'Audit',
+    items: [
+      'Introduction to Internal Audit',
+      'Mastering the Internal Audit Framework: IPPF',
+      'Corporate Governance and Business Ethics',
+      'Auditing the Control Environment',
+      'Internal Audit Function Management',
+      'Fraud and Internal Control',
+    ],
+  },
+];
 
   // flatten courses with category
   const allCourses = groups.flatMap((g) => g.items.map((it) => ({ title: it, category: g.title })));
@@ -236,6 +432,29 @@ export const BfcAcademy: React.FC = () => {
   const onSelectCategory = (cat: string) => {
     setFilterCategory(cat);
     setPage(1);
+  };
+
+  const getAccreditedLogo = (institution: string) => {
+    if (/institute of risk management|irm/i.test(institution)) return irm;
+    if (/internal control institute|ici/i.test(institution)) return ici;
+    if (/global innovation institute|gii/i.test(institution)) return GII;
+    return bfcLogo;
+  };
+
+  const getCertificationDescription = (courseTitle: string, institution: string, accredited: boolean) => {
+    if (/institute of risk management|irm/i.test(institution)) {
+      return 'Professionally aligned risk management pathway covering governance, risk framework implementation, and decision-oriented reporting practices.';
+    }
+    if (/internal control institute|ici/i.test(institution)) {
+      return 'International internal control certification focused on COSO-aligned controls, governance maturity, and operational assurance.';
+    }
+    if (/global innovation institute|gii/i.test(institution)) {
+      return 'Innovation-focused certification designed to structure innovation strategy, governance, and measurable transformation outcomes.';
+    }
+    if (accredited) {
+      return `Accredited training track for ${courseTitle}, delivered with internationally recognized standards and practical case-based learning.`;
+    }
+    return `Professional development course in ${courseTitle}, designed for practical implementation and immediate operational impact.`;
   };
 
   // Keep original inline styles and markup intact — converted to JSX.
@@ -308,8 +527,8 @@ export const BfcAcademy: React.FC = () => {
       <section className="formations-title-section">
         <div className="formations-title-container">
           <h2 className="pw-intro__title">
-            <span>NOS</span>
-            <span className="pw-intro__title-stroke">FORMATIONS</span>
+            <span>our </span>
+            <span className="pw-intro__title-stroke">courses</span>
           </h2>
           <div className="formations-title-strip">
             <div className="formations-title-line" />
@@ -348,10 +567,12 @@ export const BfcAcademy: React.FC = () => {
               {pageItems.map((c, i) => {
                 const [titleText, institutionRaw] = c.title.split(' — ').map((s) => s && s.trim());
                 const institution = institutionRaw || c.category;
-                const isAccredited = /Institute of Risk Management|Internal Control Institute/i.test(institution);
+                const isAccredited = /Institute of Risk Management|Internal Control Institute|Global Innovation Institute/i.test(institution);
                 const programs = isAccredited ? '5+ Tracks' : 'Standard';
                 const accreditation = isAccredited ? 'Global' : 'BFC';
                 const intake = isAccredited ? 'Sept 2025' : 'Rolling';
+                const courseImage = isAccredited ? getAccreditedLogo(institution) : bfcLogo;
+                const certificationDescription = getCertificationDescription(titleText, institution, isAccredited);
 
                 return (
                   <div key={`${c.title}-${i}`} className="course-card rectangular">
@@ -359,8 +580,8 @@ export const BfcAcademy: React.FC = () => {
                       <span className="accredited-badge">ACCREDITED</span>
                     )}
                     <div className="course-card__top-row">
-                      <div className="course-card__icon" aria-hidden>
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L20 5V11C20 16 16 20 12 22C8 20 4 16 4 11V5L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      <div className="course-card__image-container">
+                        <img src={courseImage} alt={titleText} className="course-card__photo" />
                       </div>
                       <div className="course-card__title-block">
                         <h5 className="course-card__title">{titleText}</h5>
@@ -396,6 +617,10 @@ export const BfcAcademy: React.FC = () => {
                             programs,
                             accreditation,
                             intake,
+                            language: 'English',
+                            imageUrl: courseImage,
+                            isAccredited,
+                            certificationDescription,
                             description: `Master the core concepts and practical frameworks of ${titleText}.`,
                           },
                         }}
@@ -440,6 +665,56 @@ export const BfcAcademy: React.FC = () => {
           </main>
         </div>
       </div>
+      </section>
+
+      <section className="academy-references-section">
+        <div className="academy-references-container">
+          <div className="academy-references-header">
+            <p className="academy-references-eyebrow">BFC Academy</p>
+            <h2 className="academy-references-title">
+              Training <span>References</span>
+            </h2>
+            <p className="academy-references-subtitle">
+              {trainingReferences.length} certified training references across Tunisia and Sub-Saharan Africa.
+            </p>
+          </div>
+
+          <div className="academy-references-grid">
+            {trainingReferences.map((ref) => (
+              <article key={ref.id} className="academy-reference-card">
+                <div className="academy-reference-top">
+                  <span className="academy-reference-index">{String(ref.id).padStart(2, '0')}</span>
+                  <span className="academy-reference-year">{ref.year}</span>
+                </div>
+
+                <h3 className="academy-reference-institution">{ref.institution}</h3>
+                <p className="academy-reference-country">{ref.country}</p>
+
+                {ref.mission && (
+                  <p className="academy-reference-line">
+                    <strong>Mission:</strong> {ref.mission}
+                  </p>
+                )}
+
+                <p className="academy-reference-line">
+                  <strong>Course:</strong> {ref.course}
+                </p>
+
+                {ref.location && (
+                  <p className="academy-reference-line">
+                    <strong>Location:</strong> {ref.location}
+                  </p>
+                )}
+
+                {ref.topics && (
+                  <p className="academy-reference-line academy-reference-line--topics">
+                    <strong>Topics:</strong> {ref.topics}
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
       </section>
 
       

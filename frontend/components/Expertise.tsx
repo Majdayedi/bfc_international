@@ -6,26 +6,26 @@ import './Expertise.css';
 const EXPERTISE = [
   {
     id: '01',
-    title: 'Process Modernization',
-    desc: 'Guiding re-engineering efforts and implementing global quality standards across public and private sectors.',
+    title: 'Strategy & Public Sector Transformation',
+    desc: 'We support governments and institutions in strategic planning, institutional reform and policy implementation across Africa and the Middle East.',
     icon: Target
   },
   {
     id: '02',
-    title: 'Digital Integration',
-    desc: 'Deploying high-efficiency digital tools that optimize transparency and operational workflow.',
+    title: 'Digital Transformation & Innovation',
+    desc: 'Digital strategy, AI governance, e‑government and innovation ecosystem development.',
     icon: Cpu
   },
   {
     id: '03',
-    title: 'BFC Academy',
-    desc: 'Capacity building through specialized, certified training adapted to the African market landscape.',
+    title: 'Certified Executive Training ',
+    desc: 'Digital strategy, AI governance, e‑government and innovation ecosystem development.',
     icon: GraduationCap
   },
   {
     id: '04',
-    title: 'Strategic Advisory',
-    desc: 'Providing long-term development visions and implementation support for sustainable organizational growth.',
+    title: 'Governance, Risk & Internal Audit',
+    desc: 'Implementation of risk management frameworks, internal audit transformation and governance strengthening.',
     icon: Users
   }
 ];

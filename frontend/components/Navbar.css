@@ -11,6 +11,39 @@
   color: #fff;
 }
 
+.navbar__countries {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  pointer-events: auto;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+.navbar__country-link {
+  color: #1f2629;
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.navbar__country-link:hover {
+  color: #204383;
+}
+
+.navbar__country-sep {
+  color: rgba(31, 38, 41, 0.45);
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
 @media (min-width: 768px) {
   .navbar {
     padding: 1.5rem 3rem;
@@ -33,7 +66,7 @@
 .navbar__logo-menu {
   position: absolute;
   top: 50%;
-  left: 100%;
+  right: 100%;
   width: max-content;
   min-width: 16rem;
   background: rgba(255, 255, 255, 0.18);
@@ -44,7 +77,7 @@
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
   opacity: 0;
   transform: translateX(0) translateY(-50%) scaleX(0);
-  transform-origin: left center;
+  transform-origin: right center;
   pointer-events: none;
   transition: opacity 0.4s ease, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
   display: flex;
@@ -58,22 +91,7 @@
     border-radius 0.6s ease;
 }
 
-.navbar__logo:hover .navbar__logo-menu
-{
-  opacity: 1;
-  transform: translateX(0) translateY(-50%) scaleX(1);
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  border-top-right-radius: 16px;
-  border-bottom-right-radius: 16px;
-  pointer-events: auto;
-}
-
-.navbar__logo:hover .navbar__logo-box
-{
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
+  
 
 .navbar__logo-menu-item {
   display: flex;
@@ -223,11 +241,19 @@
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    gap: 0.75rem;
+  }
+
+  .navbar__countries {
+    display: none;
+  }
+
   .navbar__logo-menu {
     top: 100%;
-    left: 0;
+    right: 0;
     transform: translateY(0) scaleY(0);
-    transform-origin: top left;
+    transform-origin: top right;
     flex-direction: column;
     margin-top: 0.5rem;
     border-radius: 16px;

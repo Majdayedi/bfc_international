@@ -45,6 +45,38 @@
   max-width: 70rem;
 }
 
+.hero__representatives {
+  position: absolute;
+  top: 2.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 0.45rem;
+}
+
+.hero__representative-link {
+  color: rgba(209, 213, 219, 0.95);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero__representative-link:hover {
+  color: #ffffff;
+}
+
+.hero__representative-sep {
+  color: rgba(209, 213, 219, 0.75);
+  font-size: 0.78rem;
+  font-weight: 400;
+}
+
 .hero__eyebrow {
   display: block;
   color: #99cdb3;
@@ -88,6 +120,12 @@
     right: 3rem;
     padding: 1rem;
     max-width: 24rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero__representatives {
+    top: 1.6rem;
   }
 }
 

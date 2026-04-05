@@ -10,29 +10,33 @@ export const Philosophy: React.FC = () => {
           <div>
             <span className="philosophy__eyebrow">( OUR PHILOSOPHY )</span>
             <h2 className="philosophy__title">
-              Adaptive <br />
-              <span className="philosophy__accent">Impact</span> in every <br />
-              Context.
+              Leading<br />
+              <span className="philosophy__accent">Consulting</span> & Executive Training  <br />
+              in EMEA
             </h2>
             <div className="philosophy__divider"></div>
           </div>
           
           <div className="philosophy__content">
             <p className="philosophy__lead">
-              Our experts in Tunisia, Senegal, Guinea, Congo and Mauritania guide public and private structures to exceed their ambitions.
+              Our experts in Tunisia, Senegal, Guinea, Congo and Mauritania guide public and private structures to exceed their ambitionsin
+strategy, governance, risk management and digital transformation.
             </p>
             
             <div className="philosophy__details">
               <div>
-                <h4 className="philosophy__detail-title">Local Insight</h4>
+                <h4 className="philosophy__detail-title">What we believe in  </h4>
                 <p className="philosophy__detail-text">
-                  We design systems that respect environmental specificities to ensure maximum implementation efficiency and local relevance.
-                </p>
+BFC International & Academy believes that sustainable transformation requires strong governance,
+empowered leadership and resilient institutions.               </p>
               </div>
               <div>
-                <h4 className="philosophy__detail-title">Global Scale</h4>
+                <h4 className="philosophy__detail-title">Courage to change</h4>
                 <p className="philosophy__detail-text">
-                  Modernizing practices and achieving success through innovative, data-driven frameworks that scale across the African continent.
+
+
+We partner with governments, financial institutions and private organizations to design impactful
+solutions that strengthen performance, transparency and innovation.
                 </p>
               </div>
             </div>

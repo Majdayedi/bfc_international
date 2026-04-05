@@ -1,14 +1,24 @@
-﻿import React, { useEffect, useRef } from 'react';
-import { Globe, Target, Eye, Shield, Users, Award, Zap, Crosshair, FileDown } from 'lucide-react';
+﻿import React, { useEffect, useRef, useState } from 'react';
+import { Globe, Target, Eye, Shield, Users, Award, Zap, Crosshair, FileDown, Mail, Phone } from 'lucide-react';
 import './AboutUsPage.css';
 
 import aboutHero from '../src/assets/about_us1.png';
 import bfcLogo from '../src/assets/bfc.png';
 import reandaLogo from '../src/assets/reanda.png';
 import nadiaImg from '../src/assets/nadia.png';
-import amorImg from '../src/assets/amor.png';
 import jobImg from '../src/assets/job.jpg';
 import contactImg from '../src/assets/contact.jpg';
+import akremimg from '../src/assets/team/akrem.jpeg';
+import chaimaimg from '../src/assets/team/chaima.jpeg';
+import zeinebImg from '../src/assets/team/zeineb.jpeg';
+import inesimg from '../src/assets/team/ines.jpeg';
+import tasnimImg from '../src/assets/team/tasnim.jpeg';
+import maherimg from '../src/assets/team/maher.jpeg';
+import medamine from '../src/assets/team/medamine.jpeg';
+import nadia from '../src/assets/team/nadia.jpeg';
+
+
+
 
 // 3D Spinning Globe with Orbiting Data Lines
 const SpinningGlobeBackdrop = () => {
@@ -50,8 +60,136 @@ const SpinningGlobeBackdrop = () => {
   );
 }
 
+const DEFAULT_TEAM_CV_URL = '/pdfs/team-member-cv.pdf';
+
+interface TeamBadgeFlag {
+  name: string;
+  url: string;
+}
+
+interface TeamMember {
+  name: string;
+  role: string;
+  img: string;
+  email: string;
+  phone: string;
+  cvUrl: string;
+  countryName: string;
+  countryFlagUrl: string;
+  showPrimaryFlag?: boolean;
+  extraFlags?: TeamBadgeFlag[];
+  showGlobe?: boolean;
+}
+
+const TEAM_MEMBERS: TeamMember[] = [
+  {
+    name: 'Mohamed Amine Sahli',
+    role: 'Associate & Country Manager Guinea',
+    img: medamine,
+    email: 'mohamedamine.sahli@bfc.com.tn',
+    phone: '+216 98 747 836 / +224 623 27 30 73',
+    cvUrl: DEFAULT_TEAM_CV_URL,
+    countryName: 'Guinea',
+    countryFlagUrl: 'https://flagcdn.com/w80/gn.png',
+  },
+  {
+    name: 'Maher Ben Amara',
+    role: 'Consultant',
+    img: maherimg,
+    email: 'maher.benamara@bfc.com.tn',
+    phone: '+216-99-536-528',
+    cvUrl: DEFAULT_TEAM_CV_URL,
+    countryName: 'Tunisia',
+    countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
+    showPrimaryFlag: false,
+    showGlobe: true,
+  },
+  {
+    name: 'Akrem Cherni',
+    role: 'Consultant',
+    img: akremimg,
+    email: 'akrem.cherni@bfc.com.tn',
+    phone: '+216 98 194 201',
+    cvUrl: DEFAULT_TEAM_CV_URL,
+    countryName: 'Tunisia',
+    countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
+    showPrimaryFlag: false,
+    showGlobe: true,
+  },
+  {
+    name: 'Zeineb Sboui',
+    role: 'Consultant',
+    img: zeinebImg,
+    email: 'zeineb.sboui@bfc.com.tn',
+    phone: '+216-98-135-930',
+    cvUrl: DEFAULT_TEAM_CV_URL,
+    countryName: 'Tunisia',
+    countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
+    showPrimaryFlag: false,
+    showGlobe: true,
+  },
+  {
+    name: 'Chaima Gader',
+    role: 'Auditing Accountant',
+    img: chaimaimg,
+    email: 'chaima.gader@bfc.com.tn',
+    phone: '+216-98-747-842',
+    cvUrl: DEFAULT_TEAM_CV_URL,
+    countryName: 'Tunisia',
+    countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
+  },
+  {
+    name: 'Ines Yaich',
+    role: 'Country Manager BFC Senegal',
+    img: inesimg,
+    email: 'ines.yaich@bfc.com.tn',
+    phone: 'Phone not provided',
+    cvUrl: DEFAULT_TEAM_CV_URL,
+    countryName: 'Senegal',
+    countryFlagUrl: 'https://flagcdn.com/w80/sn.png',
+  },
+  {
+    name: 'Nadia Yaich',
+    role: 'CEO & Country Manager Congo',
+    img: nadia,
+    email: 'nadia.yaich@bfc.com.tn',
+    phone: '+216-58-422-199',
+    cvUrl: DEFAULT_TEAM_CV_URL,
+    countryName: 'Republic of the Congo',
+    countryFlagUrl: 'https://flagcdn.com/w80/cg.png',
+    extraFlags: [{ name: 'Tunisia', url: 'https://flagcdn.com/w80/tn.png' }],
+  },
+  {
+    name: 'Tasnim Zouaoui',
+    role: 'Country Manager Mauritania & Mali',
+    img: tasnimImg,
+    email: 'tasnim.zouaoui@bfc.com.tn',
+    phone: '+216-98-194-202',
+    cvUrl: DEFAULT_TEAM_CV_URL,
+    countryName: 'Mauritania',
+    countryFlagUrl: 'https://flagcdn.com/w80/mr.png',
+    extraFlags: [{ name: 'Mali', url: 'https://flagcdn.com/w80/ml.png' }],
+  },
+];
+
 export const AboutUsPage: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
+  const [openContactKey, setOpenContactKey] = useState<string | null>(null);
+  const currentYear = new Date().getFullYear();
+  const result = currentYear - 2010;
+
+  const handlePdfDownload = (fileUrl: string, downloadName: string) => {
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.setAttribute('download', downloadName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const toggleContact = (key: string) => {
+    setOpenContactKey((prev) => (prev === key ? null : key));
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -74,6 +212,7 @@ export const AboutUsPage: React.FC = () => {
         heroRef.current.style.transform = "translateY(" + (scrolled * 0.35) + "px)";
       }
     };
+
     window.addEventListener('scroll', handleScroll);
     
     return () => {
@@ -97,10 +236,10 @@ export const AboutUsPage: React.FC = () => {
           <div className="ap-hero-text-box">
             <h1 className="ap-title rev-slide-up">
               <span className="text-stroke">Shaping</span> The Future<br/>
-              Of Global Business.
+              Of Africa &The Middle East.
             </h1>
             <p className="ap-subtitle rev-slide-up" style={{transitionDelay: '0.2s'}}>
-              BFC is a premier advisory, audit, and accounting network driving transformative success for institutions across the world.
+Driving transformation through governance, innovation and capacity building.
             </p>
           </div>
           <div className="ap-scroll-indicator">
@@ -119,7 +258,7 @@ export const AboutUsPage: React.FC = () => {
             
             <div className="ap-floating-stats">
               <div className="ap-f-stat rev-scale">
-                <strong>10+</strong>
+       <strong>{result}</strong>
                 <span>Years of Impact</span>
               </div>
               <div className="ap-f-stat rev-scale" style={{transitionDelay: '0.1s'}}>
@@ -133,8 +272,10 @@ export const AboutUsPage: React.FC = () => {
             <div className="ap-glass-panel rev-slide-up">
               <img src={bfcLogo} alt="BFC Group" className="ap-float-logo" />
               <p>
-                The BFC Group converges multi-disciplinary mastery to solve the most intricate challenges of modern business. We blend high-level strategic foresight with granular operational precision.
-              </p>
+BFC International & Academy is an international consulting and executive training firm specialized in
+governance, risk management, strategy and digital transformation across Africa and the Middle East.
+We support governments, development institutions, financial organizations and private sector leaders
+in implementing high‑impact transformation programs.              </p>
               <p>
                 Operating flawlessly at international standards while maintaining deep-rooted local intelligence, we act as the pivot point for sustainable resilience and expansive growth.
               </p>
@@ -155,8 +296,8 @@ export const AboutUsPage: React.FC = () => {
             {[
               { icon: <Shield size={32}/>, title: 'Integrity', desc: 'Unyielding ethical rigor and transparency in every strategic move.' },
               { icon: <Award size={32}/>, title: 'Excellence', desc: 'An absolute commitment to precision, delivering unparalleled quality.' },
-              { icon: <Zap size={32}/>, title: 'Innovation', desc: 'Pioneering future-proof technologies and disruptive methodologies.' },
-              { icon: <Users size={32}/>, title: 'Proximity', desc: 'Cultivating symbiotic, trust-based partnerships driven by empathy.' }
+              { icon: <Zap size={32}/>, title: 'Innovation', desc: 'Developing adapted solutions to critical on-ground problems via innovative techniques and tools.' },
+              { icon: <Users size={32}/>, title: 'Partnership ', desc: 'We partner with local actors and clients to create tangible and sustainable impact.' }
             ].map((val, idx) => (
               <div key={idx} className="ap-value-card rev-slide-up" style={{transitionDelay: "$" + (idx * 0.1) + "s"}}>
                 <div className="ap-glow-border"></div>
@@ -185,11 +326,10 @@ export const AboutUsPage: React.FC = () => {
                 <img src={nadiaImg} alt="Amor" />
               </div>
               <div className="ap-leader-info">
-                <h3>Amin abderrahman</h3>
-                <p className="ap-leader-role">Founding Partner & CEO</p>
-                <p className="ap-leader-desc">With over two decades of transformative leadership, Amor drives the strategic vision and operational excellence behind BFC's continued market prominence.</p>
+                <h3>Amin Abdelrahman</h3>
+                <p className="ap-leader-role"> Partner</p>
+                <p className="ap-leader-desc">Chartered accountant and international consultant in financial and economic analysis.</p>
                 <div className="ap-leader-badges">
-                  <span><Crosshair size={18} /> Strategic Vision</span>
                 </div>
               </div>
             </div>
@@ -199,11 +339,13 @@ export const AboutUsPage: React.FC = () => {
                 <img src={nadiaImg} alt="Nadia" />
               </div>
               <div className="ap-leader-info">
-                <h3>Nadia</h3>
-                <p className="ap-leader-role">Managing Director, International</p>
-                <p className="ap-leader-desc">Pioneering our footprint across borders, Nadia bridges global synergy and local mastery, propelling our Reanda International partnership and global expansion initiatives.</p>
+                <h3>Nadia Yaich</h3>
+                <p className="ap-leader-role">Managing Partner & CEO</p>
+                <p className="ap-leader-desc">International expert – Trainer in
+strategic and
+organisational management, public policy.</p>
                 <div className="ap-leader-badges">
-                  <span><Globe size={18} /> Global Expansion</span>
+                  <span><Globe size={18} /> CFE® COBIT® ITIL® CICP®</span>
                 </div>
               </div>
             </div>
@@ -223,25 +365,60 @@ export const AboutUsPage: React.FC = () => {
           </div>
           <div className="ap-team-scroll-container">
             <div className="ap-team-scroll">
-              {[
-                { name: 'Amor', role: 'Founding Partner & CEO', img: amorImg },
-                { name: 'Nadia', role: 'Managing Director', img: nadiaImg },
-                { name: 'Marcus', role: 'Senior Advisor', img: jobImg },
-                { name: 'Elena', role: 'Client Relations Lead', img: contactImg },
-                { name: 'James', role: 'Strategy Consultant', img: contactImg },
-                { name: 'Sophia', role: 'Financial Analyst', img: jobImg },
-                { name: 'David', role: 'Legal Expert', img: amorImg },
-                { name: 'Isabella', role: 'Tax Associate', img: nadiaImg },
-              ].map((member, index) => (
+              {TEAM_MEMBERS.map((member, index) => (
                 <div className="ap-team-card" key={index}>
+                  <div className="ap-team-badges">
+                    {member.showPrimaryFlag !== false && (
+                      <span className="ap-team-flag" title={member.countryName}>
+                        <img src={member.countryFlagUrl} alt={member.countryName + ' flag'} />
+                      </span>
+                    )}
+                    {member.extraFlags?.map((flag) => (
+                      <span className="ap-team-flag" key={flag.url} title={flag.name}>
+                        <img src={flag.url} alt={flag.name + ' flag'} />
+                      </span>
+                    ))}
+                    {member.showGlobe && (
+                      <span className="ap-team-globe" title="Global network member" aria-label="Global network member">
+                        <Globe size={14} />
+                      </span>
+                    )}
+                  </div>
                   <img src={member.img} alt={member.name} className="ap-team-card-img" />
                   <div className="ap-team-card-info">
-                    <div className="ap-team-card-header">
-                      <div className="ap-team-member-text">
-                        <h4>{member.name}</h4>
-                        <p>{member.role}</p>
+                    <div className="ap-team-member-text">
+                      <h4>{member.name}</h4>
+                      <p className="ap-team-card-role">{member.role}</p>
+                    </div>
+                    <div className="ap-team-action-row">
+                      <div className="ap-team-contact-actions">
+                        <button
+                          type="button"
+                          className={`ap-team-contact-toggle ${openContactKey === `${index}-mail` ? 'is-open' : ''}`}
+                          onClick={() => toggleContact(`${index}-mail`)}
+                          title={`Show ${member.name} email`}
+                          aria-label={`Show ${member.name} email`}
+                        >
+                          <Mail size={18} />
+                          <span>{member.email}</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={`ap-team-contact-toggle ${openContactKey === `${index}-phone` ? 'is-open' : ''}`}
+                          onClick={() => toggleContact(`${index}-phone`)}
+                          title={`Show ${member.name} phone`}
+                          aria-label={`Show ${member.name} phone`}
+                        >
+                          <Phone size={18} />
+                          <span>{member.phone}</span>
+                        </button>
                       </div>
-                      <button className="ap-team-cv-btn" title="Download CV">
+                      <button
+                        className="ap-team-action-btn ap-team-download-btn"
+                        title="Download CV"
+                        aria-label={`Download ${member.name} CV`}
+                        onClick={() => handlePdfDownload(member.cvUrl, `${member.name.toLowerCase().replace(/\s+/g, '-')}-cv.pdf`)}
+                      >
                         <FileDown size={20} />
                       </button>
                     </div>
@@ -271,25 +448,62 @@ export const AboutUsPage: React.FC = () => {
               <h2 className="ap-heading-xl ap-text-white" style={{marginBottom: '1.5rem'}}>Reanda<br/>International</h2>
               <div className="ap-styled-divider ap-divider-light"></div>
               <p className="ap-net-p">
-                BFC operates at the apex of global synergy as a proud member of <strong>Reanda International</strong>. 
-                We fuse local mastery with unparalleled global reach, projecting our expertise across borders 
-                through an elite matrix of independent firms.
+                <strong>Reanda International</strong> is a leading global network of accounting
+                and consulting firms. With more than 5,000 professionals and 240 partners
+                across 144 offices in 58 countries, we provide high-quality accounting,
+                audit, tax, and consulting services tailored to our clients' international needs.
               </p>
 
               <div className="ap-net-stats">
                 <div className="ap-n-stat">
-                  <div className="ap-n-num">50+</div>
+                  <div className="ap-n-num">23rd</div>
+                  <div className="ap-n-label"> Accounting Network</div>
+                </div>
+                <div className="ap-n-stat">
+                  <div className="ap-n-num">60</div>
                   <div className="ap-n-label">Countries</div>
                 </div>
                 <div className="ap-n-stat">
-                  <div className="ap-n-num">250+</div>
-                  <div className="ap-n-label">Global Offices</div>
+                  <div className="ap-n-num">140+</div>
+                  <div className="ap-n-label">Offices</div>
+                </div>
+                <div className="ap-n-stat">
+                  <div className="ap-n-num">5000+</div>
+                  <div className="ap-n-label">Staff</div>
                 </div>
               </div>
             </div>
 
             <div className="ap-net-visuals rev-scale" style={{transitionDelay: '0.3s'}}></div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* REANDA VIDEO SECTION */}
+      <section className="ap-reanda-video-section ap-section">
+        <div className="ap-container">
+          <div className="ap-reanda-video-layout">
+            <div className="ap-reanda-video-copy">
+              <span className="ap-eyebrow">Reanda Network </span>
+              <h2 className="ap-heading-lg">Signing Ceremony</h2>
+            </div>
+
+            <div className="ap-reanda-video-wrap">
+              <video
+                className="ap-reanda-video"
+                controls
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                poster={aboutHero}
+              >
+                <source src="/videos/reanda_accord.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
           </div>
         </div>
       </section>
@@ -310,12 +524,11 @@ export const AboutUsPage: React.FC = () => {
               <div className="ap-mv-icon-wrapper">
                 <Target className="ap-mv-icon" />
               </div>
-              <span className="ap-eyebrow">Our Purpose</span>
+              <span className="ap-eyebrow">Our Mission</span>
               <h2 className="ap-heading-xl ap-navy-text">Empowering<br/>Transformation.</h2>
               <div className="ap-styled-divider"></div>
               <p className="ap-mission-text">
-                Empowering clients via world-class methodologies and tailored agility to secure long-term paradigm shifts. We are committed to translating complex challenges into streamlined, actionable frameworks.
-              </p>
+Our mission is to support and guide businesses, governments, and organizations by offering tailored consulting services rooted in local expertise and focused on sustainable growth.       </p>
             </div>
           </div>
         </div>
@@ -330,11 +543,12 @@ export const AboutUsPage: React.FC = () => {
               <div className="ap-mv-icon-wrapper teal-icon">
                 <Eye className="ap-mv-icon" />
               </div>
-              <span className="ap-eyebrow ap-teal-text">The Future</span>
-              <h2 className="ap-heading-xl ap-text-white">Limitless<br/>Possibilities.</h2>
+              <span className="ap-eyebrow ap-teal-text">Our Vision</span>
+              <h2 className="ap-heading-xl ap-text-white">Courage<br/>To Change.</h2>
               <div className="ap-styled-divider ap-divider-light"></div>
               <p className="ap-vision-text">
-                To command the forefront of the global advisory sector as the definitive partner for ambitious institutions. We envision a business landscape where integrity, innovation, and strategic foresight create limitless possibilities.
+To become a leading consulting and executive training firm specialized in public sector transformation
+and governance across emerging markets.
               </p>
             </div>
             <div className="ap-mv-image-wrapper rev-scale" style={{transitionDelay: '0.2s'}}>

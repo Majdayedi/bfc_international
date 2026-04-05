@@ -15,9 +15,24 @@ interface NavbarProps {
   onOpenMenu: () => void;
 }
 
+const COUNTRY_LINKS = [
+  { label: 'Congo', to: '/representatives/congo' },
+  { label: 'Senegal', to: '/representatives/senegal' },
+  { label: 'Tunisia', to: '/representatives/tunisia' },
+  { label: 'Guinea', to: '/representatives/guinee' },
+  { label: 'Mauritania', to: '/representatives/mauritania' },
+];
+
 export const Navbar: React.FC<NavbarProps> = ({ onOpenMenu }) => {
   return (
     <header className="navbar">
+      <button onClick={onOpenMenu} className="navbar__menu-button">
+        <span className="navbar__menu-label">Menu</span>
+        <MenuIcon size={16} />
+      </button>
+
+      
+
       <div className="navbar__logo">
         <Link to="/" className="navbar__logo-link">
           <span className="navbar__logo-box">
@@ -27,31 +42,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMenu }) => {
             </span>
           </span>
         </Link>
-        <div className="navbar__logo-menu" role="menu" aria-label="Featured partners">
-          <div className="navbar__logo-menu-item" role="menuitem">
-            <img src={bfcsenegal} alt="BFC Groupe" className="navbar__logo-menu-img" />
-            <span className="navbar__logo-menu-name">BFC Senegal</span>
-          </div>
-          <div className="navbar__logo-menu-item" role="menuitem">
-            <img src={bfc_congo} alt="Reanda Global" className="navbar__logo-menu-img" />
-            <span className="navbar__logo-menu-name">BFC Congo</span>
-          </div>
-          <div className="navbar__logo-menu-item" role="menuitem">
-            <img src={bfc_guinee} alt="Reanda Global" className="navbar__logo-menu-img" />
-            <span className="navbar__logo-menu-name">BFC Guinée</span>
-          </div>
-          <div className="navbar__logo-menu-item" role="menuitem">
-            <img src={bfc_mauritania} alt="Reanda Global" className="navbar__logo-menu-img" />
-            <span className="navbar__logo-menu-name">BFC Mauritania</span>
-          </div>
-          
-        </div>
+        
       </div>
-      
-      <button onClick={onOpenMenu} className="navbar__menu-button">
-        <span className="navbar__menu-label">Menu</span>
-        <MenuIcon size={16} />
-      </button>
     </header>
   );
 };

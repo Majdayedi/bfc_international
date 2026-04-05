@@ -1,7 +1,16 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import './Hero.css';
+
+const REPRESENTATIVE_LINKS = [
+  { label: 'Congo', to: '/representatives/congo' },
+  { label: 'Senegal', to: '/representatives/senegal' },
+  { label: 'Tunisia', to: '/representatives/tunisia' },
+  { label: 'Guinea', to: '/representatives/guinee' },
+  { label: 'Mauritania', to: '/representatives/mauritania' },
+];
 
 export const Hero: React.FC = () => {
   return (
@@ -18,14 +27,25 @@ export const Hero: React.FC = () => {
       <div className="hero__content">
         <div className="hero__intro">
           <span className="hero__eyebrow">
-            (01) SINCE 2012
+             SINCE 2010
           </span>
           <h1 className="hero__title">
-            Discover<br />
-            Excellence <span className="hero__title-accent">in</span><br />
-            Innovation.
+            BFC<br />
+            International <span className="hero__title-accent">&</span><br />
+            Academy.
           </h1>
         </div>
+
+        <nav className="hero__representatives" aria-label="Country representatives">
+          {REPRESENTATIVE_LINKS.map((country, index) => (
+            <React.Fragment key={country.to}>
+              <Link to={country.to} className="hero__representative-link">
+                {country.label}
+              </Link>
+              {index < REPRESENTATIVE_LINKS.length - 1 && <span className="hero__representative-sep">|</span>}
+            </React.Fragment>
+          ))}
+        </nav>
 
         {/* Floating Detail Box */}
         <div className="hero__card">
@@ -39,8 +59,8 @@ export const Hero: React.FC = () => {
           </div>
           <div className="hero__card-footer">
             <div>
-              <p className="hero__card-meta">Featured Insights</p>
-              <p className="hero__card-title">Fintech Strategy 2025</p>
+              <p className="hero__card-meta">Talk to an expert </p>
+              <p className="hero__card-title"> Book a Free Consultation</p>
             </div>
             <a href="#horizontal-section" className="hero__card-link">
               <ArrowRight size={20} />
