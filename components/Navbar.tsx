@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Menu as MenuIcon } from 'lucide-react';
 import reandaLogo from '../src/assets/reanda.png';
 import bfcLogo from '../src/assets/bfc.png';
-import bfc_guinee from '../src/assets/bfc_guinée.png';
+import bfc_guinee from '../src/assets/bfc.png';
 import bfc_mauritania from '../src/assets/bfc_mauritania.png';
 import bfcsenegal from '../src/assets/bfc_senegal.png';
 import bfc_congo from '../src/assets/bfc_congo.png';
