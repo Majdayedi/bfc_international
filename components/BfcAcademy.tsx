@@ -1,236 +1,230 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ShieldCheck, ArrowUpRight, Star, Clock } from "lucide-react";
 import { Link } from 'react-router-dom';
 import ici from '../src/assets/certif/ici.png';
 import irm from '../src/assets/certif/IRM.png';
-import GII from '../src/assets/certif/global_innovation_insititute.png';
 import bfcLogo from '../src/assets/bfc.png';
 import './BfcAcademy.css';
 
 const certData = [
   {
     id: "01",
-    title: "Institute of Risk Management",
+    title: "Fundamentals of Risk Management (FoRM)",
     location: "London, UK",
-    programs: "5+ Tracks",
-    accreditation: "Global",
-    intake: "Sept 2025",
-    description: "The world's leading professional body for enterprise risk management. We provide qualifications, training, and resources to help you manage risk effectively.",
+    programs: "3-Day Certification + Final Exam",
+    accreditation: "Institute of Risk Management (IRM)",
+    intake: "2026",
+    description: "Official certificate training program from IRM London covering risk concepts, risk assessment, treatment, business continuity, and risk culture embedding.",
     imageUrl: irm
   },
   {
     id: "02",
-    title: "Internal Control Institute",
+    title: "Certified Internal Control Specialist (CICS)",
     location: "Florida, USA",
-    programs: "3+ Tracks",
-    accreditation: "International",
-    intake: "Oct 2025",
-    description: "Focused on the design, implementation, and assessment of internal control systems. Our certifications are recognized by major regulatory bodies worldwide.",
+    programs: "5-Day Certification + Final Exam",
+    accreditation: "Internal Control Institute (ICI)",
+    intake: "2026",
+    description: "Official ICI certification focused on internal control design, COSO-based risk control, governance practices, and implementation of enterprise internal control systems.",
     imageUrl: ici
-  },
-  {
-    id: "03",
-    title: "Information Systems Audit",
-    location: "Global Reach",
-    programs: "8+ Tracks",
-    accreditation: "Industry Standard",
-    intake: "Rolling",
-    description: "Advanced certification for IT professionals specializing in audit, control, and security. Master the complexities of modern information systems.",
-    imageUrl: GII
   }
 ];
 
-interface TrainingReference {
+interface CourseCatalogItem {
   id: number;
+  title: string;
   institution: string;
   country: string;
   year: string;
-  course: string;
-  mission?: string;
-  location?: string;
-  topics?: string;
+  category: string;
+  topics: string;
+  imageUrl: string;
+  isAccredited: boolean;
+  programs: string;
+  accreditation: string;
+  intake: string;
+  description: string;
+  certificationDescription: string;
+  intro: string;
+  participants: string;
+  duration: string;
+  location: string;
+  price: string;
+  language: string;
+  relatedTopics: string[];
+  learnPoints: string[];
+  contentSections: { title: string; lectures: number; duration: string }[];
+  journeySteps: { title: string; detail: string }[];
 }
 
-const trainingReferences: TrainingReference[] = [
+const courseCatalog: CourseCatalogItem[] = [
   {
     id: 1,
-    institution: 'Internal Control Institute (ICI - USA)',
-    country: 'Tunisia / Sub-Saharan Africa',
-    year: 'From 2020',
-    mission: 'Animation of certifying training in Internal Control.',
-    course: 'Certified Internal Control Specialist (CICS).',
-    location: 'Tunisia and Sub-Saharan Africa.',
+    title: 'Fundamentals of Risk Management (FoRM)',
+    institution: 'Institute of Risk Management (IRM) - London',
+    country: 'International',
+    year: '2026',
+    category: 'International Courses',
+    topics: 'Risk concepts, assessment and treatment, risk appetite, risk transfer, business continuity, monitoring and review, risk policy.',
+    imageUrl: irm,
+    isAccredited: true,
+    programs: '3 Days + Final Examination',
+    accreditation: 'IRM Official Certificate Program',
+    intake: '2026',
+    description: 'Official certification training from the Institute of Risk Management of London focused on practical ERM implementation and business-aligned risk decision making.',
+    certificationDescription: 'Participants: Risk Managers, Internal Controllers, Internal Auditors, Administrators, Executives, Senior Managers, Department Heads. Certificate delivered by IRM upon passing final exam.',
+    intro: 'Official FoRM certification by IRM London. This course builds a practical enterprise risk management mindset and equips participants to deploy risk frameworks that are aligned with business strategy and governance expectations.',
+    participants: 'Risk Managers, Internal Controllers, Internal Auditors, Administrators, Executives, Senior Managers, Department Heads.',
+    duration: '3 days + final exam',
+    location: 'International sessions',
+    price: 'Contact BFC for latest FoRM cohort pricing',
+    language: 'English',
+    relatedTopics: ['Risk Management', 'ERM', 'Governance', 'Business Continuity'],
+    learnPoints: [
+      'Understand risk and risk management fundamentals in organizational contexts.',
+      'Implement risk assessment, risk treatment, and risk register practices.',
+      'Define risk appetite, tolerance, and risk transfer mechanisms.',
+      'Embed risk culture, policy, monitoring, and review cycles.',
+      'Prepare for IRM final certification assessment.'
+    ],
+    contentSections: [
+      { title: 'Day 1 - Concepts and Foundations', lectures: 5, duration: '6h' },
+      { title: 'Day 2 - Risk Process and Assessment Tools', lectures: 6, duration: '6h' },
+      { title: 'Day 3 - Framework, Culture and Final Revision', lectures: 6, duration: '6h' }
+    ],
+    journeySteps: [
+      { title: 'Journey 01 - Build Foundations', detail: 'Clarify risk principles, why risk management matters, and core ERM disciplines.' },
+      { title: 'Journey 02 - Analyze and Prioritize Risks', detail: 'Apply assessment tools, risk profiling, consequence and probability matrices.' },
+      { title: 'Journey 03 - Treat and Embed', detail: 'Design treatments, define appetite and tolerance, and integrate risk culture.' },
+      { title: 'Journey 04 - Validate and Certify', detail: 'Consolidate knowledge and complete final FoRM exam preparation.' }
+    ]
   },
   {
     id: 2,
-    institution: 'Institute of Risk Management (IRM - London)',
-    country: 'Tunisia / Sub-Saharan Africa',
-    year: 'From 2018',
-    mission: 'Animation of certifying training in Risk Management.',
-    course: 'Fundamentals of Risk Management.',
-    location: 'Tunisia and Sub-Saharan Africa.',
+    title: 'Certified Internal Control Specialist (CICS)',
+    institution: 'Internal Control Institute (ICI) - USA',
+    country: 'International',
+    year: '2026',
+    category: 'International Courses',
+    topics: 'Control environment, COSO components, risk evaluation, governance practices, reporting, internal control implementation and project steering.',
+    imageUrl: ici,
+    isAccredited: true,
+    programs: '5 Days + Final Examination',
+    accreditation: 'ICI Official Certification',
+    intake: '2026',
+    description: 'Official international certifying program from ICI to design, implement, assess, and manage internal control systems with governance alignment.',
+    certificationDescription: 'Price: 3,200 EUR HT including exam voucher, pre-assessment test, module tests, and training material. Participants include Executives, Directors, Administrators, Internal Controllers, Auditors, Inspectors, GRC professionals, and Risk Managers.',
+    intro: 'Official CICS program from the Internal Control Institute, dedicated to control architecture, governance effectiveness, COSO application, and operational internal control deployment.',
+    participants: 'Executives, Directors, Administrators, Internal Controllers, Internal Auditors, Inspectors, GRC professionals, Risk Managers.',
+    duration: '5 days + final exam',
+    location: 'International cohorts',
+    price: '3,200 EUR HT (exam voucher + pre-assessment + module tests + support)',
+    language: 'French / English',
+    relatedTopics: ['Internal Control', 'COSO', 'GRC', 'Internal Audit'],
+    learnPoints: [
+      'Design and structure enterprise internal control systems.',
+      'Develop control environment and control ownership across teams.',
+      'Evaluate control effectiveness and risk exposure using COSO components.',
+      'Implement reporting, communication, and governance review practices.',
+      'Lead internal control projects and change management programs.'
+    ],
+    contentSections: [
+      { title: 'Day 1 - Intensive Internal Control Workshop', lectures: 2, duration: '6h' },
+      { title: 'Day 2 - Control Environment and COSO Risk Components', lectures: 2, duration: '6h' },
+      { title: 'Day 3 - Information, Communication and Risk Evaluation', lectures: 2, duration: '6h' },
+      { title: 'Day 4 - Governance Practices and COSO Adequacy Review', lectures: 2, duration: '6h' },
+      { title: 'Day 5 - Final Exam and Certification Validation', lectures: 1, duration: '3h' }
+    ],
+    journeySteps: [
+      { title: 'Journey 01 - Control Fundamentals', detail: 'Set the internal control baseline and map current control maturity.' },
+      { title: 'Journey 02 - Risk-Control Alignment', detail: 'Connect risks to controls through COSO-based structuring.' },
+      { title: 'Journey 03 - Governance and Reporting', detail: 'Strengthen communication flows and governance oversight.' },
+      { title: 'Journey 04 - Certification Completion', detail: 'Finalize assessment readiness and pass ICI certification exam.' }
+    ]
   },
   {
     id: 3,
-    institution: 'ARPT',
-    country: 'Guinea',
-    year: '2024',
-    course: 'CICS - Intensive Workshop on Internal Control.',
-    topics:
-      'Evaluating control effectiveness; risk measurement; Sarbanes-Oxley impact; COSO framework application.',
+    title: 'Innovation Workshop: Concevoir l\'Innovation',
+    institution: 'BFC Group',
+    country: 'Tunisia',
+    year: '2026',
+    category: 'Our Courses',
+    topics: 'Innovation definition, strategic alignment, innovation horizons, innovation process, innovation tools, prioritization of initiatives.',
+    imageUrl: bfcLogo,
+    isAccredited: false,
+    programs: 'Interactive Workshop (6 Hours)',
+    accreditation: 'BFC Group Workshop',
+    intake: 'Tunis 2026',
+    description: 'Interactive and practical workshop to align strategy, horizons, and execution of innovation for organizations and leadership teams.',
+    certificationDescription: 'Expected outcomes: innovation-effort diagnosis, primary innovation register synthesis, and practical alignment between strategic goals and innovation types. Price: 2,500 DT HT, delivered in client premises.',
+    intro: 'An executive-focused workshop that clarifies innovation concepts, aligns innovation initiatives with strategic priorities, and translates innovation ambition into actionable execution tracks.',
+    participants: 'R&D team, Project/Product Managers, CEO, COO, Strategy/Development Director, Industrial/Plant Director, Production Manager, Quality/Certification Manager, Sales/Marketing Managers, Customer Relations Manager, Business Development Manager, Risk Manager.',
+    duration: '6 hours',
+    location: 'On-site at client premises',
+    price: '2,500 DT HT',
+    language: 'French',
+    relatedTopics: ['Innovation Strategy', 'Execution', 'Transformation', 'R&D'],
+    learnPoints: [
+      'Distinguish innovation from creativity, invention, and incremental improvement.',
+      'Align innovation efforts with strategic priorities and business goals.',
+      'Use horizons and innovation types for portfolio prioritization.',
+      'Apply practical innovation processes and tools.',
+      'Produce a first innovation diagnostic and a starter innovation register.'
+    ],
+    contentSections: [
+      { title: 'Session 1 - Innovation Definition and Strategic Objectives', lectures: 2, duration: '1h 30m' },
+      { title: 'Session 2 - Innovation Horizons and Types', lectures: 2, duration: '1h 15m' },
+      { title: 'Session 3 - Innovation Process and Practical Tools', lectures: 2, duration: '1h 30m' },
+      { title: 'Session 4 - Diagnostic and Action Synthesis', lectures: 1, duration: '1h 45m' }
+    ],
+    journeySteps: [
+      { title: 'Journey 01 - Clarify', detail: 'Build shared language and understanding of what innovation is and is not.' },
+      { title: 'Journey 02 - Align', detail: 'Connect innovation initiatives to strategy, priorities, and operational needs.' },
+      { title: 'Journey 03 - Structure', detail: 'Apply horizons, process, and tools to organize execution.' },
+      { title: 'Journey 04 - Activate', detail: 'Deliver diagnostic output and a practical first innovation roadmap.' }
+    ]
   },
   {
     id: 4,
-    institution: 'SONAPI',
-    country: 'Guinea',
-    year: '2024',
-    course: 'CICS - Certification Program.',
-    topics: 'Internal control intensive workshop; risk evaluation; corporate governance practices.',
-  },
-  {
-    id: 5,
-    institution: 'CCIN',
-    country: 'Niger',
-    year: '2024',
-    course: 'CICS - Certification Program.',
-    topics: 'Internal control effectiveness; COSO framework; governance review.',
-  },
-  {
-    id: 6,
-    institution: 'Business Advice & Assurance B2A',
+    title: 'L\'IA Generative pour l\'Audit et le Controle Interne',
+    institution: 'BFC Academy & E2B Training',
     country: 'Tunisia',
-    year: '2024',
-    course: 'CICS - Certification Program.',
-  },
-  {
-    id: 7,
-    institution: 'INPS',
-    country: 'Mali',
-    year: '2024',
-    course: 'CICS - Certification Program.',
-  },
-  {
-    id: 8,
-    institution: 'Islamic Bank of Niger',
-    country: 'Niger',
-    year: '2024',
-    course: 'Fundamentals of Risk Management (COSO, IRM, ISO 31000).',
-    topics: 'Risk mapping; treatment; continuity plans; risk reporting.',
-  },
-  {
-    id: 9,
-    institution: 'Ooredoo',
-    country: 'Tunisia',
-    year: '2023',
-    course: 'How to conduct a Risk Assessment.',
-  },
-  {
-    id: 10,
-    institution: 'Poulina Group Holding',
-    country: 'Tunisia',
-    year: '2023',
-    course: 'Fundamentals of Risk Management (COSO, IRM, ISO 31000).',
-  },
-  {
-    id: 11,
-    institution: 'Societe Coin Bleu',
-    country: 'Tunisia',
-    year: '2023',
-    course: 'Fundamentals of Risk Management.',
-  },
-  {
-    id: 12,
-    institution: 'INPS',
-    country: 'Mali',
-    year: '2023',
-    course: 'Fundamentals of Risk Management.',
-  },
-  {
-    id: 13,
-    institution: 'Banque Malienne de Solidarite (BMS)',
-    country: 'Mali',
-    year: '2023',
-    course: 'Fundamentals of Risk Management.',
-  },
-  {
-    id: 14,
-    institution: 'WaterAid',
-    country: 'Mali',
-    year: '2023',
-    course: 'Fundamentals of Risk Management (NGO sector).',
-  },
-  {
-    id: 15,
-    institution: 'Energie du Mali - SA',
-    country: 'Mali',
-    year: '2023',
-    course: 'Fundamentals of Risk Management.',
-  },
-  {
-    id: 16,
-    institution: 'GRC Conseil',
-    country: 'Mali',
-    year: '2023',
-    course: 'Fundamentals of Risk Management.',
-  },
-  {
-    id: 17,
-    institution: 'Banque Atlantique',
-    country: 'Ivory Coast',
-    year: '2022',
-    course: 'CICS certification for administrators and managers.',
-  },
-  {
-    id: 18,
-    institution: 'OMA Group',
-    country: 'Senegal',
-    year: '2022',
-    course: 'Fundamentals of Risk Management.',
-  },
-  {
-    id: 19,
-    institution: 'BHS',
-    country: 'Senegal',
-    year: '2022',
-    course: 'Fundamentals of Risk Management.',
-  },
-  {
-    id: 20,
-    institution: 'Vista Banque',
-    country: 'Guinea',
-    year: '2022',
-    course: 'Fundamentals of Risk Management.',
-  },
-  {
-    id: 21,
-    institution: 'ACS-Burkina SA',
-    country: 'Burkina Faso',
-    year: '2022',
-    course: 'Fundamentals of Risk Management.',
-  },
-  {
-    id: 22,
-    institution: 'Central Bank of the Republic of Guinea (BCRG)',
-    country: 'Guinea',
-    year: '2021',
-    course: 'Fundamentals of Risk Management (COSO/ISO 31000).',
-    topics: 'Risk concepts; mapping; treatment; continuity; reporting.',
-  },
-  {
-    id: 23,
-    institution: 'BSIC',
-    country: 'Senegal',
-    year: '2021',
-    course: 'Fundamentals of Risk Management.',
-  },
-  {
-    id: 24,
-    institution: 'CIAGE',
-    country: 'Ivory Coast',
-    year: '2021',
-    course: 'Fundamentals of Risk Management.',
-  },
+    year: '2026',
+    category: 'Our Courses',
+    topics: 'Prompt engineering, NotebookLM, Claude, Claude Cowork, risk analysis automation, compliance checks, security conflicts, dashboarding.',
+    imageUrl: bfcLogo,
+    isAccredited: false,
+    programs: '4-Day Certifying Training + Final Test',
+    accreditation: 'BFC Academy Certification',
+    intake: 'Tunis 2026',
+    description: 'Certifying training to transform auditors into AI-augmented experts across the full audit cycle, data analysis automation, and intelligent documentation workflows.',
+    certificationDescription: 'Delivered by Nadia Yaich and Kais Khenine. Includes course support, coffee breaks, lunch, and AI tools used during training. Price per participant: 1,900 TND HT.',
+    intro: 'A practical certifying program designed for auditors, control teams, and risk professionals to operationalize generative AI in audit planning, execution, documentation, and assurance outcomes.',
+    participants: 'Administrators, Executives, Senior Managers, Department Heads, Risk Managers, Internal Controllers, Internal Auditors.',
+    duration: '4 days + final test',
+    location: 'Tunis',
+    price: '1,900 TND HT per participant',
+    language: 'French',
+    relatedTopics: ['AI for Audit', 'Prompt Engineering', 'Risk Analytics', 'Compliance Automation'],
+    learnPoints: [
+      'Transform audit practices using AI-assisted analysis and documentation.',
+      'Master prompt engineering for control, audit, and risk use cases.',
+      'Use NotebookLM and Claude workflows for structured audit intelligence.',
+      'Automate risk diagnostics and support compliance verification.',
+      'Apply advanced methods for data reliability, interview augmentation, and dashboarding.'
+    ],
+    contentSections: [
+      { title: 'Journee 1 - Foundations, Tools and Prompt Engineering', lectures: 4, duration: '1 day' },
+      { title: 'Journee 2 - NotebookLM and Claude Architecture', lectures: 4, duration: '1 day' },
+      { title: 'Journee 3 - Applied Risk and Compliance Automation', lectures: 4, duration: '1 day' },
+      { title: 'Journee 4 - Strategy, Ethics, Testing and Final Validation', lectures: 4, duration: '1 day' }
+    ],
+    journeySteps: [
+      { title: 'Journey 01 - Explore AI Foundations', detail: 'Understand tools and prompt techniques for audit contexts.' },
+      { title: 'Journey 02 - Build AI Workspaces', detail: 'Structure projects with NotebookLM and Claude collaborative workflows.' },
+      { title: 'Journey 03 - Automate Controls and Risk Checks', detail: 'Deploy AI for diagnostics, conformity checks, and anomaly identification.' },
+      { title: 'Journey 04 - Operationalize with Governance', detail: 'Finalize practical implementation plan, ethics guardrails, and certification test.' }
+    ]
+  }
 ];
 
 function CertificateCard({ item, index, total }: { item: typeof certData[0], index: number, total: number, key?: string | number }) {
@@ -346,118 +340,27 @@ export const BfcAcademy: React.FC = () => {
   }, []);
 
   // Filtering & pagination state
-  const [filterCategory, setFilterCategory] = useState<string>('Fundamentals & Risk Management');
+  const [filterCategory, setFilterCategory] = useState<string>('All');
   const [page, setPage] = useState<number>(1);
   const pageSize = 4; // cards per page — show 2x2 on each page
 
-  // Data groups (kept inline as before)
- const groups = [
-  {
-    title: 'Fundamentals & Risk Management',
-    items: [
-      'Fundamentals of Risk Management — Institute of Risk Management London',
-      'Risk Essentials Masterclass — Institute of Risk Management London',
-      'Senior Risk Masterclass — Institute of Risk Management London',
-      'Financial and Banking Risk Management',
-    ],
-  },
-  {
-    title: 'Internal Control',
-    items: [
-      'Certified Internal Control Specialist — Internal Control Institute USA',
-      'Certified Internal Control Professional — Internal Control Institute USA',
-      'Positioning Internal Control in Today’s Business Challenges',
-      'Implementing an Effective and Efficient Internal Control System',
-    ],
-  },
-  {
-    title: 'Information Technology',
-    items: [
-      'IT Risk Management',
-      'IT Project Management',
-      'Business Process Digitalization',
-    ],
-  },
-  {
-    title: 'Managerial Skills',
-    items: [
-      'Strategic Management',
-      'Project Management',
-      'Effective Team Communication',
-      'Situational Leadership',
-      'Operational Excellence',
-    ],
-  },
-  {
-    title: 'Innovation',
-    items: [
-      'Certified Innovation Professional — Global Innovation Institute USA & BFC',
-    ],
-  },
-  {
-    title: 'Investments',
-    items: [
-      'Understanding Financial Markets',
-      'Building and Managing Investment Strategies',
-    ],
-  },
-  {
-    title: 'Audit',
-    items: [
-      'Introduction to Internal Audit',
-      'Mastering the Internal Audit Framework: IPPF',
-      'Corporate Governance and Business Ethics',
-      'Auditing the Control Environment',
-      'Internal Audit Function Management',
-      'Fraud and Internal Control',
-    ],
-  },
-];
-
-  // flatten courses with category
-  const allCourses = groups.flatMap((g) => g.items.map((it) => ({ title: it, category: g.title })));
-
-  const categories = ['All', ...groups.map((g) => g.title)];
+  const categories = ['All', ...Array.from(new Set(courseCatalog.map((course) => course.category)))];
 
   // Filter and paginate
-  const filtered = filterCategory === 'All' ? allCourses : allCourses.filter((c) => c.category === filterCategory);
+  const filtered =
+    filterCategory === 'All'
+      ? courseCatalog
+      : courseCatalog.filter((course) => course.category === filterCategory);
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   if (page > totalPages) setPage(totalPages);
   const pageStart = (page - 1) * pageSize;
   const pageItems = filtered.slice(pageStart, pageStart + pageSize);
-
-  // Top featured: 3 international certificates (Risk Management cluster)
-  const internationalCertificates = (groups[0]?.items || []).slice(0, 3).map((it) => ({ title: it, category: groups[0].title }));
 
   const onSelectCategory = (cat: string) => {
     setFilterCategory(cat);
     setPage(1);
   };
 
-  const getAccreditedLogo = (institution: string) => {
-    if (/institute of risk management|irm/i.test(institution)) return irm;
-    if (/internal control institute|ici/i.test(institution)) return ici;
-    if (/global innovation institute|gii/i.test(institution)) return GII;
-    return bfcLogo;
-  };
-
-  const getCertificationDescription = (courseTitle: string, institution: string, accredited: boolean) => {
-    if (/institute of risk management|irm/i.test(institution)) {
-      return 'Professionally aligned risk management pathway covering governance, risk framework implementation, and decision-oriented reporting practices.';
-    }
-    if (/internal control institute|ici/i.test(institution)) {
-      return 'International internal control certification focused on COSO-aligned controls, governance maturity, and operational assurance.';
-    }
-    if (/global innovation institute|gii/i.test(institution)) {
-      return 'Innovation-focused certification designed to structure innovation strategy, governance, and measurable transformation outcomes.';
-    }
-    if (accredited) {
-      return `Accredited training track for ${courseTitle}, delivered with internationally recognized standards and practical case-based learning.`;
-    }
-    return `Professional development course in ${courseTitle}, designed for practical implementation and immediate operational impact.`;
-  };
-
-  // Keep original inline styles and markup intact — converted to JSX.
   return (
     <div className="bfc-academy">
       <div className="hero-scroll-wrapper" ref={heroWrapperRef}>
@@ -564,64 +467,64 @@ export const BfcAcademy: React.FC = () => {
 
             <div className="list-wrapper no-scrollbar">
               <div className="formations-list-grid-inner">
-              {pageItems.map((c, i) => {
-                const [titleText, institutionRaw] = c.title.split(' — ').map((s) => s && s.trim());
-                const institution = institutionRaw || c.category;
-                const isAccredited = /Institute of Risk Management|Internal Control Institute|Global Innovation Institute/i.test(institution);
-                const programs = isAccredited ? '5+ Tracks' : 'Standard';
-                const accreditation = isAccredited ? 'Global' : 'BFC';
-                const intake = isAccredited ? 'Sept 2025' : 'Rolling';
-                const courseImage = isAccredited ? getAccreditedLogo(institution) : bfcLogo;
-                const certificationDescription = getCertificationDescription(titleText, institution, isAccredited);
-
+              {pageItems.map((c) => {
                 return (
-                  <div key={`${c.title}-${i}`} className="course-card rectangular">
-                    {isAccredited && (
+                  <div key={c.id} className="course-card rectangular">
+                    {c.isAccredited && (
                       <span className="accredited-badge">ACCREDITED</span>
                     )}
                     <div className="course-card__top-row">
                       <div className="course-card__image-container">
-                        <img src={courseImage} alt={titleText} className="course-card__photo" />
+                        <img src={c.imageUrl} alt={c.title} className="course-card__photo" />
                       </div>
                       <div className="course-card__title-block">
-                        <h5 className="course-card__title">{titleText}</h5>
-                        <div className="course-card__meta">{institution}</div>
+                        <h5 className="course-card__title">{c.title}</h5>
+                        <div className="course-card__meta">{c.institution} • {c.country}</div>
                       </div>
                     </div>
                     <div className="course-card__desc">
-                      {/* Optionally add a short description here if available */}
+                      {c.description}
                     </div>
                     <div className="info-strip" role="list">
                       <div className="info-item" role="listitem">
                         <span className="label">Programs</span>
-                        <span className="value">{programs}</span>
+                        <span className="value">{c.programs}</span>
                       </div>
                       <div className="info-item" role="listitem">
                         <span className="label">Accreditation</span>
-                        <span className="value">{accreditation}</span>
+                        <span className="value">{c.accreditation}</span>
                       </div>
                       <div className="info-item" role="listitem">
                         <span className="label">Intake</span>
-                        <span className="value">{intake}</span>
+                        <span className="value">{c.intake}</span>
                       </div>
                     </div>
                     <div className="course-card__actions">
                       <button className="btn-primary">Enroll Now</button>
                       <Link
-                        to={`/course/${encodeURIComponent(titleText)}`}
+                        to={`/course/${encodeURIComponent(c.title)}`}
                         className="btn-outline"
                         state={{
                           course: {
-                            title: titleText,
-                            institution,
-                            programs,
-                            accreditation,
-                            intake,
-                            language: 'English',
-                            imageUrl: courseImage,
-                            isAccredited,
-                            certificationDescription,
-                            description: `Master the core concepts and practical frameworks of ${titleText}.`,
+                            title: c.title,
+                            institution: c.institution,
+                            programs: c.programs,
+                            accreditation: c.accreditation,
+                            intake: c.intake,
+                            language: c.language,
+                            imageUrl: c.imageUrl,
+                            isAccredited: c.isAccredited,
+                            certificationDescription: c.certificationDescription,
+                            description: c.description,
+                            intro: c.intro,
+                            participants: c.participants,
+                            duration: c.duration,
+                            location: c.location,
+                            price: c.price,
+                            relatedTopics: c.relatedTopics,
+                            learnPoints: c.learnPoints,
+                            contentSections: c.contentSections,
+                            journeySteps: c.journeySteps,
                           },
                         }}
                       >
@@ -667,57 +570,6 @@ export const BfcAcademy: React.FC = () => {
       </div>
       </section>
 
-      <section className="academy-references-section">
-        <div className="academy-references-container">
-          <div className="academy-references-header">
-            <p className="academy-references-eyebrow">BFC Academy</p>
-            <h2 className="academy-references-title">
-              Training <span>References</span>
-            </h2>
-            <p className="academy-references-subtitle">
-              {trainingReferences.length} certified training references across Tunisia and Sub-Saharan Africa.
-            </p>
-          </div>
-
-          <div className="academy-references-grid">
-            {trainingReferences.map((ref) => (
-              <article key={ref.id} className="academy-reference-card">
-                <div className="academy-reference-top">
-                  <span className="academy-reference-index">{String(ref.id).padStart(2, '0')}</span>
-                  <span className="academy-reference-year">{ref.year}</span>
-                </div>
-
-                <h3 className="academy-reference-institution">{ref.institution}</h3>
-                <p className="academy-reference-country">{ref.country}</p>
-
-                {ref.mission && (
-                  <p className="academy-reference-line">
-                    <strong>Mission:</strong> {ref.mission}
-                  </p>
-                )}
-
-                <p className="academy-reference-line">
-                  <strong>Course:</strong> {ref.course}
-                </p>
-
-                {ref.location && (
-                  <p className="academy-reference-line">
-                    <strong>Location:</strong> {ref.location}
-                  </p>
-                )}
-
-                {ref.topics && (
-                  <p className="academy-reference-line academy-reference-line--topics">
-                    <strong>Topics:</strong> {ref.topics}
-                  </p>
-                )}
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      
     </div>
   );
 };

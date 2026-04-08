@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import './Hero.css';
+import contact from '../src/assets/contact2.png';
 
 const REPRESENTATIVE_LINKS = [
   { label: 'Congo', to: '/representatives/congo' },
@@ -51,7 +52,7 @@ export const Hero: React.FC = () => {
         <div className="hero__card">
           <div className="hero__card-image">
             <img 
-              src="https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=2070&auto=format&fit=crop" 
+              src={contact} 
               alt="Collaboration" 
               className="hero__card-image-img"
             />

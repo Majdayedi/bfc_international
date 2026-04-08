@@ -907,27 +907,32 @@
     RESPONSIVE
     ================================================================ */
   @media (max-width: 900px) {
-    .hi-bar__year {
-      font-size: clamp(1.1rem, 3.5vw, 2rem);
+    .hi-bar--compact {
+      top: calc(100dvh - 75px); /* animate to bottom cleanly */
+      width: min(680px, 92vw);
+      padding: 0.5rem 1rem 0.8rem;
+    }
+    .hi-bar--compact .hi-bar__year {
+      font-size: 0.55rem; /* shrink even further to prevent overlapping */
+      margin: 0;
+      padding: 0 4px;
     }
     .hi-ms {
       grid-template-columns: 1fr;
       gap: 2.5rem;
     }
-    .hi-ms--rev .hi-ms__text,
-    .hi-ms--rev .hi-ms__img-wrap {
-      order: unset;
-    }
+    .hi-ms__text, .hi-ms--rev .hi-ms__text { order: 2; }
+    .hi-ms__img-wrap, .hi-ms--rev .hi-ms__img-wrap { order: 1; }
     .hi-ms__year-bg { font-size: 5.5rem; }
     .hi-ms__img { border-radius: 16px; }
     .hi-hero-alt__title { font-size: clamp(2.8rem, 8vw, 5rem); }
+    .hi-wheel  { display: none; }
+    .hi-sphere { display: none; }
   }
 
   @media (max-width: 600px) {
     .hi-bar--lifted { top: 56px; }
     .hi-bar__year { font-size: clamp(0.9rem, 2.5vw, 1.4rem); }
-    .hi-wheel  { display: none; }
-    .hi-sphere { display: none; }
     .hi-hero-alt {
       padding: clamp(5rem, 8vw, 7rem) 1.25rem;
     }

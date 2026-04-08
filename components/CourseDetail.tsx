@@ -50,7 +50,7 @@ const CourseDetail: React.FC = () => {
   const introText = stateCourse?.intro || 
     'Welcome to this advanced certification program. Designed by industry experts, this course combines structured theory, real-world case studies, and applied workshops so you can build immediately usable professional skills.';
 
-  const learnPoints = [
+  const learnPoints = stateCourse?.learnPoints || [
     'Design and strengthen internal control architecture across key business processes.',
     'Implement performance and compliance monitoring mechanisms.',
     'Assess, map, and treat operational and financial risks.',
@@ -58,7 +58,12 @@ const CourseDetail: React.FC = () => {
     'Lead governance and control transformation in changing environments.',
   ];
 
-  const relatedTopics = ['Governance', 'Risk Management', 'Internal Audit', 'Compliance'];
+  const relatedTopics = stateCourse?.relatedTopics || ['Governance', 'Risk Management', 'Internal Audit', 'Compliance'];
+
+  const participants = stateCourse?.participants || 'Executives, Managers, Controllers, Auditors, and Governance professionals.';
+  const duration = stateCourse?.duration || programs;
+  const locationInfo = stateCourse?.location || 'International';
+  const price = stateCourse?.price || 'Contact BFC for pricing details';
 
   const includes = [
     { icon: BadgeCheck, text: 'Official certification branding and resources' },
@@ -67,7 +72,7 @@ const CourseDetail: React.FC = () => {
     { icon: Trophy, text: 'Certificate of completion' },
   ];
 
-  const contentSections = [
+  const contentSections = stateCourse?.contentSections || [
     { title: 'Day 01 - Internal Control Foundations', lectures: 2, duration: '55m' },
     { title: 'Day 02 - Control Environment and Risk Drivers', lectures: 2, duration: '1h 05m' },
     { title: 'Day 03 - Risk Assessment and Monitoring', lectures: 2, duration: '48m' },
@@ -80,7 +85,7 @@ const CourseDetail: React.FC = () => {
     { id: 3, title: 'Financial Audit Masterclass', rating: 4.7, students: 2310, price: '.99', image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80' },
   ];
 
-  const journeySteps = [
+  const journeySteps = stateCourse?.journeySteps || [
     { title: 'Journey 01 - Foundations', detail: 'Core principles, governance baseline, and control mindset.' },
     { title: 'Journey 02 - Risk Mapping', detail: 'Identify, classify, and prioritize enterprise risks.' },
     { title: 'Journey 03 - Operating Controls', detail: 'Design actionable controls and monitoring loops.' },
@@ -88,6 +93,7 @@ const CourseDetail: React.FC = () => {
   ];
 
   const [previewHeight, setPreviewHeight] = useState(190);
+  const [activeJourneyIndex, setActiveJourneyIndex] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -160,6 +166,14 @@ const CourseDetail: React.FC = () => {
               <p>{certificationDescription}</p>
             </section>
 
+            <section className="ud-box">
+              <h2>Course facts</h2>
+              <p><strong>Participants:</strong> {participants}</p>
+              <p><strong>Duration:</strong> {duration}</p>
+              <p><strong>Location:</strong> {locationInfo}</p>
+              <p><strong>Price:</strong> {price}</p>
+            </section>
+
             <section className="ud-box ud-learn-box">
               <h2>What you'll learn</h2>
               <ul className="ud-learn-grid">
@@ -178,16 +192,36 @@ const CourseDetail: React.FC = () => {
                 <h3>Course content</h3>
                 <p>{contentSections.length} sections • {programs}</p>
               </div>
-              {contentSections.map((section) => (
-                <button key={section.title} type="button" className="ud-content-row">
-                  <span className="ud-content-row-left">
-                    <ChevronDown size={16} /> {section.title}
-                  </span>
-                  <span className="ud-content-row-right">
-                    {section.lectures} lectures • {section.duration}
-                  </span>
-                </button>
-              ))}
+              {contentSections.map((section, index) => {
+                const isActive = activeJourneyIndex === index;
+                const rowJourney = journeySteps[index];
+
+                return (
+                  <div key={section.title} className="ud-content-row-wrap">
+                    <button
+                      type="button"
+                      className={`ud-content-row${isActive ? ' is-active' : ''}`}
+                      onClick={() => setActiveJourneyIndex(index)}
+                      aria-pressed={isActive}
+                      aria-expanded={isActive}
+                    >
+                      <span className="ud-content-row-left">
+                        <ChevronDown size={16} /> {section.title}
+                      </span>
+                      <span className="ud-content-row-right">
+                        {section.lectures} lectures • {section.duration}
+                      </span>
+                    </button>
+
+                    {isActive && rowJourney && (
+                      <div key={activeJourneyIndex} className="ud-content-row-panel">
+                        <p><strong>{rowJourney.title}</strong></p>
+                        <p>{rowJourney.detail}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </section>
             
             <section className="ud-box ud-topics">

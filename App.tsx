@@ -24,6 +24,7 @@ import { ServiceDetail } from './components/ServiceDetail';
 import { RepresentativeDetail } from './components/RepresentativeDetail';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AdminDashboard } from './components/AdminDashboard';
+import { FloatingContactIcon } from './components/FloatingContactIcon';
 import './App.css';
 
 const App: React.FC = () => {
@@ -160,6 +161,8 @@ const App: React.FC = () => {
       {!location.pathname.startsWith('/admin') && (
         <Menu isOpen={isMenuOpen} onClose={() => toggleMenu(false)} />
       )}
+
+      {!location.pathname.startsWith('/admin') && <FloatingContactIcon />}
     </div>
   );
 };

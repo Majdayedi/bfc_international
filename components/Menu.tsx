@@ -1,11 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { X, ChevronRight } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft } from 'lucide-react';
 import bfcLogo from '../src/assets/bfc.png';
 import ici from '../src/assets/certif/ici.png';
 import irm from '../src/assets/certif/IRM.png';
-import GII from '../src/assets/certif/global_innovation_insititute.png';
 import './Menu.css';
 
 interface MenuProps {
@@ -97,10 +96,10 @@ const MENU_ITEMS: MenuItem[] = [
             },
           },
           {
-            label: 'ICI - Certified Internal Control Specialist',
-            href: '/course/Certified%20Internal%20Control%20Specialist',
+            label: 'ICI - Certified Internal Control Specialist (CICS)',
+            href: '/course/Certified%20Internal%20Control%20Specialist%20(CICS)',
             course: {
-              title: 'Certified Internal Control Specialist',
+              title: 'Certified Internal Control Specialist (CICS)',
               institution: 'Internal Control Institute USA',
               programs: '3+ Tracks',
               accreditation: 'International',
@@ -112,24 +111,6 @@ const MENU_ITEMS: MenuItem[] = [
                 'International internal control certification focused on COSO-aligned controls, governance maturity, and operational assurance.',
               description:
                 'Build practical internal control capabilities for governance, risk mitigation, and operational performance management.',
-            },
-          },
-          {
-            label: 'GII - Certified Innovation Professional',
-            href: '/course/Certified%20Innovation%20Professional',
-            course: {
-              title: 'Certified Innovation Professional',
-              institution: 'Global Innovation Institute USA & BFC',
-              programs: '8+ Tracks',
-              accreditation: 'Industry Standard',
-              intake: 'Rolling',
-              language: 'English',
-              imageUrl: GII,
-              isAccredited: true,
-              certificationDescription:
-                'Innovation-focused certification designed to structure innovation strategy, governance, and measurable transformation outcomes.',
-              description:
-                'Learn to build innovation systems, prioritize opportunities, and manage execution from concept to measurable business value.',
             },
           },
         ],
@@ -311,6 +292,14 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
         <div className={`menu__right ${expandedIndex !== null ? 'menu__right--open' : 'menu__right--closed'}`}>
           {expandedIndex !== null && MENU_ITEMS[expandedIndex].subPages && (
             <div className="menu__right-inner">
+              {/* Added mobile back button */}
+              <button 
+                className="menu__mobile-back" 
+                onClick={() => setExpandedIndex(null)}
+              >
+                <ChevronLeft size={20} />
+                <span>Back to Menu</span>
+              </button>
               <div className="menu__right-content">
                 <div 
                   className={`menu__right-title ${

@@ -25,6 +25,7 @@ interface Milestone {
   desc: string;
   logo: string;
   flag?: string;
+  path?: string;
 }
 
 /* Background colour for each milestone — interpolated as you scroll */
@@ -46,6 +47,7 @@ const MS: Milestone[] = [
     desc: "MGI BFC is the parent entity. It is an accounting and audit firm founded in 2010 and based in Tunis. MGI BFC is a member of the international MGI WORLDWIDE network, one of the top 20 global consulting and audit networks.",
     logo: MGIBFCImg,
     flag: 'https://flagcdn.com/w80/tn.png',
+    path: '/representatives/tunisia'
   },
   {
     year: '2020',
@@ -55,6 +57,7 @@ const MS: Milestone[] = [
     desc: "Founded in 2020, BFC International & Academy is a consulting and training firm. As a partner of IRM and ICI in Africa, it also provides outsourcing services in France and Canada.",
     logo: bfcLogo,
     flag: 'https://flagcdn.com/w80/tn.png',
+    path: '/standard-training'
   },
   {
     year: '2022',
@@ -64,6 +67,7 @@ const MS: Milestone[] = [
     desc: "Our expansion began with the launch of BFC Guinea in 2022. This entity was created to serve the sub-region and ensure closer expert support to meet client needs.",
     logo: guineeLogo,
     flag: 'https://flagcdn.com/w80/gn.png',
+    path: '/representatives/guinea'
   },
   {
     year: '2022',
@@ -73,6 +77,7 @@ const MS: Milestone[] = [
     desc: "BFC Senegal further strengthened our presence in West Africa. The firm offers a wide range of services related to IT, management, training, and organizational development.",
     logo: senegalLogo,
     flag: 'https://flagcdn.com/w80/sn.png',
+    path: '/representatives/senegal'
   },
   {
     year: '2023',
@@ -82,6 +87,7 @@ const MS: Milestone[] = [
     desc: "BFC expanded its footprint into the Congo Basin. The firm entered Central Africa by delivering high-level consulting and training services.",
     logo: congoLogo,
     flag: 'https://flagcdn.com/w80/cg.png',
+    path: '/representatives/congo'
   },
   {
     year: '2025',
@@ -91,6 +97,7 @@ const MS: Milestone[] = [
     desc: "BFC continues its strategic expansion across the world, developing new local and international partnerships that support sustainable development.",
     logo: mauritaniaLogo,
     flag: false,
+    path: '/representatives/mauritania'
   },
 ];
 
@@ -500,7 +507,11 @@ export const HistoryPage: React.FC = () => {
               <div className="hi-divider" />
               <p className="hi-ms__desc">{m.desc}</p>
               <div className="hi-ms__actions">
-                <button className="hi-ms__cta" type="button">
+                <button 
+                  className="hi-ms__cta" 
+                  type="button"
+                  onClick={() => m.path ? window.location.href = m.path : null}
+                >
                   See More
                 </button>
                 <button className="hi-ms__contact-cta" type="button" onClick={() => window.location.href = '/contact'}>

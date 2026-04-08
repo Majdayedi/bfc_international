@@ -1,0 +1,81 @@
+.fc-contact {
+  position: fixed;
+  right: clamp(14px, 2vw, 28px);
+  bottom: clamp(18px, 3vh, 34px);
+  width: 58px;
+  height: 58px;
+  border-radius: 999px;
+  background: #204383;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 12px 28px rgba(32, 67, 131, 0.26), 0 3px 8px rgba(0, 0, 0, 0.16);
+  z-index: 500;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+  animation: fc-float 3.2s ease-in-out infinite;
+}
+
+.fc-contact:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 16px 32px rgba(32, 67, 131, 0.34), 0 5px 12px rgba(0, 0, 0, 0.2);
+}
+
+.fc-contact:focus,
+.fc-contact:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 0 6px rgba(153, 205, 179, 0.9), 0 16px 32px rgba(32, 67, 131, 0.34);
+}
+
+.fc-contact--active {
+  background: #99cdb3;
+  color: #204383;
+}
+
+.fc-contact__label {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(8px);
+  background: rgba(32, 67, 131, 0.96);
+  color: #fff;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.fc-contact:hover .fc-contact__label,
+.fc-contact:focus-visible .fc-contact__label {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+@keyframes fc-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (max-width: 768px) {
+  .fc-contact {
+    width: 52px;
+    height: 52px;
+    right: 12px;
+    bottom: 18px;
+  }
+
+  .fc-contact__label {
+    display: none;
+  }
+}

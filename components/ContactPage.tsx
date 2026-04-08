@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import contactHero from '../src/assets/contact.jpg';
+import contactHero from '../src/assets/contact1.png';
 import './ContactPage.css';
 
 interface SelectOption {

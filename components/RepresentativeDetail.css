@@ -244,7 +244,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  margin-top: 60px;
+  margin-top: 130px;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
@@ -256,7 +256,7 @@
 
 @media (min-width: 1024px) {
   .rd-bottom-section {
-    margin-top: 120px;
+    margin-top: 180px;
     padding: 100px 8vw;
     flex-direction: row;
     align-items: stretch;
@@ -674,6 +674,16 @@
   margin-top: 20px;
 }
 
+.rd-rep-projects-empty {
+  margin-top: 20px;
+  padding: 30px;
+  border: 1px solid #e2e8f0;
+  background: var(--rd-white);
+  color: var(--rd-gray);
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
 @media (min-width: 768px) {
   .rd-rep-projects-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -751,4 +761,67 @@
   color: var(--rd-gray);
   line-height: 1.6;
   margin: 0;
+}
+
+.rd-congo-motivation {
+  margin-top: 100px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  background: linear-gradient(120deg, #f8fafc 0%, #ecf3ff 100%);
+  border: 1px solid #dbe6f4;
+  padding: 28px;
+}
+
+.rd-congo-motivation__content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.rd-congo-motivation__text {
+  margin: 0;
+  text-align: right;
+  color: var(--rd-navy);
+  font-size: clamp(1.65rem, 4.2vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  max-width: 34rem;
+  text-wrap: balance;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.rd-congo-motivation__photo-wrap {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rd-congo-motivation__photo {
+  width: min(100%, 460px);
+  height: auto;
+  object-fit: cover;
+  border: 1px solid #dbe6f4;
+  box-shadow: 16px 16px 0 rgba(26, 42, 74, 0.08);
+}
+
+@media (min-width: 1024px) {
+  .rd-congo-motivation {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 40px;
+    padding: 44px;
+  }
+}
+
+@media (max-width: 900px) {
+  .rd-congo-motivation {
+    margin-top: 72px;
+  }
+
+  .rd-congo-motivation__text {
+    font-size: clamp(1.35rem, 6vw, 2.2rem);
+    text-align: right;
+  }
 }

@@ -11,7 +11,7 @@ export const Philosophy: React.FC = () => {
             <span className="philosophy__eyebrow">( OUR PHILOSOPHY )</span>
             <h2 className="philosophy__title">
               Leading<br />
-              <span className="philosophy__accent">Consulting</span> & Executive Training  <br />
+              <span className="philosophy__accent">Consulting</span> &Executive Training  <br />
               in EMEA
             </h2>
             <div className="philosophy__divider"></div>
