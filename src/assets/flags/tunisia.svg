@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40" role="img" aria-labelledby="title">
+  <title>Tunisia flag</title>
+  <rect width="60" height="40" fill="#E70013"/>
+  <circle cx="30" cy="20" r="11" fill="#fff"/>
+  <circle cx="32" cy="20" r="8" fill="#E70013"/>
+  <circle cx="34" cy="20" r="6.5" fill="#fff"/>
+  <path d="M31.8 14.8l1.65 4.7h4.96l-4 2.9 1.53 4.7-4.14-2.92-4.1 2.92 1.5-4.7-3.98-2.9h4.93z" fill="#E70013"/>
+</svg>

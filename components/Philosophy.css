@@ -181,13 +181,12 @@
 }
 
 .philosophy__lead {
-  font-size: 30px;
+  font-size: clamp(1.5rem, 3.2vw, 1.875rem);
   color: #1f2937;
-  line-height: 1.1;
+  line-height: 1.25;
   font-weight: 300;
   letter-spacing: -0.01em;
-  margin-bottom: -2rem;
-
+  margin-bottom: 0;
 }
 
 .philosophy__details {
@@ -221,6 +220,57 @@
 }
 
 @media (max-width: 767px) {
+  .philosophy {
+    padding: 5rem 0;
+  }
+
+  .philosophy__container {
+    padding: 0 1rem;
+  }
+
+  .philosophy__grid {
+    gap: 2.5rem;
+  }
+
+  .philosophy__eyebrow {
+    letter-spacing: 0.26em;
+    margin-bottom: 1.25rem;
+  }
+
+  .philosophy__title {
+    font-size: clamp(2rem, 12vw, 3.2rem);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  .philosophy__divider {
+    width: 5rem;
+    height: 0.25rem;
+  }
+
+  .philosophy__content {
+    gap: 2rem;
+  }
+
+  .philosophy__lead {
+    font-size: 1.3rem;
+    line-height: 1.35;
+  }
+
+  .philosophy__details {
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .philosophy__detail-title {
+    margin-bottom: 0.75rem;
+  }
+
+  .philosophy__detail-text {
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
   .philosophy__wheel-item {
     margin-left: -2rem;
     margin-top: -2rem;

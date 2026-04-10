@@ -77,3 +77,41 @@
   color: #99cdb3;
   margin-left: 0.5rem;
 }
+
+@media (max-width: 767px) {
+  .stats {
+    padding: 5rem 0;
+  }
+
+  .stats__container {
+    padding: 0 1rem;
+  }
+
+  .stats__title {
+    text-align: left;
+    margin-bottom: 2rem;
+  }
+
+  .stats__grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .stats__item {
+    padding-left: 1rem;
+  }
+
+  .stats__label {
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.24em;
+  }
+
+  .stats__number {
+    font-size: clamp(2.25rem, 14vw, 3.5rem);
+    line-height: 1;
+  }
+
+  .stats__suffix {
+    font-size: clamp(1.3rem, 8vw, 2rem);
+  }
+}

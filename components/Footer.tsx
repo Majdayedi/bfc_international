@@ -13,7 +13,7 @@ export const Footer: React.FC = () => {
               <span className="footer__accent">something</span> great.
             </h2>
             <a 
-              href="mailto:work@bfc.com" 
+              href="mailto:international@BFC.com.tn" 
               className="footer__email"
             >
               work@bfc.com
@@ -26,8 +26,7 @@ export const Footer: React.FC = () => {
                 <span className="footer__label">( SOCIAL )</span>
                 <ul className="footer__list">
                   <li><a href="#" className="footer__link">LinkedIn</a></li>
-                  <li><a href="#" className="footer__link">Instagram</a></li>
-                  <li><a href="#" className="footer__link">X / Twitter</a></li>
+                  <li><a href="#" className="footer__link">YouTube</a></li>
                 </ul>
               </div>
               <div>

@@ -6,12 +6,12 @@
 .hscroll__header {
   position: relative;
   z-index: 10;
-  padding: 4rem 1rem 5rem;
+  padding: 4rem 1rem 2.5rem;
 }
 
 @media (min-width: 768px) {
   .hscroll__header {
-    padding: 5rem 2rem;
+    padding: 5rem 2rem 2.75rem;
   }
 }
 
@@ -61,7 +61,7 @@
 .hscroll__track {
   display: flex;
   gap: 4rem;
-  padding: 0 3rem 3rem;
+  padding: 0 3rem 4rem;
   height: 440px;
   align-items: flex-end;
   width: 500vw;
@@ -69,7 +69,7 @@
 
 @media (min-width: 768px) {
   .hscroll__track {
-    padding: 0 5rem 4rem;
+    padding: 0 5rem 5rem;
     height: 480px;
   }
 }
@@ -79,13 +79,15 @@
   width: 80vw;
   max-width: 500px;
   height: 380px;
-  background: #fff;
-  border: 1px solid rgba(153, 205, 179, 0.2);
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+  border: 1px solid rgba(153, 205, 179, 0.18);
+  border-radius: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 2.5rem;
-  transition: background 0.3s ease;
+  justify-content: flex-start;
+  padding: 0.45rem 0.45rem 0.95rem;
+  box-shadow: 0 24px 60px rgba(10, 34, 73, 0.18);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
 }
 
 @media (min-width: 768px) {
@@ -94,43 +96,101 @@
   }
 }
 
+.hscroll__card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 70px rgba(10, 34, 73, 0.24);
+  border-color: rgba(32, 67, 131, 0.22);
+}
+
+.hscroll__card-media {
+  position: relative;
+  min-height: 12rem;
+  border-radius: 0;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  background: #dbe5f2;
+}
+
+.hscroll__card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s ease;
+}
+
+.hscroll__card:hover .hscroll__card-image {
+  transform: scale(1.05);
+}
+
+.hscroll__card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(14, 32, 64, 0.08) 0%, rgba(14, 32, 64, 0.36) 100%);
+}
+
+.hscroll__card-topline {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  right: 0.8rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.hscroll__card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0 0.25rem;
+}
+
 .hscroll__category {
   display: inline-block;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #204383;
-  border: 1px solid rgba(32, 67, 131, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(15, 28, 53, 0.55);
+  backdrop-filter: blur(10px);
   padding: 0.375rem 1rem;
-  margin-bottom: 2.5rem;
-  transition: border-color 0.3s ease;
+  border-radius: 0;
+  transition: border-color 0.3s ease, background 0.3s ease;
 }
 
 .hscroll__card:hover .hscroll__category {
-  border-color: #204383;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(15, 28, 53, 0.68);
 }
 
 .hscroll__card-title {
   font-size: clamp(1.5rem, 3vw, 2.5rem);
   font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
+  line-height: 1.03;
+  margin: 0 0 0.75rem;
   color: #204383;
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 .hscroll__card-desc {
   color: rgba(32, 67, 131, 0.6);
-  line-height: 1.7;
+  line-height: 1.55;
   font-weight: 500;
+  margin: 0;
 }
 
 .hscroll__card-footer {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding-top: 2rem;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: auto;
+  padding: 1rem 0.25rem 0;
   border-top: 1px solid rgba(32, 67, 131, 0.1);
 }
 
@@ -145,14 +205,127 @@
   color: #204383;
   text-decoration: none;
   transition: gap 0.3s ease;
+  padding-bottom: 0.05rem;
 }
 
 .hscroll__card:hover .hscroll__card-link {
   gap: 1.5rem;
 }
 
-.hscroll__card-count {
-  font-size: 10px;
-  color: rgba(32, 67, 131, 0.3);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+.hscroll__flag-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hscroll__flag-badge--media {
+  background: rgba(15, 28, 53, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 0rem;
+  backdrop-filter: blur(10px);
+}
+
+.hscroll__flag {
+  width: 3rem;
+  height: 1.95rem;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 768px) {
+  .hscroll__header {
+    padding: 3.5rem 1rem 1.5rem;
+  }
+
+  .hscroll__header-inner {
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .hscroll__title {
+    font-size: clamp(2.2rem, 12vw, 3.2rem);
+    line-height: 0.95;
+  }
+
+  .hscroll__subtitle {
+    text-align: left;
+  }
+
+  .hscroll__subtitle-text {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .hscroll__track {
+    width: auto;
+    height: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 1rem;
+    padding: 0 1rem 2.75rem;
+    align-items: stretch;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hscroll__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hscroll__card {
+    width: min(84vw, 21rem);
+    min-height: 22rem;
+    height: auto;
+    padding: 0.45rem 0.45rem 0.9rem;
+    scroll-snap-align: start;
+  }
+
+  .hscroll__card-media {
+    min-height: 10rem;
+    margin-bottom: 1rem;
+  }
+
+  .hscroll__card-topline {
+    top: 0.6rem;
+    left: 0.6rem;
+    right: 0.6rem;
+  }
+
+  .hscroll__card-body {
+    padding: 0 0.1rem;
+  }
+
+  .hscroll__category {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.58rem;
+  }
+
+  .hscroll__card-title {
+    font-size: 1.35rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .hscroll__card-desc {
+    line-height: 1.5;
+    font-size: 0.95rem;
+  }
+
+  .hscroll__card-footer {
+    padding: 0.9rem 0.1rem 0;
+    align-items: center;
+  }
+
+  .hscroll__card-link {
+    font-size: 0.65rem;
+  }
+
+  .hscroll__flag-badge--media {
+    padding: 0.35rem 0.55rem;
+  }
+
+  .hscroll__flag {
+    width: 1.15rem;
+    height: 0.8rem;
+  }
 }

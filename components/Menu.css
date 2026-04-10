@@ -482,5 +482,39 @@
 .menu__footer-link:hover {
   color: #fff;
 }
-. m e n u _ _ m o b i l e - b a c k   {   d i s p l a y :   n o n e ;   }  
- 
+
+.menu__mobile-back {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .menu__mobile-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgba(153, 205, 179, 0.35);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+  }
+
+  .menu__right-inner {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 6rem;
+  }
+
+  .menu__right-content {
+    padding-right: 0;
+  }
+
+  .menu__subitem {
+    font-size: clamp(1.7rem, 9vw, 3rem);
+  }
+}
+.menu__mobile-back { display: none; }
+

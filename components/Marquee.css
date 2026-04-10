@@ -106,3 +106,33 @@
     transform: translateX(-50%);
   }
 }
+
+@media (max-width: 767px) {
+  .marquee {
+    padding: 3rem 0;
+  }
+
+  .marquee__header {
+    margin-bottom: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .marquee__eyebrow {
+    letter-spacing: 0.28em;
+  }
+
+  .marquee__row {
+    padding: 0.5rem 0;
+    animation-duration: 110s;
+  }
+
+  .marquee__group {
+    gap: 2.25rem;
+    padding: 0 1.25rem;
+  }
+
+  .marquee__logo-image {
+    height: 42px;
+    max-width: 120px;
+  }
+}
