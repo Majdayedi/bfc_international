@@ -44,6 +44,7 @@ interface CourseCatalogItem {
   intake: string;
   description: string;
   certificationDescription: string;
+  brochureUrl: string;
   intro: string;
   participants: string;
   duration: string;
@@ -72,6 +73,7 @@ const courseCatalog: CourseCatalogItem[] = [
     intake: '2026',
     description: 'Official certification training from the Institute of Risk Management of London focused on practical ERM implementation and business-aligned risk decision making.',
     certificationDescription: 'Participants: Risk Managers, Internal Controllers, Internal Auditors, Administrators, Executives, Senior Managers, Department Heads. Certificate delivered by IRM upon passing final exam.',
+    brochureUrl: '/pdfs/irm-form.pdf',
     intro: 'Official FoRM certification by IRM London. This course builds a practical enterprise risk management mindset and equips participants to deploy risk frameworks that are aligned with business strategy and governance expectations.',
     participants: 'Risk Managers, Internal Controllers, Internal Auditors, Administrators, Executives, Senior Managers, Department Heads.',
     duration: '3 days + final exam',
@@ -113,6 +115,7 @@ const courseCatalog: CourseCatalogItem[] = [
     intake: '2026',
     description: 'Official international certifying program from ICI to design, implement, assess, and manage internal control systems with governance alignment.',
     certificationDescription: 'Price: 3,200 EUR HT including exam voucher, pre-assessment test, module tests, and training material. Participants include Executives, Directors, Administrators, Internal Controllers, Auditors, Inspectors, GRC professionals, and Risk Managers.',
+    brochureUrl: '/pdfs/cics.pdf',
     intro: 'Official CICS program from the Internal Control Institute, dedicated to control architecture, governance effectiveness, COSO application, and operational internal control deployment.',
     participants: 'Executives, Directors, Administrators, Internal Controllers, Internal Auditors, Inspectors, GRC professionals, Risk Managers.',
     duration: '5 days + final exam',
@@ -156,6 +159,7 @@ const courseCatalog: CourseCatalogItem[] = [
     intake: 'Tunis 2026',
     description: 'Interactive and practical workshop to align strategy, horizons, and execution of innovation for organizations and leadership teams.',
     certificationDescription: 'Expected outcomes: innovation-effort diagnosis, primary innovation register synthesis, and practical alignment between strategic goals and innovation types. Price: 2,500 DT HT, delivered in client premises.',
+    brochureUrl: '/pdfs/innovation-workshop.pdf',
     intro: 'An executive-focused workshop that clarifies innovation concepts, aligns innovation initiatives with strategic priorities, and translates innovation ambition into actionable execution tracks.',
     participants: 'R&D team, Project/Product Managers, CEO, COO, Strategy/Development Director, Industrial/Plant Director, Production Manager, Quality/Certification Manager, Sales/Marketing Managers, Customer Relations Manager, Business Development Manager, Risk Manager.',
     duration: '6 hours',
@@ -198,6 +202,7 @@ const courseCatalog: CourseCatalogItem[] = [
     intake: 'Tunis 2026',
     description: 'Certifying training to transform auditors into AI-augmented experts across the full audit cycle, data analysis automation, and intelligent documentation workflows.',
     certificationDescription: 'Delivered by Nadia Yaich and Kais Khenine. Includes course support, coffee breaks, lunch, and AI tools used during training. Price per participant: 1,900 TND HT.',
+    brochureUrl: '/pdfs/ai-audit.pdf',
     intro: 'A practical certifying program designed for auditors, control teams, and risk professionals to operationalize generative AI in audit planning, execution, documentation, and assurance outcomes.',
     participants: 'Administrators, Executives, Senior Managers, Department Heads, Risk Managers, Internal Controllers, Internal Auditors.',
     duration: '4 days + final test',
@@ -229,6 +234,7 @@ const courseCatalog: CourseCatalogItem[] = [
 
 function CertificateCard({ item, index, total }: { item: typeof certData[0], index: number, total: number, key?: string | number }) {
   const container = useRef(null);
+  const linkedCourse = courseCatalog.find((course) => course.title === item.title);
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ['start end', 'start start']
@@ -285,7 +291,41 @@ function CertificateCard({ item, index, total }: { item: typeof certData[0], ind
 
         <div className="certificate-actions">
           <button className="btn-primary">ENROLL NOW</button>
-          <button className="btn-outline">LEARN MORE</button>
+          {linkedCourse ? (
+            <Link
+              to={`/course/${encodeURIComponent(linkedCourse.title)}`}
+              className="btn-outline"
+              state={{
+                from: '/standard-training',
+                course: {
+                  title: linkedCourse.title,
+                  institution: linkedCourse.institution,
+                  programs: linkedCourse.programs,
+                  accreditation: linkedCourse.accreditation,
+                  intake: linkedCourse.intake,
+                  language: linkedCourse.language,
+                  imageUrl: linkedCourse.imageUrl,
+                  isAccredited: linkedCourse.isAccredited,
+                  certificationDescription: linkedCourse.certificationDescription,
+                  description: linkedCourse.description,
+                  brochureUrl: linkedCourse.brochureUrl,
+                  intro: linkedCourse.intro,
+                  participants: linkedCourse.participants,
+                  duration: linkedCourse.duration,
+                  location: linkedCourse.location,
+                  price: linkedCourse.price,
+                  relatedTopics: linkedCourse.relatedTopics,
+                  learnPoints: linkedCourse.learnPoints,
+                  contentSections: linkedCourse.contentSections,
+                  journeySteps: linkedCourse.journeySteps,
+                },
+              }}
+            >
+              LEARN MORE
+            </Link>
+          ) : (
+            <button className="btn-outline" disabled>LEARN MORE</button>
+          )}
         </div>
       </motion.div>
     </div>
@@ -505,6 +545,7 @@ export const BfcAcademy: React.FC = () => {
                         to={`/course/${encodeURIComponent(c.title)}`}
                         className="btn-outline"
                         state={{
+                          from: '/standard-training',
                           course: {
                             title: c.title,
                             institution: c.institution,
@@ -516,6 +557,7 @@ export const BfcAcademy: React.FC = () => {
                             isAccredited: c.isAccredited,
                             certificationDescription: c.certificationDescription,
                             description: c.description,
+                            brochureUrl: c.brochureUrl,
                             intro: c.intro,
                             participants: c.participants,
                             duration: c.duration,

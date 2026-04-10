@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useLayoutEffect, Suspense, lazy } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -11,48 +11,38 @@ import { Stats } from './components/Stats';
 import { Expertise } from './components/Expertise';
 import { Footer } from './components/Footer';
 import { Menu } from './components/Menu';
-import { ArticlesPage } from './components/ArticlesPage';
-import { ArticleDetailPage } from './components/ArticleDetailPage';
-import { ContactPage } from './components/ContactPage';
-import { AboutUsPage } from './components/AboutUsPage.tsx';
-import { OurProjectsPage } from './components/OurProjectsPage.tsx';
-import { ProjectArticlePage } from './components/ProjectArticlePage';
-import { HistoryPage } from './components/HistoryPage.tsx';
-import { BfcAcademy } from './components/BfcAcademy';
-import CourseDetail from './components/CourseDetail';
-import { ServiceDetail } from './components/ServiceDetail';
-import { RepresentativeDetail } from './components/RepresentativeDetail';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { AdminDashboard } from './components/AdminDashboard';
 import { FloatingContactIcon } from './components/FloatingContactIcon';
 import './App.css';
+
+const ArticlesPage = lazy(() => import('./components/ArticlesPage').then((m) => ({ default: m.ArticlesPage })));
+const ArticleDetailPage = lazy(() => import('./components/ArticleDetailPage').then((m) => ({ default: m.ArticleDetailPage })));
+const ContactPage = lazy(() => import('./components/ContactPage').then((m) => ({ default: m.ContactPage })));
+const AboutUsPage = lazy(() => import('./components/AboutUsPage').then((m) => ({ default: m.AboutUsPage })));
+const OurProjectsPage = lazy(() => import('./components/OurProjectsPage').then((m) => ({ default: m.OurProjectsPage })));
+const ProjectArticlePage = lazy(() => import('./components/ProjectArticlePage').then((m) => ({ default: m.ProjectArticlePage })));
+const HistoryPage = lazy(() => import('./components/HistoryPage').then((m) => ({ default: m.HistoryPage })));
+const BfcAcademy = lazy(() => import('./components/BfcAcademy').then((m) => ({ default: m.BfcAcademy })));
+const CourseDetail = lazy(() => import('./components/CourseDetail'));
+const ServiceDetail = lazy(() => import('./components/ServiceDetail').then((m) => ({ default: m.ServiceDetail })));
+const RepresentativeDetail = lazy(() => import('./components/RepresentativeDetail').then((m) => ({ default: m.RepresentativeDetail })));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
 
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    let timeoutId: number | undefined;
-
+  useLayoutEffect(() => {
     if (location.hash) {
-      timeoutId = window.setTimeout(() => {
-        const target = document.getElementById(location.hash.replace('#', ''));
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 200);
-    } else if (location.pathname === '/') {
-      timeoutId = window.setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 120);
+      const target = document.getElementById(location.hash.replace('#', ''));
+      if (target) {
+        target.scrollIntoView({ behavior: 'auto', block: 'start' });
+        return;
+      }
     }
 
-    return () => {
-      if (timeoutId) {
-        window.clearTimeout(timeoutId);
-      }
-    };
-  }, [location]);
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [location.pathname, location.search, location.hash]);
 
   const toggleMenu = (show: boolean) => {
      setIsMenuOpen(show);
@@ -69,6 +59,7 @@ const App: React.FC = () => {
         <Navbar onOpenMenu={() => toggleMenu(true)} />
       )}
 
+      <Suspense fallback={null}>
       <Routes>
         <Route
           path="/"
@@ -157,6 +148,7 @@ const App: React.FC = () => {
         />
         <Route path="/admin" element={<ErrorBoundary><AdminDashboard /></ErrorBoundary>} />
       </Routes>
+      </Suspense>
 
       {!location.pathname.startsWith('/admin') && (
         <Menu isOpen={isMenuOpen} onClose={() => toggleMenu(false)} />

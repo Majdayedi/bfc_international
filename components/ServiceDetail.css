@@ -799,42 +799,318 @@
 }
 
 @media (max-width: 991px) {
+  .sd-page {
+    padding-bottom: 64px;
+  }
+
+  .sd-hero {
+    padding: 100px 0 20px;
+  }
+
+  .sd-hero-container,
+  .sd-container {
+    padding: 0 18px;
+  }
+
+  .sd-desc {
+    font-size: 1rem;
+    margin-top: 16px;
+  }
+
+  .sd-category-block {
+    margin-bottom: 72px;
+  }
+
+  .sd-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .sd-list-layout {
+    padding: 24px;
+  }
+
+  .sd-list-items {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .sd-subscribe-banner {
+    margin-top: 64px;
+    padding: 24px;
+    border-radius: 26px;
+  }
+
   .sd-clean-card-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
 }
 
 @media (max-width: 768px) {
+  .sd-hero {
+    padding: 88px 0 14px;
+  }
+
+  .sd-eyebrow {
+    margin-bottom: 12px;
+    letter-spacing: 0.16em;
+    font-size: 0.74rem;
+  }
+
+  .sd-title {
+    font-size: clamp(1.8rem, 10vw, 2.6rem);
+    line-height: 1.08;
+  }
+
+  .sd-desc {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .sd-container,
+  .sd-hero-container {
+    padding: 0 14px;
+  }
+
+  .sd-stats {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .sd-stat-card {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .sd-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sd-grid-card {
+    padding: 20px 16px;
+  }
+
+  .sd-category-title {
+    font-size: 1.25rem;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .sd-category-title::before {
+    width: 24px;
+    height: 3px;
+  }
+
+  .sd-image-grid {
+    grid-template-columns: 1fr;
+    margin-top: 28px;
+  }
+
+  .sd-image-grid .sd-image-card:nth-child(even) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .sd-image-card {
+    height: 320px;
+  }
+
+  .sd-card-content-wrap {
+    padding: 22px 18px;
+  }
+
+  .sd-image-card-title {
+    font-size: 1.15rem;
+  }
+
+  .sd-card-hover-reveal {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: 12px;
+  }
+
+  .sd-card-arrow {
+    opacity: 1;
+    transform: translate(0, 0);
+    top: 14px;
+    right: 14px;
+    padding: 8px;
+  }
+
+  .sd-list-layout {
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .sd-list-block {
+    margin-bottom: 26px;
+  }
+
+  .sd-list-header {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .sd-list-num {
+    font-size: 1.6rem;
+  }
+
+  .sd-list-title {
+    font-size: 1.2rem;
+  }
+
+  .sd-list-items li {
+    align-items: flex-start;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .sd-item-text {
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
   .sd-clean-card-grid {
     grid-template-columns: 1fr;
+    margin-top: 1rem;
   }
 
   .sd-outsourcing-layout {
     grid-template-columns: 1fr;
+    gap: 0.85rem;
+    margin-top: 1rem;
   }
 
   .sd-outsourcing-team-card {
-    min-height: 340px;
+    min-height: 300px;
+  }
+
+  .sd-outsourcing-team-content {
+    padding: 1.25rem;
+  }
+
+  .sd-outsourcing-team-content h3 {
+    font-size: clamp(1.35rem, 8vw, 1.7rem);
   }
 
   .sd-outsourcing-team-content p {
     max-width: 100%;
+    font-size: 0.94rem;
+  }
+
+  .sd-outsourcing-services-panel {
+    border-radius: 14px;
+    padding: 1rem;
+  }
+
+  .sd-outsourcing-services-panel h3 {
+    font-size: 1.08rem;
   }
 
   .sd-clean-card {
-    min-height: 250px;
+    min-height: 220px;
+    padding: 1.2rem 1rem;
   }
 
   .sd-clean-card-title {
-    font-size: 1.55rem;
+    font-size: 1.2rem;
+    margin-bottom: 0.55rem;
   }
 
   .sd-clean-card-list-item {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
   }
 
   .sd-clean-readmore {
-    font-size: 1.05rem;
+    font-size: 0.98rem;
+  }
+
+  .sd-subscribe-banner {
+    margin-top: 38px;
+    border-radius: 16px;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .sd-subscribe-text {
+    font-size: 1rem;
+    max-width: 100%;
+    line-height: 1.5;
+  }
+
+  .sd-subscribe-form {
+    flex-direction: column;
+    border-radius: 14px;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .sd-subscribe-input,
+  .sd-subscribe-btn {
+    width: 100%;
+    min-height: 42px;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.86rem;
+  }
+
+  .sd-subscribe-btn {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .sd-hero {
+    padding-top: 80px;
+  }
+
+  .sd-container,
+  .sd-hero-container {
+    padding: 0 12px;
+  }
+
+  .sd-eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+  }
+
+  .sd-title {
+    font-size: clamp(1.65rem, 9vw, 2.15rem);
+  }
+
+  .sd-desc {
+    font-size: 0.9rem;
+  }
+
+  .sd-category-block {
+    margin-bottom: 44px;
+  }
+
+  .sd-image-card {
+    height: 280px;
+  }
+
+  .sd-overlay-list li,
+  .sd-overlay-text,
+  .sd-card-list li {
+    font-size: 0.86rem;
+  }
+
+  .sd-card-num {
+    width: 34px;
+    height: 34px;
+    font-size: 0.85rem;
+  }
+
+  .sd-card-title {
+    font-size: 1.02rem;
+  }
+
+  .sd-subscribe-input {
+    font-size: 0.82rem;
   }
 }
 

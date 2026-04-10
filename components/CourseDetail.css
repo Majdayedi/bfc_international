@@ -64,6 +64,8 @@
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  position: relative;
+  z-index: 5;
 }
 
 .ud-back:hover {
@@ -80,6 +82,21 @@
   margin-top: 2rem;
   font-size: 0.9rem;
   color: #e2e8f0;
+}
+
+.ud-hero-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ud-mobile-course-thumb {
+  display: none;
+}
+
+.ud-mobile-actions {
+  display: none;
 }
 
 .ud-pill {
@@ -751,27 +768,132 @@
 }
 
 @media (max-width: 768px) {
+  .ud-page {
+    padding-bottom: 92px;
+  }
+
+  .ud-shell {
+    width: calc(100% - 1.25rem);
+  }
+
   .ud-hero {
-    padding: 3rem 0 4rem;
+    padding: 5.25rem 0 2.4rem;
+  }
+
+  .ud-badges {
+    margin-top: 1.1rem;
+  }
+
+  .ud-mobile-course-thumb {
+    display: flex;
+    width: 98px;
+    height: 72px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.4rem;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .ud-mobile-course-thumb-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
   
   .ud-title {
-    font-size: 1.85rem;
+    font-size: 2.05rem;
+    line-height: 1.18;
+    margin-top: 1rem;
+  }
+
+  .ud-subtitle {
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .ud-meta-line {
+    gap: 0.8rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ud-card-wrap {
+    display: none;
+  }
+
+  .ud-card-body {
+    padding: 1.25rem;
   }
   
   .ud-box {
-    padding: 1.5rem;
+    padding: 1.15rem;
+  }
+
+  .ud-content {
+    padding: 2rem 0 2.75rem;
   }
 
   .ud-content-head {
-    padding: 1.5rem;
+    padding: 1.15rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
   }
 
   .ud-content-row {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.15rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
   }
 
   .ud-content-row:hover {
-    padding-left: 2rem;
+    padding-left: 1.3rem;
+  }
+
+  .ud-content-row.is-active {
+    padding-left: 1.3rem;
+  }
+
+  .ud-content-row-right {
+    margin-left: 1.95rem;
+  }
+
+  .ud-content-row-panel {
+    margin: 0 0.6rem 0.75rem;
+    padding: 0.8rem 0.9rem;
+  }
+
+  .ud-suggestion-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .ud-mobile-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: rgba(0, 21, 43, 0.96);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.65rem 0.65rem calc(0.65rem + env(safe-area-inset-bottom));
+  }
+
+  .ud-mobile-actions .ud-btn {
+    width: 100%;
+    padding: 0.85rem 0.55rem;
+    font-size: 0.92rem;
+    min-height: 44px;
+  }
+
+  .ud-mobile-actions .ud-btn + .ud-btn {
+    margin-top: 0;
   }
 }

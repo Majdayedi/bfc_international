@@ -32,6 +32,7 @@ const CourseDetail: React.FC = () => {
   const navigate = useNavigate();
 
   const stateCourse = (location.state as any)?.course;
+  const fromPath = (location.state as any)?.from;
   const title = stateCourse?.title || (params.title ? decodeURIComponent(params.title) : 'Internal Control Fundamentals');
   const institution = stateCourse?.institution || 'Internal Control Institute (ICI)';
   const description =
@@ -43,6 +44,7 @@ const CourseDetail: React.FC = () => {
   const language = stateCourse?.language || 'English';
   const certificationDescription =
     stateCourse?.certificationDescription || getDefaultCertificationDescription(title, institution);
+  const brochureUrl = stateCourse?.brochureUrl || '/pdfs/team-member-cv.pdf';
 
   const previewLogo = stateCourse?.imageUrl
     || (/risk management|irm/i.test(institution) ? irm : /internal control|ici/i.test(institution) ? ici : bfcLogo);
@@ -95,6 +97,20 @@ const CourseDetail: React.FC = () => {
   const [previewHeight, setPreviewHeight] = useState(190);
   const [activeJourneyIndex, setActiveJourneyIndex] = useState(0);
 
+  const handleBack = () => {
+    if (fromPath) {
+      navigate(fromPath);
+      return;
+    }
+
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate('/standard-training');
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       const y = window.scrollY;
@@ -111,12 +127,16 @@ const CourseDetail: React.FC = () => {
       <section className="ud-hero">
         <div className="ud-shell ud-hero-grid">
           <div className="ud-left">
-            <button type="button" className="ud-back" onClick={() => navigate(-1)}>
+            <button type="button" className="ud-back" onClick={handleBack}>
               <ChevronLeft size={16} /> Back
             </button>
-            <div className="ud-badges">
-              <span className="ud-pill">Bestseller</span>
-             
+            <div className="ud-hero-topline">
+              <div className="ud-badges">
+                <span className="ud-pill">Bestseller</span>
+              </div>
+              <div className="ud-mobile-course-thumb" aria-hidden="true">
+                <img src={previewLogo} alt="" className="ud-mobile-course-thumb-img" />
+              </div>
             </div>
             <h1 className="ud-title">{title}</h1>
             <p className="ud-subtitle">{description}</p>
@@ -136,9 +156,14 @@ const CourseDetail: React.FC = () => {
               </div>
               <div className="ud-card-body">
                 <button type="button" className="ud-btn ud-btn-primary">Enroll now</button>
-                <button type="button" className="ud-btn ud-btn-outline">
+                <a
+                  href={brochureUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ud-btn ud-btn-outline"
+                >
                   <FileText size={18} /> Get Brochure
-                </button>
+                </a>
                 <h4>This course includes:</h4>
                 <ul className="ud-includes">
                   {includes.map((item) => (
@@ -259,6 +284,18 @@ const CourseDetail: React.FC = () => {
           <div className="ud-right-spacer" aria-hidden="true" />
         </div>
       </main>
+
+      <div className="ud-mobile-actions" aria-label="Course actions">
+        <a href="/contact" className="ud-btn ud-btn-primary">Enroll now</a>
+        <a
+          href={brochureUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ud-btn ud-btn-outline"
+        >
+          <FileText size={18} /> Get Brochure
+        </a>
+      </div>
     </div>
   );
 };

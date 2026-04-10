@@ -18,9 +18,12 @@ export const Hero: React.FC = () => {
     <section id="home" className="hero">
       <div className="hero__bg">
         <img 
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" 
+          src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=65&w=1400&auto=format&fit=crop" 
           alt="Modern Architecture" 
           className="hero__bg-image"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="hero__bg-overlay"></div>
       </div>

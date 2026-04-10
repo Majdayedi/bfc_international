@@ -298,7 +298,6 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
                 onClick={() => setExpandedIndex(null)}
               >
                 <ChevronLeft size={20} />
-                <span>Back to Menu</span>
               </button>
               <div className="menu__right-content">
                 <div 

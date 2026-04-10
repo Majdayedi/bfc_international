@@ -160,3 +160,52 @@
 .expertise__card:hover .expertise__card-desc {
   color: rgba(255, 255, 255, 0.6);
 }
+
+@media (max-width: 767px) {
+  .expertise {
+    padding: 5.25rem 0;
+  }
+
+  .expertise__container {
+    padding: 0 0.9rem;
+  }
+
+  .expertise__header {
+    gap: 1.3rem;
+    margin-bottom: 2rem;
+  }
+
+  .expertise__title {
+    font-size: clamp(2rem, 12vw, 2.7rem);
+    line-height: 1.05;
+  }
+
+  .expertise__subtitle {
+    max-width: 100%;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .expertise__card {
+    padding: 1.35rem 1rem;
+  }
+
+  .expertise__card-header {
+    margin-bottom: 1rem;
+  }
+
+  .expertise__card-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .expertise__card-title {
+    font-size: 1.12rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .expertise__card-desc {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+}
