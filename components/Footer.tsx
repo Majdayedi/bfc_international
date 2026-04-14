@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
               href="mailto:international@BFC.com.tn" 
               className="footer__email"
             >
-              work@bfc.com
+              international@BFC.com.tn
             </a>
           </div>
           
@@ -32,8 +32,7 @@ export const Footer: React.FC = () => {
               <div>
                 <span className="footer__label">( OFFICES )</span>
                 <div className="footer__offices">
-                  <p>Tunis, Tunisia<br />Les Berges du Lac 2</p>
-                  <p>Dakar, Senegal<br />Plateau District</p>
+                  <p>Tunis, Tunisia<br />Imm City center, bloc B, Centre urbain nord, Tunis, Tunisia</p>
                 </div>
               </div>
             </div>

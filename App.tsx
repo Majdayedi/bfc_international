@@ -44,8 +44,13 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, [location.pathname, location.search, location.hash]);
 
+  useLayoutEffect(() => {
+    setIsMenuOpen(false);
+    document.body.style.overflow = 'auto';
+  }, [location.pathname, location.search, location.hash]);
+
   const toggleMenu = (show: boolean) => {
-     setIsMenuOpen(show);
+    setIsMenuOpen(show);
     if (show) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -79,7 +84,7 @@ const App: React.FC = () => {
           }
         />
         <Route path="/who-we-are/our-articles" element={<ArticlesPage />} />
-        <Route path="/articles/ai-fintech" element={<ArticleDetailPage />} />
+        <Route path="/articles/:slug" element={<ArticleDetailPage />} />
         <Route
           path="/who-we-are/about-us"
           element={

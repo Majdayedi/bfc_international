@@ -1,0 +1,188 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: ReplicaSet
+  metadata:
+    creationTimestamp: "2025-03-25T14:37:43Z"
+    generation: 1
+    name: newpods
+    namespace: default
+    resourceVersion: "763"
+    uid: 43022383-7a6e-421b-837e-128b222e8a67
+  spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        tier: busybox
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          tier: busybox
+      spec:
+        containers:
+        - command:
+          - sleep
+          - "1000"
+          image: busybox
+          imagePullPolicy: Always
+          name: busybox
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 3
+    fullyLabeledReplicas: 3
+    observedGeneration: 1
+    readyReplicas: 3
+    replicas: 3
+kind: List
+metadata:
+  resourceVersion: ""
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2025-03-25T14:46:37Z"
+  name: webapp
+  namespace: default
+  resourceVersion: "982"
+  uid: 715891d0-6c01-402d-8c45-e637613c52f8
+spec:
+  containers:
+  - image: nginx
+    imagePullPolicy: Always
+    name: nginx
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-llh46
+      readOnly: true
+  - image: agentx
+    imagePullPolicy: Always
+    name: agentx
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-llh46
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: controlplane
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: kube-api-access-llh46
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2025-03-25T14:46:39Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2025-03-25T14:46:37Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2025-03-25T14:46:37Z"
+    message: 'containers with unready status: [agentx]'
+    reason: ContainersNotReady
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2025-03-25T14:46:37Z"
+    message: 'containers with unready status: [agentx]'
+    reason: ContainersNotReady
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2025-03-25T14:46:37Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - image: agentx
+    imageID: ""
+    lastState: {}
+    name: agentx
+    ready: false
+    restartCount: 0
+    started: false
+    state:
+      waiting:
+        message: 'Back-off pulling image "agentx": ErrImagePull: failed to pull and
+          unpack image "docker.io/library/agentx:latest": failed to resolve reference
+          "docker.io/library/agentx:latest": pull access denied, repository does not
+          exist or may require authorization: server message: insufficient_scope:
+          authorization failed'
+        reason: ImagePullBackOff
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-llh46
+      readOnly: true
+      recursiveReadOnly: Disabled
+  - containerID: containerd://158a1d57cb6cf281d786a19e0adc5c60e85a4cb784e2f9d8e00b5c2ff92d1033
+    image: docker.io/library/nginx:latest
+    imageID: docker.io/library/nginx@sha256:124b44bfc9ccd1f3cedf4b592d4d1e8bddb78b51ec2ed5056c52d3692baebc19
+    lastState: {}
+    name: nginx
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2025-03-25T14:46:38Z"
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-llh46
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 192.168.227.145
+  hostIPs:
+  - ip: 192.168.227.145
+  phase: Pending
+  podIP: 10.22.0.14
+  podIPs:
+  - ip: 10.22.0.14
+  qosClass: BestEffort
+  startTime: "2025-03-25T14:46:37Z"
