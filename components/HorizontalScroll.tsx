@@ -1,19 +1,17 @@
-
 import React, { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './HorizontalScroll.css';
-import contactImage from '../src/assets/contact.jpg';
-import consultationImage from '../src/assets/contact1.jpg';
-import teamImage from '../src/assets/contact2.png';
-import careersImage from '../src/assets/job.jpg';
-import aboutImage from '../src/assets/about_us1.png';
-import congoFlag from '../src/assets/flags/congo.svg';
-import senegalFlag from '../src/assets/flags/senegal.svg';
-import tunisiaFlag from '../src/assets/flags/tunisia.svg';
-import guineeFlag from '../src/assets/flags/guinea.svg';
-import mauritaniaFlag from '../src/assets/flags/mauritania.svg';
+
+// Importing your specific assets
+
+
+import mauritaniaRep from '/src/assets/representatives/mauritania.png';
+import tunisiaRep from '/src/assets/representatives/tunisia.png';
+import guineeRep from '/src/assets/representatives/guinee.png';
+import senegalRep from '/src/assets/representatives/senegal.png';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,62 +19,48 @@ const ARTICLES = [
   {
     id: '01',
     category: 'Strategy',
-    title: 'The Future of AI in African Fintech',
-    desc: 'Exploring how large language models are reshaping the landscape of emerging market banking.',
-    total: '05',
-    image: contactImage,
-    imageAlt: 'Business discussion around digital finance strategy',
-    flag: tunisiaFlag,
-    flagAlt: 'Tunisia flag',
-    region: 'Tunisia',
+    title: 'Digital Transformation in Africa and MENA: Why Strategy, Not Technology, Determines Outcomes',
+    slug: 'digitalization-strategy',
+    image: tunisiaRep,
+    flag: 'https://flagcdn.com/tn.svg',
+    // description removed
+    // metaTitle removed
+    metaDescription: 'Learn why successful digital transformation in Africa depends on strategy, governance, and trust infrastructure—not just technology.',
+    tags: ['Digital Transformation', 'Government Strategy', 'Digital Economy', 'Public Sector', 'Africa Innovation', 'Policy & Governance'],
   },
   {
     id: '02',
     category: 'Innovation',
-    title: 'Scaling Digital Public Goods',
-    desc: 'How decentralized identities can transform government transparency and service delivery.',
-    total: '05',
-    image: consultationImage,
-    imageAlt: 'Consultants collaborating around a table',
-    flag: senegalFlag,
-    flagAlt: 'Senegal flag',
-    region: 'Senegal',
+    title: 'SME Formalization and Digitalization in Africa: A Strategic Lever for Growth, Tax Revenue, and Financial Inclusion',
+    slug: 'sme-formalization',
+    image: senegalRep,
+    flag: 'https://flagcdn.com/sn.svg',
+    metaDescription: 'Discover how digitalization enables SME formalization, financial inclusion, and economic growth across Africa and MENA.',
+    tags: ['SMEs', 'Financial Inclusion', 'Digital Economy', 'Entrepreneurship', 'Africa Growth', 'Informal Economy'],
   },
   {
     id: '03',
-    category: 'Culture',
-    title: 'The Decentralized Workforce',
-    desc: 'Building high-performance remote cultures across multiple timezones and jurisdictions.',
-    total: '05',
-    image: teamImage,
-    imageAlt: 'Teamwork and collaboration in a modern workplace',
-    flag: guineeFlag,
-    flagAlt: 'Guinea flag',
-    region: 'Guinea',
+    category: 'Policy',
+    title: 'Why Timing Matters: The Cost of Delaying PKI Implementation In Africa',
+    slug: 'pki-timing-matters',
+    image: guineeRep,
+    flag: 'https://flagcdn.com/gn.svg',
+    // description removed
+    // metaTitle removed
+    metaDescription: 'Delaying PKI implementation increases costs, complexity, and risks in national digital strategies. Learn why trust infrastructure is critical for digital economies in Africa and MENA.',
+    tags: ['Digital Strategy', 'PKI', 'Government Transformation', 'Interoperability', 'Public Sector Innovation', 'Africa Governance'],
   },
   {
     id: '04',
     category: 'Tech',
-    title: 'Green Infrastructure Solutions',
-    desc: 'Implementing sustainable server architecture in developing tech ecosystems.',
-    total: '05',
-    image: careersImage,
-    imageAlt: 'Modern professional in a technology-focused environment',
-    flag: congoFlag,
-    flagAlt: 'Congo flag',
-    region: 'Congo',
-  },
-  {
-    id: '05',
-    category: 'Insights',
-    title: 'Visual Trust & Modern Design',
-    desc: 'How aesthetics and micro-interactions influence high-stakes financial user behavior.',
-    total: '05',
-    image: aboutImage,
-    imageAlt: 'Presentation and strategy session in a branded environment',
-    flag: mauritaniaFlag,
-    flagAlt: 'Mauritania flag',
-    region: 'Mauritania',
+    title: 'Public Key Infrastructure (PKI) in Africa: The Strategic Backbone of Digital Trust, Sovereignty, and Scalable Services',
+    slug: 'pki-strategic-backbone',
+    image: mauritaniaRep,
+    flag: 'https://flagcdn.com/cg.svg',
+    // description removed
+    // metaTitle removed
+    metaDescription: 'Explore how Public Key Infrastructure (PKI) enables secure digital identity, trusted transactions, and scalable e-government systems across Africa and MENA.',
+    tags: ['PKI', 'Digital Trust', 'Cybersecurity', 'E-Government', 'Digital Identity', 'Africa Digital Transformation'],
   }
 ];
 
@@ -86,92 +70,60 @@ export const HorizontalScroll: React.FC = () => {
 
   useLayoutEffect(() => {
     const mm = gsap.matchMedia();
-
     mm.add("(min-width: 769px)", () => {
-      const pin = gsap.fromTo(
-        sectionRef.current,
+      const pin = gsap.fromTo(sectionRef.current,
         { translateX: 0 },
         {
-          translateX: "-90vw",
+          translateX: "-70vw",
           ease: "none",
-          duration: 4,
           scrollTrigger: {
             trigger: triggerRef.current,
             start: "top top",
-            end: "3200 top",
+            end: "2000 top",
             scrub: 0.1,
             pin: true,
-            invalidateOnRefresh: true,
           },
         }
       );
-
-      return () => {
-        pin.kill();
-      };
+      return () => pin.kill();
     });
-
-    return () => {
-      mm.revert();
-    };
+    return () => mm.revert();
   }, []);
 
   return (
-    <section className="hscroll">
-      <div ref={triggerRef}>
-        <div className="hscroll__header">
-          <div className="hscroll__header-inner">
-            <div className="hscroll__title-wrap">
-              <h2 className="hscroll__title">Top <br /><span className="hscroll__title-accent">articles</span></h2>
+    <section className="hscroll" ref={triggerRef}>
+      <div className="hscroll__header">
+        <div className="hscroll__header-inner">
+          <h2 className="hscroll__title">Top <span className="hscroll__title-accent">Articles</span></h2>
+        </div>
+      </div>
+
+      <div ref={sectionRef} className="hscroll__track">
+        {ARTICLES.map((article) => (
+          <div key={article.id} className="hscroll__card">
+            <div className="hscroll__card-media">
+              <img src={article.image} alt={article.title} className="hscroll__card-image" />
+              <div className="hscroll__card-topline">
+                <span className="hscroll__category">{article.category}</span>
+                <img src={article.flag} className="hscroll__flag" alt="flag" style={{width: '44px'}} />
+              </div>
             </div>
-            <div className="hscroll__subtitle">
-              <p className="hscroll__subtitle-text">
-                Thought leadership at the <br /> intersection of design and data.
-              </p>
+            <div className="hscroll__card-body">
+              <h3 className="hscroll__card-title">{article.title}</h3>
+              {/* description removed */}
+              <div className="hscroll__card-tags">
+                {article.tags && article.tags.map((tag: string) => (
+                  <span key={tag} className="hscroll__card-tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+            <div className="hscroll__card-footer">
+              <Link to={`/articles/${article.slug}`} className="hscroll__card-link">
+                Read Story <ArrowRight size={18} />
+              </Link>
             </div>
           </div>
-        </div>
-
-        <div ref={sectionRef} className="hscroll__track">
-          {ARTICLES.map((article) => (
-            <div 
-              key={article.id} 
-              className="hscroll__card"
-            >
-              <div className="hscroll__card-media">
-                <img
-                  src={article.image}
-                  alt={article.imageAlt}
-                  className="hscroll__card-image"
-                  loading="lazy"
-                />
-                <div className="hscroll__card-overlay"></div>
-                <div className="hscroll__card-topline">
-                  <span className="hscroll__category">
-                    {article.category}
-                  </span>
-                  <span className="hscroll__flag-badge hscroll__flag-badge--media">
-                    <img src={article.flag} alt={article.flagAlt} className="hscroll__flag" loading="lazy" />
-                  </span>
-                </div>
-              </div>
-
-              <div className="hscroll__card-body">
-                <h3 className="hscroll__card-title">
-                  {article.title}
-                </h3>
-                <p className="hscroll__card-desc">
-                  {article.desc}
-                </p>
-              </div>
-              <div className="hscroll__card-footer">
-                <a href="#" className="hscroll__card-link">
-                  Read Story <ArrowRight size={18} />
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
+        ))}
       </div>
     </section>
   );

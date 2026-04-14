@@ -162,7 +162,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
         setExpandedIndex(currentIndex);
       }
     }
-  }, [isOpen, location.pathname, location.hash]);
+  }, [isOpen]);
 
   return (
     <div className={`menu ${isOpen ? 'menu--open' : 'menu--closed'}`}>

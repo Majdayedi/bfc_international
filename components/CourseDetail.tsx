@@ -74,12 +74,60 @@ const CourseDetail: React.FC = () => {
     { icon: Trophy, text: 'Certificate of completion' },
   ];
 
-  const contentSections = stateCourse?.contentSections || [
-    { title: 'Day 01 - Internal Control Foundations', lectures: 2, duration: '55m' },
-    { title: 'Day 02 - Control Environment and Risk Drivers', lectures: 2, duration: '1h 05m' },
-    { title: 'Day 03 - Risk Assessment and Monitoring', lectures: 2, duration: '48m' },
-    { title: 'Day 04 - Governance Review and Final Assessment', lectures: 2, duration: '52m' },
+  const irmContentSections = [
+    {
+      title: 'Journée 01 - Introduction au management des risques',
+      lectures: 12,
+      duration: '1j',
+      topics: [
+        "Qu'est-ce que le risque et le management du risque ?",
+        'Pourquoi gérer les risques ?',
+        "Caractéristiques d'une gestion des risques efficace",
+        'Principes du management des risques.',
+        'Le processus du management des risques',
+        'Communication & consultation',
+        'Définir le contexte',
+        'Évaluation des risques',
+        
+        
+        "Outils d'identification et d'analyse des risques",
+        'Définition du risque - Conséquences',
+        'Matrice des probabilités - cartographie des risques',
+        "Appétit des risques et tolérance aux risques",
+        'Traitement des risques',
+      ]
+    },
+    {
+      title: 'Journée 02 - Suite du processus du management des risques',
+      lectures: 8,
+      duration: '1j',
+      topics: [
+        'Transfert des risques',
+        'Management de la continuité des activités',
+        'Surveillance et pilotage',
+        
+        
+        
+        
+        
+        "Intégration d'une culture du risque",
+        'Intégrer le management des risques',
+        'Politique des risques',
+        'Avantages du management des risques',
+        'Examen final à la fin de la 2ème journée',
+      ]
+    }
   ];
+
+  const contentSections =
+    /risk management|irm/i.test(institution)
+      ? irmContentSections
+      : stateCourse?.contentSections || [
+          { title: 'Day 01 - Internal Control Foundations', lectures: 2, duration: '55m' },
+          { title: 'Day 02 - Control Environment and Risk Drivers', lectures: 2, duration: '1h 05m' },
+          { title: 'Day 03 - Risk Assessment and Monitoring', lectures: 2, duration: '48m' },
+          { title: 'Day 04 - Governance Review and Final Assessment', lectures: 2, duration: '52m' },
+        ];
 
   const suggestedCourses = [
     { id: 1, title: 'Risk Management Advanced', rating: 4.8, students: 1204, price: '.99', image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80' },
@@ -140,7 +188,7 @@ const CourseDetail: React.FC = () => {
             </div>
             <h1 className="ud-title">{title}</h1>
             <p className="ud-subtitle">{description}</p>
-            <p className="ud-author">Created by <strong>BFC International Academy</strong></p>
+            <p className="ud-author">Created by <strong>{institution}</strong></p>
             <div className="ud-meta-line">
               <span><Globe size={16} /> {language}</span>
               <span><BadgeCheck size={16} /> {accreditation}</span>
@@ -220,7 +268,6 @@ const CourseDetail: React.FC = () => {
               {contentSections.map((section, index) => {
                 const isActive = activeJourneyIndex === index;
                 const rowJourney = journeySteps[index];
-
                 return (
                   <div key={section.title} className="ud-content-row-wrap">
                     <button
@@ -238,10 +285,22 @@ const CourseDetail: React.FC = () => {
                       </span>
                     </button>
 
-                    {isActive && rowJourney && (
+                    {isActive && (
                       <div key={activeJourneyIndex} className="ud-content-row-panel">
-                        <p><strong>{rowJourney.title}</strong></p>
-                        <p>{rowJourney.detail}</p>
+                        {section.topics ? (
+                          <ul>
+                            {section.topics.map((topic, i) => (
+                              <li key={i}>{topic}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          rowJourney && (
+                            <>
+                              <p><strong>{rowJourney.title}</strong></p>
+                              <p>{rowJourney.detail}</p>
+                            </>
+                          )
+                        )}
                       </div>
                     )}
                   </div>
@@ -258,27 +317,7 @@ const CourseDetail: React.FC = () => {
               </div>
             </section>
 
-            <section className="ud-suggestions">
-              <h2>Top courses in related topics</h2>
-              <div className="ud-suggestion-grid">
-                {suggestedCourses.map(course => (
-                  <div key={course.id} className="ud-suggestion-card">
-                    <img src={course.image} alt={course.title} className="ud-suggestion-img" />
-                    <div className="ud-suggestion-content">
-                      <h4>{course.title}</h4>
-                      <p className="ud-author">BFC International Academy</p>
-                      <div className="ud-suggestion-rating">
-                        <span className="ud-rating-number">{course.rating}</span>
-                        <Star size={14} fill="#b45309" color="#b45309" />
-                        <span className="ud-students">({course.students})</span>
-                      </div>
-                      <div className="ud-suggestion-price">{course.price}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
+            
           </div>
 
           <div className="ud-right-spacer" aria-hidden="true" />
