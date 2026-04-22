@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ici from '../src/assets/certif/ici.png';
 import irm from '../src/assets/certif/IRM.png';
 import bfcLogo from '../src/assets/bfc.png';
@@ -11,7 +11,7 @@ const certData = [
     id: "01",
     title: "Fundamentals of Risk Management (FoRM)",
     location: "London, UK",
-    programs: "3-Day Certification + Final Exam",
+    programs: "2-Day Certification + Final Exam",
     accreditation: "Institute of Risk Management (IRM)",
     intake: "2026",
     description: "Official certificate training program from IRM London covering risk concepts, risk assessment, treatment, business continuity, and risk culture embedding.",
@@ -74,7 +74,7 @@ const courseCatalog: CourseCatalogItem[] = [
     description: 'Official certification training from the Institute of Risk Management of London focused on practical ERM implementation and business-aligned risk decision making.',
     certificationDescription: 'Participants: Risk Managers, Internal Controllers, Internal Auditors, Administrators, Executives, Senior Managers, Department Heads. Certificate delivered by IRM upon passing final exam.',
     brochureUrl: '/pdfs/irm-form.pdf',
-    intro: 'Official FoRM certification by IRM London. This course builds a practical enterprise risk management mindset and equips participants to deploy risk frameworks that are aligned with business strategy and governance expectations.',
+    intro: `Official FoRM certification by IRM London. The IRM is the world's leading organization in risk management. It helps build excellence in risk management to enhance how organizations operate. The IRM provides globally recognized qualifications and training, publishes research and informed leadership, and sets professional standards that define the knowledge, skills, and behaviors today's risk professionals need to meet the demands of an increasingly complex and challenging business environment. This course builds a practical enterprise risk management mindset and equips participants to deploy risk frameworks that are aligned with business strategy and governance expectations.`,
     participants: 'Risk Managers, Internal Controllers, Internal Auditors, Administrators, Executives, Senior Managers, Department Heads.',
     duration: '3 days + final exam',
     location: 'International sessions',
@@ -114,14 +114,14 @@ const courseCatalog: CourseCatalogItem[] = [
     accreditation: 'ICI Official Certification',
     intake: '2026',
     description: 'Official international certifying program from ICI to design, implement, assess, and manage internal control systems with governance alignment.',
-    certificationDescription: 'Price: 3,200 EUR HT including exam voucher, pre-assessment test, module tests, and training material. Participants include Executives, Directors, Administrators, Internal Controllers, Auditors, Inspectors, GRC professionals, and Risk Managers.',
+    certificationDescription: `Includes exam voucher, pre-assessment test, module tests, and training materials. The program is aimed at executives, directors, administrators, internal controllers, auditors, inspectors, GRC professionals, and risk managers.`,
     brochureUrl: '/pdfs/cics.pdf',
-    intro: 'Official CICS program from the Internal Control Institute, dedicated to control architecture, governance effectiveness, COSO application, and operational internal control deployment.',
+    intro: `Official CICS program from the Internal Control Institute (ICI). The course focuses on control architecture, governance effectiveness, application of the COSO framework, and operational internal control implementation.    The Internal Control Institute™ (ICI)—the only global organization dedicated exclusively to internal control and corporate governance—offers an official international certification program for designing, implementing, assessing, and managing internal control systems aligned with governance, providing specialized methodologies, guidelines, and comprehensive controls for organizations.`,
     participants: 'Executives, Directors, Administrators, Internal Controllers, Internal Auditors, Inspectors, GRC professionals, Risk Managers.',
     duration: '5 days + final exam',
     location: 'International cohorts',
-    price: '3,200 EUR HT (exam voucher + pre-assessment + module tests + support)',
-    language: 'French / English',
+    price: '3,200 EUR (excl. VAT) — includes exam voucher, pre-assessment, module tests, and support',
+    language: 'English',
     relatedTopics: ['Internal Control', 'COSO', 'GRC', 'Internal Audit'],
     learnPoints: [
       'Design and structure enterprise internal control systems.',
@@ -158,7 +158,7 @@ const courseCatalog: CourseCatalogItem[] = [
     accreditation: 'BFC Group Workshop',
     intake: 'Tunis 2026',
     description: 'Interactive and practical workshop to align strategy, horizons, and execution of innovation for organizations and leadership teams.',
-    certificationDescription: 'Expected outcomes: innovation-effort diagnosis, primary innovation register synthesis, and practical alignment between strategic goals and innovation types. Price: 2,500 DT HT, delivered in client premises.',
+    certificationDescription: 'Expected outcomes: innovation-effort diagnosis, primary innovation register synthesis, and practical alignment between strategic goals and innovation types. ',
     brochureUrl: '/pdfs/innovation-workshop.pdf',
     intro: 'An executive-focused workshop that clarifies innovation concepts, aligns innovation initiatives with strategic priorities, and translates innovation ambition into actionable execution tracks.',
     participants: 'R&D team, Project/Product Managers, CEO, COO, Strategy/Development Director, Industrial/Plant Director, Production Manager, Quality/Certification Manager, Sales/Marketing Managers, Customer Relations Manager, Business Development Manager, Risk Manager.',
@@ -201,7 +201,7 @@ const courseCatalog: CourseCatalogItem[] = [
     accreditation: 'BFC Academy Certification',
     intake: 'Tunis 2026',
     description: 'Certifying training to transform auditors into AI-augmented experts across the full audit cycle, data analysis automation, and intelligent documentation workflows.',
-    certificationDescription: 'Delivered by Nadia Yaich and Kais Khenine. Includes course support, coffee breaks, lunch, and AI tools used during training. Price per participant: 1,900 TND HT.',
+    certificationDescription: 'Delivered by Nadia Yaich and Kais Khenine. Includes course support, coffee breaks, lunch, and AI tools used during training.',
     brochureUrl: '/pdfs/ai-audit.pdf',
     intro: 'A practical certifying program designed for auditors, control teams, and risk professionals to operationalize generative AI in audit planning, execution, documentation, and assurance outcomes.',
     participants: 'Administrators, Executives, Senior Managers, Department Heads, Risk Managers, Internal Controllers, Internal Auditors.',
@@ -234,6 +234,7 @@ const courseCatalog: CourseCatalogItem[] = [
 
 function CertificateCard({ item, index, total }: { item: typeof certData[0], index: number, total: number, key?: string | number }) {
   const container = useRef(null);
+  const navigate = useNavigate();
   const linkedCourse = courseCatalog.find((course) => course.title === item.title);
   const { scrollYProgress } = useScroll({
     target: container,
@@ -283,14 +284,16 @@ function CertificateCard({ item, index, total }: { item: typeof certData[0], ind
             <span className="certificate-info-label">Accreditation</span>
             <span className="certificate-info-value">{item.accreditation}</span>
           </div>
-          <div>
-            <span className="certificate-info-label">Intake</span>
-            <span className="certificate-info-value">{item.intake}</span>
-          </div>
+          
         </div>
 
         <div className="certificate-actions">
-          <button className="btn-primary">ENROLL NOW</button>
+          <button
+            className="btn-primary"
+            onClick={() => navigate('/enroll', { state: { courseTitle: item.title } })}
+          >
+            ENROLL NOW
+          </button>
           {linkedCourse ? (
             <Link
               to={`/course/${encodeURIComponent(linkedCourse.title)}`}
@@ -333,6 +336,7 @@ function CertificateCard({ item, index, total }: { item: typeof certData[0], ind
 }
 
 export const BfcAcademy: React.FC = () => {
+  const navigate = useNavigate();
   const heroWrapperRef = useRef(null);
   const { scrollYProgress: heroScrollProgress } = useScroll({
     target: heroWrapperRef,
@@ -534,13 +538,15 @@ export const BfcAcademy: React.FC = () => {
                         <span className="label">Accreditation</span>
                         <span className="value">{c.accreditation}</span>
                       </div>
-                      <div className="info-item" role="listitem">
-                        <span className="label">Intake</span>
-                        <span className="value">{c.intake}</span>
-                      </div>
+                     
                     </div>
                     <div className="course-card__actions">
-                      <button className="btn-primary">Enroll Now</button>
+                      <button
+                        className="btn-primary"
+                        onClick={() => navigate('/enroll', { state: { courseTitle: c.title } })}
+                      >
+                        Enroll Now
+                      </button>
                       <Link
                         to={`/course/${encodeURIComponent(c.title)}`}
                         className="btn-outline"

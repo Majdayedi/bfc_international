@@ -296,8 +296,9 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
               <button 
                 className="menu__mobile-back" 
                 onClick={() => setExpandedIndex(null)}
+                aria-label="Back to main menu"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft size={16} />
               </button>
               <div className="menu__right-content">
                 <div 

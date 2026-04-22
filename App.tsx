@@ -27,6 +27,7 @@ const CourseDetail = lazy(() => import('./components/CourseDetail'));
 const ServiceDetail = lazy(() => import('./components/ServiceDetail').then((m) => ({ default: m.ServiceDetail })));
 const RepresentativeDetail = lazy(() => import('./components/RepresentativeDetail').then((m) => ({ default: m.RepresentativeDetail })));
 const AdminDashboard = lazy(() => import('./components/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
+const EnrollmentForm = lazy(() => import('./components/EnrollmentForm'));
 
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -133,6 +134,7 @@ const App: React.FC = () => {
         <Route path="/bfc-academy" element={<Navigate to="/standard-training" replace />} />
         <Route path="/standard-training" element={<ErrorBoundary><BfcAcademy /></ErrorBoundary>} />
         <Route path="/course/:title" element={<ErrorBoundary><CourseDetail /></ErrorBoundary>} />
+        <Route path="/enroll" element={<ErrorBoundary><EnrollmentForm /></ErrorBoundary>} />
         <Route
           path="/services/:serviceId"
           element={

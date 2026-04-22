@@ -1,0 +1,375 @@
+/* ── Design tokens shared with CourseDetail ── */
+.enroll-page {
+  --c-navy: #002244;
+  --c-navy-dark: #00152b;
+  --c-teal: #00A3A1;
+  --c-teal-light: #e6f6f6;
+  --c-ink: #1e293b;
+  --c-muted: #64748b;
+  --c-border: #e2e8f0;
+  --c-bg: #f8fafc;
+  --c-white: #ffffff;
+  --c-error: #dc2626;
+  background-color: var(--c-bg);
+  color: var(--c-ink);
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+}
+
+/* ── Hero banner ── */
+.enroll-hero {
+  background: linear-gradient(135deg, #00152b 0%, #002244 100%);
+  color: #fff;
+  padding: 4rem 0 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.enroll-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+.enroll-hero__title {
+  margin: 1.5rem 0 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.enroll-hero__sub {
+  margin: 0.75rem 0 0;
+  color: #cbd5e1;
+  font-size: 1.05rem;
+  max-width: 560px;
+  position: relative;
+}
+
+/* ── Back button (matches ud-back) ── */
+.enroll-back {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  padding: 0.45rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.25s;
+  position: relative;
+}
+
+.enroll-back:hover {
+  background: rgba(255,255,255,0.14);
+  border-color: var(--c-teal);
+  transform: translateX(-3px);
+}
+
+/* ── Shell / centring ── */
+.enroll-shell {
+  width: min(780px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+/* ── Body ── */
+.enroll-body {
+  padding: 3rem 0 5rem;
+}
+
+/* ── Form card ── */
+.enroll-form {
+  background: var(--c-white);
+  border: 1px solid var(--c-border);
+  box-shadow: 0 8px 32px -8px rgba(0,34,68,0.10);
+  padding: 2.5rem 2.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+/* ── Fieldsets ── */
+.enroll-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.enroll-legend {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--c-teal);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--c-teal-light);
+  width: 100%;
+}
+
+.enroll-optional {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--c-muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ── Row layouts ── */
+.enroll-row {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.enroll-row--2 > * {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ── Input group ── */
+.enroll-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.enroll-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--c-ink);
+  letter-spacing: 0.01em;
+}
+
+.enroll-input,
+.enroll-select,
+.enroll-textarea {
+  font-family: inherit;
+  font-size: 0.92rem;
+  color: var(--c-ink);
+  background: #f8fafc;
+  border: 1.5px solid var(--c-border);
+  padding: 0.7rem 0.9rem;
+  outline: none;
+  border-radius: 0;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.enroll-input:focus,
+.enroll-select:focus,
+.enroll-textarea:focus {
+  border-color: var(--c-teal);
+  box-shadow: 0 0 0 3px rgba(0,163,161,0.12);
+  background: #fff;
+}
+
+.enroll-input.is-error,
+.enroll-select.is-error {
+  border-color: var(--c-error);
+}
+
+.enroll-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ── Custom select ── */
+.enroll-select-wrap {
+  position: relative;
+}
+
+.enroll-select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 2.2rem;
+}
+
+.enroll-select-icon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--c-muted);
+  pointer-events: none;
+}
+
+/* ── Error messages ── */
+.enroll-error {
+  font-size: 0.78rem;
+  color: var(--c-error);
+  font-weight: 500;
+}
+
+.enroll-error--top {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* ── Course checkboxes ── */
+.enroll-course-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.enroll-course-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1.5px solid var(--c-border);
+  cursor: pointer;
+  background: #f8fafc;
+  transition: border-color 0.2s, background 0.2s;
+  font-size: 0.92rem;
+  color: var(--c-ink);
+  font-weight: 500;
+}
+
+.enroll-course-item:hover {
+  border-color: var(--c-teal);
+  background: #f0fafa;
+}
+
+.enroll-course-item.is-checked {
+  border-color: var(--c-teal);
+  background: var(--c-teal-light);
+}
+
+.enroll-course-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+.enroll-course-check-box {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--c-border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--c-teal);
+  background: var(--c-white);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.enroll-course-item.is-checked .enroll-course-check-box {
+  border-color: var(--c-teal);
+  background: var(--c-teal);
+  color: #fff;
+}
+
+/* ── Submit button ── */
+.enroll-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.enroll-btn {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.85rem 2rem;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  border-radius: 0;
+  text-decoration: none;
+}
+
+.enroll-btn--primary {
+  background: var(--c-teal);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,163,161,0.3);
+}
+
+.enroll-btn--primary:hover {
+  background: #007d7b;
+  box-shadow: 0 6px 20px rgba(0,163,161,0.4);
+  transform: translateY(-1px);
+}
+
+/* ── Success screen ── */
+.enroll-success {
+  text-align: center;
+  padding: 6rem 1rem;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.enroll-success__icon {
+  width: 72px;
+  height: 72px;
+  background: var(--c-teal);
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 800;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  box-shadow: 0 8px 24px rgba(0,163,161,0.3);
+}
+
+.enroll-success h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--c-navy);
+  margin-bottom: 1rem;
+}
+
+.enroll-success p {
+  color: var(--c-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 2rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .enroll-form {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .enroll-row--2 {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .enroll-actions {
+    justify-content: stretch;
+  }
+
+  .enroll-btn--primary {
+    width: 100%;
+    justify-content: center;
+  }
+}

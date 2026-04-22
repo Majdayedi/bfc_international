@@ -169,7 +169,7 @@
 }
 
 .hscroll__card-title {
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: 25px ;
   font-weight: 900;
   line-height: 1.03;
   margin: 0 0 0.75rem;

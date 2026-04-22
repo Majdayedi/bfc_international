@@ -1,21 +1,21 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import { MessageCircle } from 'lucide-react';
 import './FloatingContactIcon.css';
 
-export const FloatingContactIcon: React.FC = () => {
-  const location = useLocation();
-  const isActive = location.pathname === '/contact';
+const WHATSAPP_URL = 'https://wa.me/21698770970';
 
+export const FloatingContactIcon: React.FC = () => {
   return (
-    <Link
-      to="/contact"
-      className={`fc-contact ${isActive ? 'fc-contact--active' : ''}`}
-      aria-label="Contact us"
-      title="Contact us"
+    <a
+      href={WHATSAPP_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fc-contact"
+      aria-label="Contact us on WhatsApp"
+      title="Contact us on WhatsApp"
     >
       <MessageCircle size={22} strokeWidth={2.1} />
       <span className="fc-contact__label">Contact</span>
-    </Link>
+    </a>
   );
 };

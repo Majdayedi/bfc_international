@@ -270,7 +270,7 @@ body {
 
 .certificate-info-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.2rem;
   background: #f8fafb;
   padding: 1.1rem 1.25rem;
