@@ -25,14 +25,17 @@ export const Footer: React.FC = () => {
               <div>
                 <span className="footer__label">( SOCIAL )</span>
                 <ul className="footer__list">
-                  <li><a href="#" className="footer__link">LinkedIn</a></li>
-                  <li><a href="#" className="footer__link">YouTube</a></li>
+                  <li><a href="https://tn.linkedin.com/company/bfc-international-academy" className="footer__link">LinkedIn</a></li>
+                  <li><a href="https://www.youtube.com/@BFCGROUPOFFICIAL" className="footer__link">YouTube</a></li>
                 </ul>
               </div>
               <div>
                 <span className="footer__label">( OFFICES )</span>
                 <div className="footer__offices">
                   <p>Tunis, Tunisia<br />Imm City center, bloc B, Centre urbain nord, Tunis, Tunisia</p>
+                  <p>Guinea, Conakry</p>
+                  <p>Senegal, Dakar</p>
+                  <p>Congo, Kinshasa</p>
                 </div>
               </div>
             </div>

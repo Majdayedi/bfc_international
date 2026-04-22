@@ -146,17 +146,11 @@ const CourseDetail: React.FC = () => {
   const [activeJourneyIndex, setActiveJourneyIndex] = useState(0);
 
   const handleBack = () => {
-    if (fromPath) {
-      navigate(fromPath);
-      return;
-    }
-
     if (window.history.length > 1) {
       navigate(-1);
-      return;
+    } else {
+      navigate('/standard-training');
     }
-
-    navigate('/standard-training');
   };
 
   useEffect(() => {
@@ -203,7 +197,13 @@ const CourseDetail: React.FC = () => {
                
               </div>
               <div className="ud-card-body">
-                <button type="button" className="ud-btn ud-btn-primary">Enroll now</button>
+                <button
+                  type="button"
+                  className="ud-btn ud-btn-primary"
+                  onClick={() => navigate('/enroll', { state: { courseTitle: title } })}
+                >
+                  Enroll now
+                </button>
                 <a
                   href={brochureUrl}
                   target="_blank"
@@ -243,14 +243,12 @@ const CourseDetail: React.FC = () => {
               <h2>Course facts</h2>
               <p><strong>Participants:</strong> {participants}</p>
               <p><strong>Duration:</strong> {duration}</p>
-              <p><strong>Location:</strong> {locationInfo}</p>
-              <p><strong>Price:</strong> {price}</p>
             </section>
 
             <section className="ud-box ud-learn-box">
               <h2>What you'll learn</h2>
               <ul className="ud-learn-grid">
-                {learnPoints.map((point) => (
+                {learnPoints.map((point: string) => (
                   <li key={point}>
                     <div className="ud-learn-icon"><Check size={18} /></div>
                     <span>{point}</span>
@@ -265,7 +263,7 @@ const CourseDetail: React.FC = () => {
                 <h3>Course content</h3>
                 <p>{contentSections.length} sections • {programs}</p>
               </div>
-              {contentSections.map((section, index) => {
+              {contentSections.map((section: any, index: number) => {
                 const isActive = activeJourneyIndex === index;
                 const rowJourney = journeySteps[index];
                 return (
@@ -289,7 +287,7 @@ const CourseDetail: React.FC = () => {
                       <div key={activeJourneyIndex} className="ud-content-row-panel">
                         {section.topics ? (
                           <ul>
-                            {section.topics.map((topic, i) => (
+                            {section.topics.map((topic: string, i: number) => (
                               <li key={i}>{topic}</li>
                             ))}
                           </ul>
@@ -311,7 +309,7 @@ const CourseDetail: React.FC = () => {
             <section className="ud-box ud-topics">
               <h3>Explore related topics</h3>
               <div className="ud-topic-list">
-                {relatedTopics.map((topic) => (
+                {relatedTopics.map((topic: string) => (
                   <span key={topic}>{topic}</span>
                 ))}
               </div>
@@ -325,7 +323,13 @@ const CourseDetail: React.FC = () => {
       </main>
 
       <div className="ud-mobile-actions" aria-label="Course actions">
-        <a href="/contact" className="ud-btn ud-btn-primary">Enroll now</a>
+        <button
+          type="button"
+          className="ud-btn ud-btn-primary"
+          onClick={() => navigate('/enroll', { state: { courseTitle: title } })}
+        >
+          Enroll now
+        </button>
         <a
           href={brochureUrl}
           target="_blank"

@@ -6,6 +6,51 @@ import tunisiaRep from '/src/assets/representatives/tunisia.png';
 import guineeRep from '/src/assets/representatives/guinee.png';
 import senegalRep from '/src/assets/representatives/senegal.png';
 
+/* ─── Helpers ──────────────────────────────────────────────────────── */
+function slugify(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function RenderLines({ lines }: { lines: string[] }) {
+  const nodes: React.ReactNode[] = [];
+  let bullets: string[] = [];
+  let k = 0;
+
+  const flush = () => {
+    if (!bullets.length) return;
+    nodes.push(
+      <ul key={k++}>
+        {bullets.map((b, i) => <li key={i}>{b.replace(/^[•\-]\s*/, '')}</li>)}
+      </ul>
+    );
+    bullets = [];
+  };
+
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const t = line.trim();
+    if (t.startsWith('•') || t.startsWith('- ')) {
+      bullets.push(t);
+    } else {
+      flush();
+      if (t.startsWith('(Source:') || (t.startsWith('(') && t.endsWith(')'))) {
+        nodes.push(<p key={k++} className="article-detail__source-note">{t}</p>);
+      } else {
+        nodes.push(<p key={k++}>{t}</p>);
+      }
+    }
+  }
+  flush();
+  return <>{nodes}</>;
+}
+
+interface Reference {
+  label: string;
+  url: string;
+  author: string;
+  year: string;
+}
+
 const CONTENT: Record<string, any> = {
   'digitalization-strategy': {
     heroPhoto:mauritaniaRep,
@@ -31,18 +76,38 @@ const CONTENT: Record<string, any> = {
       'digital governance Africa',
       'economic impact digitalization',
     ],
+    readTime: '8 min read',
+    publishDate: 'March 15, 2025',
+    takeaways: [
+      'Technology alone does not drive digital transformation — strategy, sequencing, and institutional ownership are the decisive factors.',
+      'Most national digital programs fail due to fragmentation, not lack of investment.',
+      'Successful countries (Rwanda, Kenya, Morocco) combine digital identity, mobile payments, and e-services as a coordinated system.',
+      'Use-case prioritization — focusing on revenue impact and leakage reduction — is more effective than broad digitalization mandates.',
+      'PKI and trust infrastructure must be designed in from the start, not retrofitted after launch.',
+    ],
+    references: [
+      { label: 'World Bank: Digital Development Overview', url: 'https://www.worldbank.org/en/topic/digitaldevelopment', author: 'World Bank', year: '2024' },
+      { label: 'ITU: Measuring Digital Development 2023', url: 'https://www.itu.int/en/ITU-D/Statistics/Pages/publications/misr2023.aspx', author: 'International Telecommunication Union', year: '2023' },
+      { label: 'African Union: Digital Transformation Strategy 2020–2030', url: 'https://au.int/en/documents/20200518/digital-transformation-strategy-africa-2020-2030', author: 'African Union', year: '2020' },
+      { label: 'OECD: Digital Government Index', url: 'https://www.oecd.org/en/topics/digital-government.html', author: 'OECD', year: '2023' },
+      { label: 'AfCFTA: Continental Free Trade Agreement Portal', url: 'https://au-afcfta.org/', author: 'African Union Commission', year: '2023' },
+    ],
+    relatedProjects: [
+      { id: 2, title: 'Technical assistance for PKI legal framework and e-certification', country: 'Mauritania', flag: 'https://flagcdn.com/w40/mr.png' },
+      { id: 7, title: 'Feasibility study for a digital addressing system', country: 'Mali', flag: 'https://flagcdn.com/w40/ml.png' },
+    ],
     sections: [
       {
         h2: 'The Illusion of Progress: When Digitalization Becomes Fragmentation',
         p: [
           'Across the region, governments and institutions have invested heavily in:',
-          '• Platforms',
-          '• Portals',
-          '• Digital tools',
+          '• Platforms — standalone portals deployed without a unified architecture',
+          '• Portals — web interfaces built in isolation, with no shared data layer',
+          '• Digital tools — sector-specific applications that cannot communicate with each other',
           'Yet outcomes often include:',
-          '• Low adoption',
-          '• Redundant systems',
-          '• Limited economic impact',
+          '• Low adoption — citizens and businesses do not use the systems built for them',
+          '• Redundant systems — the same function duplicated across ministries and agencies',
+          '• Limited economic impact — investment does not translate into measurable economic change',
           'The issue is not lack of investment. It is the absence of strategic coherence.',
           '4. Market Adoption: SMEs, banks, citizens',
           'Most programs fail because they move one layer at a time.'
@@ -62,14 +127,14 @@ const CONTENT: Record<string, any> = {
           '• Not isolated within ministries or IT departments',
           '3. Interoperability as a Design Principle',
           'Systems must:',
-          '• Communicate',
-          '• Share data securely',
-          '• Avoid duplication',
+          '• Communicate — exchange data reliably across agencies and ministries',
+          '• Share data securely — with encryption, access controls, and audit trails',
+          '• Avoid duplication — one system of record, not ten conflicting registries',
           '4. Embedded Trust Infrastructure',
           'No digital system works without:',
-          '• Identity',
-          '• Authentication',
-          '• Legal enforceability',
+          '• Identity — a verified, unique identifier for every citizen, business, and official',
+          '• Authentication — proof that an identity is being used by its rightful owner',
+          '• Legal enforceability — digital actions that carry the same weight as physical signatures',
           'This is where PKI becomes critical.'
         ]
       },
@@ -85,9 +150,9 @@ const CONTENT: Record<string, any> = {
           '• Reduced administrative overhead',
           '• Faster service delivery',
           '3. Investment Attractiveness',
-          '• Transparency',
-          '• Predictability',
-          '• Ease of doing business',
+          '• Transparency — auditable processes and publicly accountable spending',
+          '• Predictability — stable regulations and consistent enforcement that attract investors',
+          '• Ease of doing business — streamlined administrative processes that reduce time and cost',
           '4. SME Growth',
           '• Access to finance',
           '• Market expansion',
@@ -102,8 +167,8 @@ const CONTENT: Record<string, any> = {
           '• Corruption becomes more scalable',
           '• Citizen trust declines',
           'This is already visible in multiple countries where:',
-          '• Platforms exist',
-          '• But usage remains low'
+          '• Platforms exist — but operate as silos with no cross-agency interoperability',
+          '• Usage remains low — adoption blocked by lack of trust and user complexity'
         ]
       },
       {
@@ -116,20 +181,20 @@ const CONTENT: Record<string, any> = {
           'This allows for:',
           '• Leapfrogging legacy systems',
           '• Building digital economies from the ground up',
-          'But only if: Strategy precedes technology'
+          'But only if — strategy precedes technology',
         ]
       },
       {
         h2: 'BFC Perspective',
         p: [
           'From Experience, digital transformation programs fail when they are:',
-          '• Vendor-driven',
-          '• Technology-led',
-          '• Poorly sequenced',
+          '• Vendor-driven — technology choices dictated by suppliers, not national strategy',
+          '• Technology-led — solutions deployed before problems are properly defined',
+          '• Poorly sequenced — layers built without a coherent rollout order',
           'They succeed when they are:',
-          '• Strategy-led',
-          '• Institutionally anchored',
-          '• Designed around real economic use cases',
+          '• Strategy-led — priority use cases and objectives defined before any procurement',
+          '• Institutionally anchored — owned at the highest levels of government, not siloed in IT',
+          '• Designed around real economic use cases — built where they generate measurable returns',
           'Digitalization is not about modernization. It is about competitiveness, sovereignty, and control over economic flows.',
           'Starting this process by thoroughly mapping social and economic actors, both private and public sides along with their needs, processes, and capabilities, and then moving to creating a strategic PKI strategy and rollout plan directed by SMART national and sectorial objectives, and adapting as we go via continuous monitoring and evaluation, market listening, and stakeholder communication…wins',
           'The countries that get this right will not just improve services. They will redefine their position in the global economy.'
@@ -160,6 +225,26 @@ const CONTENT: Record<string, any> = {
       'SME access to finance Africa',
       'informal economy Africa',
       'e-government services SMEs',
+    ],
+    readTime: '10 min read',
+    publishDate: 'January 22, 2025',
+    takeaways: [
+      'SMEs represent over 90% of businesses in Africa and MENA, yet informality limits their contribution to national tax revenues.',
+      'Informality is a system failure — complex registration, inaccessible finance, and opaque tax regimes — not a behavioral one.',
+      'Digitalization creates the missing link: it reduces friction, builds financial identities, and gives SMEs tangible reasons to formalize.',
+      'Success requires strategy-led design: centralized in vision, decentralized in execution, and interoperable by default.',
+      'Countries like Rwanda, Kenya, and Morocco show that mobile payments + digital identity + e-government can unlock rapid formalization at scale.',
+    ],
+    references: [
+      { label: 'World Bank: SME Finance', url: 'https://www.worldbank.org/en/topic/smefinance', author: 'World Bank', year: '2024' },
+      { label: 'GSMA: State of the Industry Report on Mobile Money 2023', url: 'https://www.gsma.com/solutions-and-impact/connectivity-for-good/mobile-for-development/programme/mobile-money/state-of-the-industry-report-on-mobile-money/', author: 'GSMA', year: '2023' },
+      { label: 'IMF: Financial Inclusion', url: 'https://www.imf.org/en/Topics/financial-inclusion', author: 'International Monetary Fund', year: '2024' },
+      { label: 'IFC: MSME Access to Finance', url: 'https://www.ifc.org/en/topic/msme-banking-access-to-finance', author: 'International Finance Corporation', year: '2023' },
+      { label: 'AfCFTA: Continental Free Trade Agreement Portal', url: 'https://au-afcfta.org/', author: 'African Union Commission', year: '2023' },
+    ],
+    relatedProjects: [
+      { id: 1, title: 'Study on the formalization of MSMEs in the Republic of Benin', country: 'Benin', flag: 'https://flagcdn.com/w40/bj.png' },
+      { id: 10, title: 'Mapping the SME and Startup ecosystem', country: 'Ivory Coast', flag: 'https://flagcdn.com/w40/ci.png' },
     ],
     sections: [
       {
@@ -205,12 +290,12 @@ const CONTENT: Record<string, any> = {
         h3: '1. Digital Identity for Businesses',
         p: [
           'A unified digital identity allows SMEs to:',
-          '• Register faster',
-          '• Access services',
-          '• Build a verifiable economic footprint',
+          '• Register faster — digital onboarding in days, replacing months of paper-based queues',
+          '• Access services — government platforms, procurement portals, and financial grants',
+          '• Build a verifiable economic footprint — a traceable record enabling credit and contracts',
           'This is foundational for:',
-          '• Banking access',
-          '• Public procurement eligibility'
+          '• Banking access — open accounts and access credit without paper-heavy verification',
+          '• Public procurement eligibility — qualify for government contracts and competitive tenders'
         ]
       },
       {
@@ -241,9 +326,9 @@ const CONTENT: Record<string, any> = {
           '• Secure authentication',
           '• Data integrity across systems',
           'This is essential for:',
-          '• E-commerce',
-          '• Public services',
-          '• Cross-border transactions'
+          '• E-commerce — legally binding online transactions between businesses and consumers',
+          '• Public services — secure, authenticated access to government platforms and entitlements',
+          '• Cross-border transactions — authenticated trade flows within AfCFTA digital frameworks'
         ]
       },
       {
@@ -251,17 +336,17 @@ const CONTENT: Record<string, any> = {
         p: [
           'Leaders face three critical questions:',
           '1. Where do we start? Not with tools—but with use cases that impact revenue and growth:',
-          '• Business registration',
-          '• Tax collection',
-          '• Payments',
+          '• Business registration — simplified digital enrollment with a unique national identifier',
+          '• Tax collection — automated digital filing and real-time revenue tracking',
+          '• Payments — mobile and digital infrastructure as the backbone of economic formalization',
           '2. How do we ensure adoption? Adoption is driven by:',
-          '• Incentives (not enforcement)',
-          '• Simplicity',
-          '• Interoperability',
+          '• Incentives over enforcement — access to credit, contracts, and services as drivers of uptake',
+          '• Simplicity — registration and compliance achievable in a few steps on a mobile device',
+          '• Interoperability — one registration connects to tax, finance, and government platforms',
           '3. How do we avoid fragmented systems? This is where most national programs fail. Digitalization must be:',
-          '• Centralized in strategy',
-          '• Decentralized in execution',
-          '• Interoperable by design'
+          '• Centralized in strategy — a unified national vision with a single point of accountability',
+          '• Decentralized in execution — agencies and regions adapt the model to local conditions',
+          '• Interoperable by design — systems built to communicate from day one, not retrofitted later'
         ]
       },
       {
@@ -294,9 +379,9 @@ const CONTENT: Record<string, any> = {
           '• Aligning regulation with technology',
           '• Ensuring adoption at scale',
           'Our approach is grounded in:',
-          '• Local realities',
-          '• Institutional constraints',
-          '• Measurable economic outcomes'
+          '• Local realities — regulatory environments, infrastructure gaps, and cultural context',
+          '• Institutional constraints — governance capacity, budget cycles, and coordination challenges',
+          '• Measurable economic outcomes — KPIs tied to revenue, adoption, and formalization rates'
         ]
       },
       {
@@ -330,6 +415,26 @@ const CONTENT: Record<string, any> = {
       'SME formalization digital',
       'interoperability government systems',
     ],
+    readTime: '9 min read',
+    publishDate: 'February 10, 2025',
+    takeaways: [
+      'Delaying PKI is not a neutral decision — each month without it adds cost, complexity, and fragmentation to digital ecosystems.',
+      'Governments that defer trust infrastructure end up rebuilding systems at higher cost when incompatibilities compound.',
+      'Economic inclusion (SME formalization, financial access) fundamentally depends on reliable identity and legally enforceable digital interactions.',
+      'Citizens and businesses only engage with digital services when they perceive tangible value — security, rights protection, and access to financing.',
+      'Africa still has a window to design interoperable digital ecosystems from the ground up — that window is narrowing.',
+    ],
+    references: [
+      { label: 'UNCITRAL: Model Law on Electronic Signatures', url: 'https://uncitral.un.org/en/texts/ecommerce/modellaw/electronic_signatures', author: 'UNCITRAL', year: '2001' },
+      { label: 'World Bank: Digital Development Overview', url: 'https://www.worldbank.org/en/topic/digitaldevelopment', author: 'World Bank', year: '2024' },
+      { label: 'ITU-T X.509: Public-key and attribute certificate frameworks', url: 'https://www.itu.int/rec/T-REC-X.509/en', author: 'ITU', year: '2019' },
+      { label: 'GSMA: Digital Identity Programme', url: 'https://www.gsma.com/identity/', author: 'GSMA', year: '2023' },
+      { label: 'NIST: Digital Identity Guidelines SP 800-63', url: 'https://pages.nist.gov/800-63-3/', author: 'NIST', year: '2020' },
+    ],
+    relatedProjects: [
+      { id: 2, title: 'Technical assistance for PKI legal framework and e-certification', country: 'Mauritania', flag: 'https://flagcdn.com/w40/mr.png' },
+      { id: 3, title: 'Design and implementation of the Information System', country: 'Guinea', flag: 'https://flagcdn.com/w40/gn.png' },
+    ],
     sections: [
       {
         h2: 'Executive Summary',
@@ -358,11 +463,15 @@ const CONTENT: Record<string, any> = {
         h2: 'Why Timing Matters: The Cost of Delaying PKI Implementation',
         p: [
           'One of the most underestimated risks in national digital strategies is deferring the establishment of a trust infrastructure.',
-          'Across Africa and MENA, governments are accelerating digital transformation: E-government platforms, Digital tax systems, SME formalization programs, and Digital payment ecosystems',
+          'Across Africa and MENA, governments are accelerating digital transformation:',
+          '• E-government platforms',
+          '• Digital tax systems',
+          '• SME formalization programs',
+          '• Digital payment ecosystems',,
           'PKI is often postponed in favor of:',
           '• Faster deployment of digital services',
-          '• Pilot platforms',
-          '• Sector-specific initiatives',
+          '• Pilot platforms — quick-launch tools that bypass the foundational trust layer',
+          '• Sector-specific initiatives — isolated programs with no cross-system interoperability',
           'This creates short-term progress—but long-term structural inefficiencies.',
           'The Reality: Delay Increases Complexity and Cost',
           'The longer PKI is delayed, the more digital ecosystems evolve without a unified trust layer.',
@@ -372,13 +481,13 @@ const CONTENT: Record<string, any> = {
           '• Incompatible platforms that cannot securely communicate',
           '• Increasing reliance on manual verification processes despite digital interfaces',
           'Over time, governments are forced to:',
-          '• Rebuild systems',
-          '• Integrate incompatible architectures',
-          '• Reconcile inconsistent data',
+          '• Rebuild systems — entire platforms redesigned as incompatibilities compound',
+          '• Integrate incompatible architectures — costly middleware bridging systems never designed to connect',
+          '• Reconcile inconsistent data — resolving duplicate identities, mismatched records, and conflicting registries',
           'This significantly increases:',
-          '• Cost of implementation',
-          '• Project timelines',
-          '• Operational risk',
+          '• Cost of implementation — exponentially higher when retrofitting trust into live systems',
+          '• Project timelines — extended by months or years as integration complexity compounds',
+          '• Operational risk — system failures, data breaches, and cascading service disruptions',
           'In practice, this is where many large-scale digital programs lose momentum.'
         ]
       },
@@ -387,9 +496,9 @@ const CONTENT: Record<string, any> = {
         p: [
           'Beyond infrastructure, the strategic importance of PKI is directly tied to economic outcomes.',
           'Economic growth in emerging markets depends heavily on:',
-          '• Business formalization',
-          '• Financial inclusion',
-          '• Efficient public service delivery',
+          '• Business formalization — registering entities with legal identity and economic visibility',
+          '• Financial inclusion — enabling SMEs and individuals to access banking, credit, and markets',
+          '• Efficient public service delivery — reducing friction in government-to-citizen interactions',
           'None of these can scale without:',
           '• Reliable identification of individuals and businesses',
           '• Secure and traceable transactions',
@@ -438,14 +547,14 @@ const CONTENT: Record<string, any> = {
         p: [
           'Delaying PKI does not delay complexity. It shifts it forward—and amplifies it.',
           'Governments that prioritize trust infrastructure early:',
-          '• Reduce duplication',
-          '• Accelerate service integration',
-          '• Enable faster formalization',
-          '• Build stronger citizen engagement',
+          '• Reduce duplication — one trusted identity used consistently across all government services',
+          '• Accelerate service integration — systems connect faster when a trust layer already exists',
+          '• Enable faster formalization — businesses and citizens can register and transact digitally',
+          '• Build stronger citizen engagement — trust in the system drives adoption and compliance',
           'Those that delay face:',
-          '• Higher costs',
-          '• Slower adoption',
-          '• Increased system fragility'
+          '• Higher costs — system rework and retrofitting multiply the original investment',
+          '• Slower adoption — citizens and businesses disengage from fragmented, unclear systems',
+          '• Increased system fragility — single points of failure with no trusted fallback layer'
         ]
       },
       {
@@ -458,17 +567,21 @@ const CONTENT: Record<string, any> = {
           'However, this window is narrowing.',
           'As more systems are deployed independently, alignment becomes harder and more expensive.',
           'In practice, the challenge is rarely technical. It lies in:',
-          '• Strategic sequencing',
-          '• Institutional coordination',
-          '• Aligning infrastructure with real economic use cases',
-          'PKI should not be approached as a standalone project. It must be positioned as: A foundational layer for state functionality, economic participation, and long-term scalability.'
+          '• Strategic sequencing — prioritizing the trust layer before scaling dependent digital services',
+          '• Institutional coordination — aligning ministries, regulators, and agencies on a shared roadmap',
+          '• Aligning infrastructure with real economic use cases — building where it generates the most returns',
+          'PKI should not be approached as a standalone project — it must be positioned as a foundational layer for state functionality, economic participation, and long-term scalability.',
         ]
       },
       {
         h2: 'Conclusion',
         p: [
-          'Delaying PKI is not a neutral decision, It increases costs, fragments systems, and limits the impact of digital transformation efforts.',
-          'Governments that prioritize trust infrastructure early, Accelerate formalization, Improve service delivery, Reduce costs and complexity, and Strengthen economic participation.'
+          'Delaying PKI is not a neutral decision — it increases costs, fragments systems, and limits the impact of digital transformation efforts.',
+          'Governments that prioritize trust infrastructure early:',
+          '• Accelerate formalization',
+          '• Improve service delivery',
+          '• Reduce costs and complexity',
+          '• Strengthen economic participation',
         ]
       }
     ]
@@ -496,6 +609,26 @@ const CONTENT: Record<string, any> = {
       'cybersecurity government Africa',
       'digital trust framework MENA',
       'certificate authority Africa',
+    ],
+    readTime: '11 min read',
+    publishDate: 'April 5, 2025',
+    takeaways: [
+      'PKI is not an IT project — it is a national trust infrastructure enabling verifiable identity, secure transactions, and digital sovereignty.',
+      'Without a trust layer, digital services fail to scale: documents are unenforceable, identities are duplicated, and cross-border trade stalls.',
+      "The EU's eIDAS framework demonstrates that legal, technical, and operational layers must be aligned — not sequenced separately.",
+      "Africa's window to leapfrog legacy infrastructure is real, but requires deliberate strategy: sovereignty, interoperability, and use-case targeting must coexist.",
+      'Failure patterns are consistent: PKI treated as IT procurement, no cross-ministry coordination, no integration with real economic use cases.',
+    ],
+    references: [
+      { label: 'EU eIDAS Regulation: Electronic Identification and Trust Services', url: 'https://digital-strategy.ec.europa.eu/en/policies/eidas-regulation', author: 'European Commission', year: '2023' },
+      { label: 'UNCITRAL: Model Law on Electronic Signatures', url: 'https://uncitral.un.org/en/texts/ecommerce/modellaw/electronic_signatures', author: 'UNCITRAL', year: '2001' },
+      { label: 'World Bank: Digital Development Overview', url: 'https://www.worldbank.org/en/topic/digitaldevelopment', author: 'World Bank', year: '2024' },
+      { label: 'AfCFTA: Continental Free Trade Agreement Portal', url: 'https://au-afcfta.org/', author: 'African Union Commission', year: '2023' },
+      { label: 'GSMA: Digital Identity Programme', url: 'https://www.gsma.com/identity/', author: 'GSMA', year: '2023' },
+    ],
+    relatedProjects: [
+      { id: 2, title: 'Technical assistance for PKI legal framework and e-certification', country: 'Mauritania', flag: 'https://flagcdn.com/w40/mr.png' },
+      { id: 6, title: 'Strategic plan for private investment and APIP business plan', country: 'Guinea', flag: 'https://flagcdn.com/w40/gn.png' },
     ],
     sections: [
       {
@@ -529,8 +662,8 @@ const CONTENT: Record<string, any> = {
           '• Contracts are enforceable',
           '• Communications are secure',
           '3. Institutional Trust',
-          '• Clear liability frameworks',
-          '• Data protection regulations',
+          '• Clear liability frameworks — defining who is accountable when digital interactions fail or are disputed',
+          '• Data protection regulations — legal assurance that personal and business data is safeguarded',
           'Examples:',
           '• The EU’s eIDAS framework is often referenced because it aligns legal, technical, and operational layers',
           '• Several African countries have adopted e-signature laws, but implementation gaps remain significant',
@@ -541,16 +674,16 @@ const CONTENT: Record<string, any> = {
         h2: 'Where PKI Actually Creates Measurable Value',
         p: [
           '1. Tax and Public Finance',
-          '• Secure digital filing',
-          '• Reduced fraud',
-          '• Faster processing',
+          '• Secure digital filing — taxpayers authenticate directly, eliminating document forgery',
+          '• Reduced fraud — cryptographic signatures make falsified declarations detectable',
+          '• Faster processing — digital submissions remove manual review and paper-based bottlenecks',
           '2. Public Procurement',
           '• Transparent, auditable bidding',
           '• Reduced corruption risks',
           '3. Financial Services',
-          '• KYC automation',
-          '• Secure onboarding',
-          '• Regulatory compliance',
+          '• KYC automation — verified digital identities replace manual document checks at scale',
+          '• Secure onboarding — cryptographically authenticated enrollment, no physical presence required',
+          '• Regulatory compliance — auditable digital trails satisfy AML and prudential requirements',
           '4. Cross-Border Trade',
           '• Digital certificates of origin',
           '• Alignment with AfCFTA ambitions'
@@ -574,7 +707,9 @@ const CONTENT: Record<string, any> = {
           '1. Digital identity integration',
           '2. Tax and business registration',
           '3. Government-to-business transactions',
-          'Then scale PKI as: Demand increases, Legal frameworks mature'
+          'Then scale PKI as:',
+          '• Demand increases — adoption grows as citizens and businesses engage with digital services',
+          '• Legal frameworks mature — e-signature laws and data protection regulations take effect',
         ]
       },
       {
@@ -590,10 +725,10 @@ const CONTENT: Record<string, any> = {
         h2: 'BFC Perspective',
         p: [
           'In our work across Africa and MENA, the issue is rarely technical. It is:',
-          '• Institutional alignment',
-          '• Governance clarity',
-          '• Sequencing of investments',
-          'PKI should not be sold as infrastructure. It should be positioned as: A national trust layer enabling economic activity, regulatory enforcement, and digital sovereignty.'
+          '• Institutional alignment — ministries, regulators, and agencies working from a shared roadmap',
+          '• Governance clarity — defined roles, responsibilities, and decision rights across all stakeholders',
+          '• Sequencing of investments — building the trust layer before scaling dependent digital services',
+          'PKI should not be sold as infrastructure — it should be positioned as a national trust layer enabling economic activity, regulatory enforcement, and digital sovereignty.',
         ]
       },
       {
@@ -613,38 +748,168 @@ const CONTENT: Record<string, any> = {
 export const ArticleDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const data = slug ? CONTENT[slug] : null;
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [heroProgress, setHeroProgress] = useState(0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (data) document.title = data.h1;
+    if (data) document.title = data.metaTitle || data.h1;
   }, [data]);
 
-  if (!data) return <div>Article not found. Please check the URL path.</div>;
+  useEffect(() => {
+    const update = () => {
+      const top = window.scrollY;
+      const height = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(height > 0 ? Math.min(top / height, 1) : 0);
+      const heroDistance = Math.max(window.innerHeight * 0.65, 1);
+      setHeroProgress(Math.min(top / heroDistance, 1));
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    return () => window.removeEventListener('scroll', update);
+  }, []);
+
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>('.article-detail__reveal');
+    const obs = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add('is-visible')),
+      { threshold: 0.1 }
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, [data]);
+
+  if (!data) return <div style={{ padding: '4rem', textAlign: 'center' }}>Article not found.</div>;
+
+  const h2Sections = data.sections.filter((s: any) => s.h2);
 
   return (
-    <article className="article-detail">
+    <article className="article-detail" style={{ ['--hero-progress' as any]: heroProgress }}>
+      {/* ── Reading progress bar ─────────────────────────────── */}
+      <div className="article-detail__progress">
+        <span style={{ transform: `scaleX(${scrollProgress})` }} />
+      </div>
+
+      {/* ── Hero ─────────────────────────────────────────────── */}
       <header className="article-detail__hero">
-         <div className="article-detail__hero-media">
-          <img
-            src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?q=80&w=2400&auto=format&fit=crop"
-            alt="Economic outlook and leadership"
-          />
-          
+        <div className="article-detail__hero-media">
+          <img src={data.heroPhoto} alt={data.h1} />
         </div>
         <div className="article-detail__hero-panel">
-          <Link to="/articles" className="article-detail__back">← Back to Articles</Link>
+          <div className="article-detail__hero-top">
+            <Link to="/who-we-are/our-articles" className="article-detail__back">← Back to Articles</Link>
+            <span className="article-detail__eyebrow">Research Report</span>
+          </div>
           <h1 className="article-detail__title">{data.h1}</h1>
+          {data.metaDescription && (
+            <p className="article-detail__subtitle">{data.metaDescription}</p>
+          )}
+          <div className="article-detail__meta">
+            <span>{data.readTime || '8 min read'}</span>
+            <span>{data.publishDate || '2025'}</span>
+            <span>By BFC Insights</span>
+          </div>
+          {data.tags && (
+            <div className="article-detail__tags">
+              {data.tags.map((tag: string) => (
+                <span key={tag} className="article-detail__tag">{tag}</span>
+              ))}
+            </div>
+          )}
         </div>
       </header>
 
+      {/* ── Body ─────────────────────────────────────────────── */}
       <section className="article-detail__body">
         <div className="article-detail__content">
+
+          {/* Key takeaways inline box */}
+          
+
+          {/* Sections */}
           {data.sections.map((s: any, i: number) => (
-            <div key={i} className="article-detail__reveal is-visible">
-              <h2 className="article-detail__h2">{s.h2}</h2>
-              <p>{s.p}</p>
+            <div key={i} className="article-detail__reveal">
+              {s.h2 && <h2 id={slugify(s.h2)}>{s.h2}</h2>}
+              {s.h3 && <h3>{s.h3}</h3>}
+              {s.p && <RenderLines lines={s.p} />}
             </div>
           ))}
+
+          <div className="article-detail__divider" />
+
+          {/* References */}
+          {data.references && (
+            <div className="article-detail__references article-detail__reveal">
+              <h2>References</h2>
+              <ol>
+                {(data.references as Reference[]).map((ref, i) => (
+                  <li key={i} className="article-detail__reference-item">
+                    <a href={ref.url} target="_blank" rel="noopener noreferrer">{ref.label}</a>
+                    <span className="article-detail__ref-meta"> — {ref.author}, {ref.year}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+
+          {/* Author */}
+          <div className="article-detail__author article-detail__reveal">
+            <div className="article-detail__author-avatar">BI</div>
+            <div>
+              <p className="article-detail__author-name">BFC Insights</p>
+              <p className="article-detail__author-role">Strategy & Digital Transformation Practice</p>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Sidebar ──────────────────────────────────────── */}
+        <aside className="article-detail__sidebar">
+          {h2Sections.length > 0 && (
+            <div className="article-detail__card article-detail__reveal">
+              <p className="article-detail__card-label">In this article</p>
+              {h2Sections.map((s: any, i: number) => (
+                <a key={i} href={`#${slugify(s.h2)}`} className="article-detail__toc-link">
+                  {s.h2}
+                </a>
+              ))}
+            </div>
+          )}
+          {data.takeaways && (
+            <div className="article-detail__card article-detail__reveal">
+              <p className="article-detail__takeaways-label">Key takeaways</p>
+              <ul className="article-detail__sidebar-takeaways">
+                {data.takeaways.map((t: string, i: number) => (
+                  <li key={i}>{t}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          <div className="article-detail__card article-detail__reveal">
+            <p className="article-detail__card-label">Related projects</p>
+            {data.relatedProjects && data.relatedProjects.map((p: any) => (
+              <Link
+                key={p.id}
+                to={`/who-we-are/our-projects/${p.id}`}
+                className="article-detail__related-link"
+              >
+                <img src={p.flag} alt={p.country} className="article-detail__related-flag" />
+                <span>{p.title}</span>
+              </Link>
+            ))}
+          </div>
+        </aside>
+      </section>
+
+      {/* ── CTA ──────────────────────────────────────────── */}
+      <section className="article-detail__cta">
+        <div className="article-detail__cta-inner">
+          <div>
+            <p className="article-detail__cta-eyebrow">Continue exploring</p>
+            <h3>Read more from the BFC strategy series</h3>
+          </div>
+          <Link to="/articles" className="article-detail__cta-button">
+            View all articles
+          </Link>
         </div>
       </section>
     </article>

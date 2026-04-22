@@ -17,6 +17,14 @@ import maherimg from '../src/assets/team/maher.jpeg';
 import medamine from '../src/assets/team/medamine.jpeg';
 import nadia from '../src/assets/team/nadia.jpeg';
 
+import abderrahman from '../src/assets/abderrahman.png';
+import cvnadia from '../src/assets/cv/CV Nadia YAICH  Février 2026.pdf';
+import cvakram from '../src/assets/cv/CV de Akrem Cherni (1).pdf';
+import cvmaher from '../src/assets/cv/CV MAHER BEN AMARA  Avril 2026.pdf';
+import cv_medamine from '../src/assets/cv/CV Mohamed Amine Sahli (2).pdf';
+import cvtasnim from '../src/assets/cv/CV Tasnim Zouaoui .pdf';
+import cvzaineb from '../src/assets/cv/CV ZEINEB SBOUI (2).pdf';
+
 
 
 
@@ -88,7 +96,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     img: medamine,
     email: 'mohamedamine.sahli@bfc.com.tn',
     phone: '+216 98 747 836 / +224 623 27 30 73',
-    cvUrl: DEFAULT_TEAM_CV_URL,
+    cvUrl: cv_medamine,
     countryName: 'Guinea',
     countryFlagUrl: 'https://flagcdn.com/w80/gn.png',
   },
@@ -98,7 +106,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     img: maherimg,
     email: 'maher.benamara@bfc.com.tn',
     phone: '+216-99-536-528',
-    cvUrl: DEFAULT_TEAM_CV_URL,
+    cvUrl: cvmaher,
     countryName: 'Tunisia',
     countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
     showPrimaryFlag: false,
@@ -110,7 +118,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     img: akremimg,
     email: 'akrem.cherni@bfc.com.tn',
     phone: '+216 98 194 201',
-    cvUrl: DEFAULT_TEAM_CV_URL,
+    cvUrl: cvakram,
     countryName: 'Tunisia',
     countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
     showPrimaryFlag: false,
@@ -122,7 +130,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     img: zeinebImg,
     email: 'zeineb.sboui@bfc.com.tn',
     phone: '+216-98-135-930',
-    cvUrl: DEFAULT_TEAM_CV_URL,
+    cvUrl: cvzaineb,
     countryName: 'Tunisia',
     countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
     showPrimaryFlag: false,
@@ -154,7 +162,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     img: nadia,
     email: 'nadia.yaich@bfc.com.tn',
     phone: '+216-58-422-199',
-    cvUrl: DEFAULT_TEAM_CV_URL,
+    cvUrl: cvnadia,
     countryName: 'Republic of the Congo',
     countryFlagUrl: 'https://flagcdn.com/w80/cg.png',
     extraFlags: [{ name: 'Tunisia', url: 'https://flagcdn.com/w80/tn.png' }],
@@ -165,7 +173,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     img: tasnimImg,
     email: 'tasnim.zouaoui@bfc.com.tn',
     phone: '+216-98-194-202',
-    cvUrl: DEFAULT_TEAM_CV_URL,
+    cvUrl: cvtasnim,
     countryName: 'Mauritania',
     countryFlagUrl: 'https://flagcdn.com/w80/mr.png',
     extraFlags: [{ name: 'Mali', url: 'https://flagcdn.com/w80/ml.png' }],
@@ -323,7 +331,7 @@ in implementing high‑impact transformation programs.              </p>
           <div className="ap-leadership-grid">
             <div className="ap-leader-card rev-fade">
               <div className="ap-leader-image">
-                <img src={nadiaImg} alt="Amor" />
+                <img src={abderrahman} alt="abderrahman" />
               </div>
               <div className="ap-leader-info">
                 <h3>Amin Abdelrahman</h3>
@@ -427,9 +435,7 @@ organisational management, public policy.</p>
               ))}
             </div>
           </div>
-          <div className="ap-text-center" style={{ marginTop: '4rem' }}>
-            <button className="ap-cv-button">Join Our Team</button>
-          </div>
+          
         </div>
       </section>
 

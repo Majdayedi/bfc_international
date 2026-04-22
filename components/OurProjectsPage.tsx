@@ -2,6 +2,87 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './OurProjectsPage.css';
 
+/* ─── Logo assets ──────────────────────────────────────────────────── */
+import logoADPME from '../src/assets/Logo references/ADPME benin.png';
+import logoSONAPI from '../src/assets/Logo references/sonapi.png';
+import logoOfficeRoyale from '../src/assets/Logo references/office royale.jpg';
+import logoExpertiseFrance from '../src/assets/Logo references/EXPERTISE FRANCE.jpg';
+import logoAPIP from '../src/assets/Logo references/APIP.png';
+import logoAMRTP from '../src/assets/Logo references/amrtp logo.jpg';
+import logoCILSS from '../src/assets/Logo references/CILSS.png';
+import logoEuropeanBank from '../src/assets/Logo references/european bank.png';
+import logoAMFUMOA from '../src/assets/Logo references/amf umoa.jpg';
+import logoCAMPOST from '../src/assets/Logo references/Campost_logo (1).png';
+import logoSOGUIPAH from '../src/assets/Logo references/Societe guenienne palmier huile.jpg';
+import logoConnectInnov from '../src/assets/Logo references/connect innov.png';
+import logoSelect from '../src/assets/Logo references/select.png';
+import logoLaPosteBenin from '../src/assets/Logo references/la poste Public benin.png';
+import logoMinNumerique from '../src/assets/Logo references/minsitere benin numerique et digitalisation.png';
+import logoAMICommerciale from '../src/assets/Logo references/AMI Commerciale.png';
+import logoWikiStartup from '../src/assets/Logo references/wiki startup.png';
+import logoAZIZA from '../src/assets/Logo references/aziza.jpg';
+import logoMunathara from '../src/assets/Logo references/Initiative Munathara.jpg';
+import logoMinFinance from '../src/assets/Logo references/ministere finance benin.png';
+import logoNGTech from '../src/assets/Logo references/NG technologies.jpg';
+import logoOIT from '../src/assets/Logo references/OIT logo.png';
+import logoSOTUGAR from '../src/assets/Logo references/Sotugar.png';
+import logoKALYS from '../src/assets/Logo references/KALYS.png';
+import logoUGFS from '../src/assets/Logo references/ugfs north africa logo.jpg';
+import logoSOROUBAT from '../src/assets/Logo references/Soroubat-logo.png';
+import logoTUNEPS from '../src/assets/Logo references/e-Procurement System TUNEPS.png';
+import logoSOLIDAR from '../src/assets/Logo references/SOLIDAR TUN.jpg';
+import logoNGOBeninAction from '../src/assets/Logo references/ong benin action.png';
+import logoRoseBlanche from '../src/assets/Logo references/rose blanche.png';
+import logoRedGO from '../src/assets/Logo references/redgo.png';
+import logoVILAVI from '../src/assets/Logo references/VILAVI.png';
+import logoDjibouti from '../src/assets/Logo references/Office de la Voirie de Djibouti.jpg';
+import logoWorldBank from '../src/assets/Logo references/world bank.png';
+import logoPDACG from '../src/assets/Logo references/LOGO-PDACG-removebg-preview.png';
+
+/** Maps project ID → logo asset. Projects without a matching logo use imageUrl. */
+const CLIENT_LOGOS: Record<number, string> = {
+  1:  logoADPME,
+  3:  logoSONAPI,
+  4:  logoOfficeRoyale,
+  5:  logoExpertiseFrance,
+  6:  logoAPIP,
+  7:  logoAMRTP,
+  8:  logoWorldBank,
+  9:  logoCILSS,
+  10: logoEuropeanBank,
+  11: logoAMFUMOA,
+  12: logoCAMPOST,
+  14: logoSOGUIPAH,
+  15: logoConnectInnov,
+  16: logoSelect,
+  17: logoLaPosteBenin,
+  18: logoMinNumerique,
+  19: logoMinNumerique,
+  20: logoAMICommerciale,
+  22: logoWikiStartup,
+  23: logoAZIZA,
+  25: logoMunathara,
+  26: logoMinFinance,
+  27: logoNGTech,
+  29: logoOIT,
+  30: logoSOTUGAR,
+  31: logoKALYS,
+  32: logoUGFS,
+  33: logoSOROUBAT,
+  34: logoTUNEPS,
+  36: logoSOLIDAR,
+  39: logoSOLIDAR,
+  40: logoNGOBeninAction,
+  41: logoAMICommerciale,
+  45: logoRoseBlanche,
+  46: logoRedGO,
+  47: logoVILAVI,
+  48: logoRedGO,
+  49: logoAZIZA,
+  50: logoDjibouti,
+  6:  logoPDACG,
+};
+
 /* ─── Types & Data ─────────────────────────────────────────────────── */
 export interface Project {
   id: number;
@@ -686,7 +767,7 @@ function mapRange(value: number, inMin: number, inMax: number, outMin: number, o
 const SLIDER_PROJECTS = PROJECTS.slice(0, 3); // Only show the first 3 on the slider
 
 const VH_PER_ITEM = 150;
-const SMOOTH_FACTOR = 0.04;
+const SMOOTH_FACTOR = 0.1;
 const INTRO_VH = 120;
 const CTA_AFTER = SLIDER_PROJECTS.length; // triggers after the last slide
 const CTA_VH = 120;
@@ -777,7 +858,7 @@ export const OurProjectsPage: React.FC = () => {
       void contentEl.offsetHeight;
       contentEl.style.animation = '';
       isTransitioningRef.current = false;
-    }, 420);
+    }, 200);
   }, []);
 
   useEffect(() => {
@@ -1021,26 +1102,30 @@ export const OurProjectsPage: React.FC = () => {
           {/* Images (right) */}
           <div className="pw-wheel-section" ref={wheelSectionRef}>
             <div className="pw-wheel-container">
-              {SLIDER_PROJECTS.map((p, i) => (
-                <div
-                  key={p.id}
-                  className="pw-wheel-item"
-                  ref={(el) => { wheelItemRefs.current[i] = el; }}
-                >
-                  <div className="pw-wheel-item-inner">
-                    <div
-                      className="pw-wheel-glow"
-                      style={{ background: p.accent }}
-                      ref={(el) => { glowRefs.current[i] = el; }}
-                    />
-                    <img
-                      src={p.imageUrl}
-                      alt={p.title}
-                      loading={i === 0 ? 'eager' : 'lazy'}
-                    />
+              {SLIDER_PROJECTS.map((p, i) => {
+                const logo = CLIENT_LOGOS[p.id];
+                return (
+                  <div
+                    key={p.id}
+                    className="pw-wheel-item"
+                    ref={(el) => { wheelItemRefs.current[i] = el; }}
+                  >
+                    <div className={`pw-wheel-item-inner${logo ? ' pw-wheel-item-inner--logo' : ''}`}>
+                      <div
+                        className="pw-wheel-glow"
+                        style={{ background: p.accent }}
+                        ref={(el) => { glowRefs.current[i] = el; }}
+                      />
+                      <img
+                        src={logo || p.imageUrl}
+                        alt={p.client}
+                        loading={i === 0 ? 'eager' : 'lazy'}
+                        className={logo ? 'pw-wheel-logo-img' : ''}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="pw-scroll-hint">
@@ -1137,8 +1222,13 @@ export const OurProjectsPage: React.FC = () => {
                   '--card-delay': `${i * 100}ms`,
                 } as React.CSSProperties}
               >
-                <div className="pw-card__img-wrap">
-                  <img src={p.imageUrl} alt={p.title} loading="lazy" />
+                <div className={`pw-card__img-wrap${CLIENT_LOGOS[p.id] ? ' pw-card__img-wrap--logo' : ''}`}>
+                  <img
+                    src={CLIENT_LOGOS[p.id] || p.imageUrl}
+                    alt={p.client}
+                    loading="lazy"
+                    className={CLIENT_LOGOS[p.id] ? 'pw-card__logo-img' : ''}
+                  />
                   <span className="pw-card__cat" style={{ background: p.accent }}>
                     {p.category}
                   </span>
