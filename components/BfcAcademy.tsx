@@ -146,7 +146,7 @@ const courseCatalog: CourseCatalogItem[] = [
   },
   {
     id: 3,
-    title: 'Innovation Workshop: Concevoir l\'Innovation',
+    title: 'Innovation Workshop: Designing Innovation',
     institution: 'BFC Group',
     country: 'Tunisia',
     year: '2026',
@@ -189,7 +189,7 @@ const courseCatalog: CourseCatalogItem[] = [
   },
   {
     id: 4,
-    title: 'L\'IA Generative pour l\'Audit et le Controle Interne',
+    title: 'Generative AI for Audit and Internal Control',
     institution: 'BFC Academy & E2B Training',
     country: 'Tunisia',
     year: '2026',
@@ -218,10 +218,10 @@ const courseCatalog: CourseCatalogItem[] = [
       'Apply advanced methods for data reliability, interview augmentation, and dashboarding.'
     ],
     contentSections: [
-      { title: 'Journee 1 - Foundations, Tools and Prompt Engineering', lectures: 4, duration: '1 day' },
-      { title: 'Journee 2 - NotebookLM and Claude Architecture', lectures: 4, duration: '1 day' },
-      { title: 'Journee 3 - Applied Risk and Compliance Automation', lectures: 4, duration: '1 day' },
-      { title: 'Journee 4 - Strategy, Ethics, Testing and Final Validation', lectures: 4, duration: '1 day' }
+      { title: 'Day 1 - Foundations, Tools and Prompt Engineering', lectures: 4, duration: '1 day' },
+      { title: 'Day 2 - NotebookLM and Claude Architecture', lectures: 4, duration: '1 day' },
+      { title: 'Day 3 - Applied Risk and Compliance Automation', lectures: 4, duration: '1 day' },
+      { title: 'Day 4 - Strategy, Ethics, Testing and Final Validation', lectures: 4, duration: '1 day' }
     ],
     journeySteps: [
       { title: 'Journey 01 - Explore AI Foundations', detail: 'Understand tools and prompt techniques for audit contexts.' },
@@ -419,7 +419,7 @@ export const BfcAcademy: React.FC = () => {
             }}
           >
             <h1 className="hero-title">
-              BFC International Academy: <br />Acteur de Votre Succès
+              BFC International Academy: <br />Your Partner in Excellence
             </h1>
             <p className="hero-desc">
               Elevate your professional expertise with our world-class certification programs 
@@ -470,7 +470,7 @@ export const BfcAcademy: React.FC = () => {
       </section>
       {/* Excellence & Innovation Section */}
      
-      {/* Nos Formations Title Section */}
+      {/* Our Courses Title Section */}
       <section className="formations-title-section">
         <div className="formations-title-container">
           <h2 className="pw-intro__title">
