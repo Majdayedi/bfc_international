@@ -6,8 +6,8 @@ import './EnrollmentForm.css';
 const ALL_COURSES = [
   'Fundamentals of Risk Management (FoRM)',
   'Certified Internal Control Specialist (CICS)',
-  'Innovation Workshop: Concevoir l\'Innovation',
-  'L\'IA Generative pour l\'Audit et le Controle Interne',
+  'Innovation Workshop: Designing Innovation',
+  'Generative AI for Audit and Internal Control',
 ];
 
 const COUNTRIES = [

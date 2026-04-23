@@ -1,11 +1,11 @@
 ﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './RepresentativeDetail.css';
-import { PROJECTS, type Project } from './OurProjectsPage';
+import { PROJECTS, CLIENT_LOGOS, type Project } from './OurProjectsPage';
 
 import bfcCongo from '../src/assets/bfc_congo.png';
 import bfcSenegal from '../src/assets/bfc_senegal.png';
-import bfcGuinee from '../src/assets/bfc.png';
+import bfcGuinee from '../src/assets/BFC_GUINEE.jpeg';
 import bfcMauritania from '../src/assets/bfc_mauritania.png';
 import bfcTunisia from '../src/assets/MGI-BFC.png';
 import reandaLogo from '../src/assets/reanda.png';
@@ -187,6 +187,11 @@ export const RepresentativeDetail: React.FC = () => {
     [data],
   );
 
+  const countryReferences = useMemo(() => {
+    if (!data) return [];
+    return PROJECTS.filter((p) => data.projectCountries.includes(p.country));
+  }, [data]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     setIsGlobeAnimating(false);
@@ -293,6 +298,45 @@ export const RepresentativeDetail: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Country References / Client Logos Section */}
+        {countryReferences.length > 0 && (
+          <div className="rd-references-section rd-reveal">
+            <div className="rd-references-inner">
+            <div className="rd-rep-projects-header">
+              <span className="rd-references-eyebrow">OUR CLIENTS</span>
+              <h2 className="rd-references-heading">
+                References in {data.location.split(',')[0]}
+              </h2>
+              <div className="rd-references-divider"></div>
+            </div>
+            <div className="rd-rep-projects-grid">
+              {countryReferences.map((project) => {
+                const logo = CLIENT_LOGOS[project.id];
+                return (
+                  <div className="rd-ref-card sharp-card" key={project.id}>
+                    <div className="rd-rep-project-img-wrap">
+                      <img src={project.imageUrl} alt={project.title} className="rd-rep-project-img" />
+                      <span className="rd-rep-project-cat">{project.category}</span>
+                      {logo && (
+                        <div className="rd-ref-logo-badge">
+                          <img src={logo} alt={project.client} className="rd-ref-logo-img" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="rd-rep-project-content">
+                      <span className="rd-rep-project-year">{project.year}</span>
+                      <h3 className="rd-ref-card-title">{project.title}</h3>
+                      <p className="rd-rep-project-desc">{project.description}</p>
+                      <p className="rd-ref-client-name">{project.client}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            </div>
+          </div>
+        )}
 
         {/* Enhanced Bottom Section: Manager Left, Globe Right */}
         <div className="rd-bottom-section rd-reveal">

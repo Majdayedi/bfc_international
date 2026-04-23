@@ -40,7 +40,7 @@ import logoWorldBank from '../src/assets/Logo references/world bank.png';
 import logoPDACG from '../src/assets/Logo references/LOGO-PDACG-removebg-preview.png';
 
 /** Maps project ID → logo asset. Projects without a matching logo use imageUrl. */
-const CLIENT_LOGOS: Record<number, string> = {
+export const CLIENT_LOGOS: Record<number, string> = {
   1:  logoADPME,
   3:  logoSONAPI,
   4:  logoOfficeRoyale,
@@ -428,8 +428,8 @@ export const PROJECTS: Project[] = [
     title: 'Rationalization of electronic signature services',
     category: 'Digital Trust',
     client: 'Ministry of Finance (Finance Computer Center)',
-    country: 'Tunisia',
-    flag: 'https://flagcdn.com/w40/tn.png',
+    country: 'Benin',
+    flag: 'https://flagcdn.com/w40/bj.png',
     year: '2021',
     description:
       'Maturity and compliance review of e-signature services, with organizational and risk analysis recommendations.',

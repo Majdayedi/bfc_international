@@ -825,3 +825,155 @@
     text-align: right;
   }
 }
+
+/* ─── Country References Section ─────────────────────────────────── */
+.rd-references-section {
+  margin-top: 120px;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  background: linear-gradient(160deg, var(--rd-navy) 0%, #0f2040 60%, #0a1628 100%);
+  padding: 80px 5vw 100px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.rd-references-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--rd-teal), var(--rd-blue), var(--rd-teal));
+}
+
+.rd-references-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.rd-references-eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--rd-teal);
+}
+
+.rd-references-heading {
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.rd-references-divider {
+  width: 60px;
+  height: 4px;
+  background: var(--rd-teal);
+  margin-top: 4px;
+}
+
+/* Reference cards – inherit image wrap & content but override colours */
+.rd-ref-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(38, 192, 175, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.rd-ref-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 0 2px var(--rd-teal);
+  border-color: var(--rd-teal);
+}
+
+.rd-ref-card .rd-rep-project-img-wrap {
+  position: relative;
+}
+
+.rd-ref-card .rd-rep-project-img {
+  transition: transform 0.8s ease;
+}
+
+.rd-ref-card:hover .rd-rep-project-img {
+  transform: scale(1.06);
+}
+
+/* Logo badge – top-right corner of the image */
+.rd-ref-logo-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 64px;
+  height: 44px;
+  background: #ffffff;
+  border: 2px solid var(--rd-teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.rd-ref-card:hover .rd-ref-logo-badge {
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(38, 192, 175, 0.35);
+}
+
+.rd-ref-logo-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Card content on dark background */
+.rd-ref-card .rd-rep-project-content {
+  background: transparent;
+  border-top: 1px solid rgba(38, 192, 175, 0.15);
+}
+
+.rd-ref-card-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.rd-ref-card .rd-rep-project-desc {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.rd-ref-card .rd-rep-project-year {
+  color: var(--rd-teal);
+}
+
+.rd-ref-client-name {
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--rd-teal);
+  margin: 6px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid rgba(38, 192, 175, 0.25);
+}
+
+@media (max-width: 768px) {
+  .rd-references-section {
+    margin-top: 80px;
+    padding: 60px 5vw 80px;
+  }
+}

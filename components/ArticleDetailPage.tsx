@@ -907,7 +907,7 @@ export const ArticleDetailPage: React.FC = () => {
             <p className="article-detail__cta-eyebrow">Continue exploring</p>
             <h3>Read more from the BFC strategy series</h3>
           </div>
-          <Link to="/articles" className="article-detail__cta-button">
+          <Link to="/who-we-are/our-articles" className="article-detail__cta-button">
             View all articles
           </Link>
         </div>
