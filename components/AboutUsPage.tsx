@@ -81,7 +81,7 @@ interface TeamMember {
   img: string;
   email: string;
   phone: string;
-  cvUrl: string;
+  cvUrl: string | null | false;
   countryName: string;
   countryFlagUrl: string;
   showPrimaryFlag?: boolean;
@@ -142,7 +142,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     img: chaimaimg,
     email: 'chaima.gader@bfc.com.tn',
     phone: '+216-98-747-842',
-    cvUrl: DEFAULT_TEAM_CV_URL,
+    cvUrl: null,
     countryName: 'Tunisia',
     countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
   },
@@ -152,7 +152,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     img: inesimg,
     email: 'ines.yaich@bfc.com.tn',
     phone: 'Phone not provided',
-    cvUrl: DEFAULT_TEAM_CV_URL,
+    cvUrl: false,
     countryName: 'Senegal',
     countryFlagUrl: 'https://flagcdn.com/w80/sn.png',
   },
@@ -421,14 +421,16 @@ organisational management, public policy.</p>
                           <span>{member.phone}</span>
                         </button>
                       </div>
-                      <button
-                        className="ap-team-action-btn ap-team-download-btn"
-                        title="Download CV"
-                        aria-label={`Download ${member.name} CV`}
-                        onClick={() => handlePdfDownload(member.cvUrl, `${member.name.toLowerCase().replace(/\s+/g, '-')}-cv.pdf`)}
-                      >
-                        <FileDown size={20} />
-                      </button>
+                      {member.cvUrl && (
+                        <button
+                          className="ap-team-action-btn ap-team-download-btn"
+                          title="Download CV"
+                          aria-label={`Download ${member.name} CV`}
+                          onClick={() => handlePdfDownload(member.cvUrl as string, `${member.name.toLowerCase().replace(/\s+/g, '-')}-cv.pdf`)}
+                        >
+                          <FileDown size={20} />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

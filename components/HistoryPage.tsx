@@ -24,8 +24,9 @@ interface Milestone {
   img: string;
   desc: string;
   logo: string;
-  flag?: string;
+  flag?: string | false;
   path?: string;
+  email?: string;
 }
 
 /* Background colour for each milestone — interpolated as you scroll */
@@ -47,7 +48,8 @@ const MS: Milestone[] = [
     desc: "MGI BFC is the parent entity. It is an accounting and audit firm founded in 2010 and based in Tunis. MGI BFC is a member of the international MGI WORLDWIDE network, one of the top 20 global consulting and audit networks.",
     logo: MGIBFCImg,
     flag: 'https://flagcdn.com/w80/tn.png',
-    path: '/representatives/tunisia'
+    path: '/representatives/tunisia',
+    email: 'nadia.yaich@bfc.com.tn'
   },
   {
     year: '2020',
@@ -57,7 +59,8 @@ const MS: Milestone[] = [
     desc: "Founded in 2020, BFC International & Academy is a consulting and training firm. As a partner of IRM and ICI in Africa, it also provides outsourcing services in France and Canada.",
     logo: bfcLogo,
     flag: 'https://flagcdn.com/w80/tn.png',
-    path: '/standard-training'
+    path: '/standard-training',
+    email: 'nadia.yaich@bfc.com.tn'
   },
   {
     year: '2022',
@@ -67,7 +70,8 @@ const MS: Milestone[] = [
     desc: "Our expansion began with the launch of BFC Guinea in 2022. This entity was created to serve the sub-region and ensure closer expert support to meet client needs.",
     logo: guineeLogo,
     flag: 'https://flagcdn.com/w80/gn.png',
-    path: '/representatives/guinea'
+    path: '/representatives/guinea',
+    email: 'mohamedamine.sahli@bfc.com.tn'
   },
   {
     year: '2022',
@@ -77,7 +81,8 @@ const MS: Milestone[] = [
     desc: "BFC Senegal further strengthened our presence in West Africa. The firm offers a wide range of services related to IT, management, training, and organizational development.",
     logo: senegalLogo,
     flag: 'https://flagcdn.com/w80/sn.png',
-    path: '/representatives/senegal'
+    path: '/representatives/senegal',
+    email: 'ines.yaich@bfc.com.tn'
   },
   {
     year: '2023',
@@ -87,7 +92,8 @@ const MS: Milestone[] = [
     desc: "BFC expanded its footprint into the Congo Basin. The firm entered Central Africa by delivering high-level consulting and training services.",
     logo: congoLogo,
     flag: 'https://flagcdn.com/w80/cg.png',
-    path: '/representatives/congo'
+    path: '/representatives/congo',
+    email: 'nadia.yaich@bfc.com.tn'
   },
   {
     year: '2025',
@@ -97,7 +103,8 @@ const MS: Milestone[] = [
     desc: "BFC continues its strategic expansion across the world, developing new local and international partnerships that support sustainable development.",
     logo: mauritaniaLogo,
     flag: false,
-    path: '/representatives/mauritania'
+    path: '/representatives/mauritania',
+    email: 'tasnim.zouaoui@bfc.com.tn'
   },
 ];
 
@@ -514,9 +521,14 @@ export const HistoryPage: React.FC = () => {
                 >
                   See More
                 </button>
-                <button className="hi-ms__contact-cta" type="button" onClick={() => window.location.href = '/contact'}>
-                  Contact our Country Manager
-                </button>
+                {m.email && (
+                  <a
+                    className="hi-ms__contact-cta"
+                    href={`mailto:${m.email}`}
+                  >
+                    Contact our Country Manager
+                  </a>
+                )}
               </div>
             </div>
 

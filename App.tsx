@@ -42,7 +42,9 @@ const App: React.FC = () => {
       }
     }
 
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    // Bypass CSS scroll-behavior: smooth so the reset is always instant
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }, [location.pathname, location.search, location.hash]);
 
   useLayoutEffect(() => {

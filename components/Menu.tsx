@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useTransition } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { X, ChevronRight, ChevronLeft } from 'lucide-react';
 import bfcLogo from '../src/assets/bfc.png';
 import ici from '../src/assets/certif/ici.png';
@@ -130,6 +130,48 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const [, startTransition] = useTransition();
+
+  // Preload all lazy route components as soon as the menu opens so they are
+  // ready by the time the user clicks — eliminates the lazy-load delay.
+  useEffect(() => {
+    if (isOpen) {
+      import('./AboutUsPage');
+      import('./ArticlesPage');
+      import('./ArticleDetailPage');
+      import('./ContactPage');
+      import('./OurProjectsPage');
+      import('./ProjectArticlePage');
+      import('./HistoryPage');
+      import('./BfcAcademy');
+      import('./CourseDetail');
+      import('./ServiceDetail');
+      import('./RepresentativeDetail');
+      import('./EnrollmentForm');
+    }
+  }, [isOpen]);
+
+  // Navigate inside a React transition: React 19 keeps the current page frozen
+  // (no Suspense fallback flash) until the new component is ready. The location
+  // change only commits after the new page renders, so App.tsx's useLayoutEffect
+  // closes the menu exactly when the new page is already visible behind it.
+  const handleLinkClick = (
+    e: React.MouseEvent,
+    to: string | { pathname: string; hash: string },
+    state?: unknown,
+  ) => {
+    e.preventDefault();
+    const targetPath = typeof to === 'string' ? to : to.pathname;
+    if (targetPath === location.pathname) {
+      // Same page: just close the menu
+      onClose();
+      return;
+    }
+    startTransition(() => {
+      navigate(to as string, state ? { state } : undefined);
+    });
+  };
 
   const isItemActive = (item: MenuItem) => {
     if (item.href === location.pathname || item.href === location.pathname + location.hash) return true;
@@ -169,7 +211,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
       {/* Header */}
       <div className="menu__header">
         <div className={`menu__logo ${isOpen ? 'menu__logo--open' : 'menu__logo--closed'}`}>
-          <Link to="/" className="menu__logo-link" onClick={onClose}>
+          <Link to="/" className="menu__logo-link" onClick={(e) => handleLinkClick(e, '/')}>
             <span className="menu__logo-box">
               <img src={bfcLogo} alt="BFC" className="menu__logo-img" />
             </span>
@@ -238,7 +280,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
                   <Link
                     key={item.label}
                     to={item.href}
-                    onClick={onClose}
+                    onClick={(e) => handleLinkClick(e, item.href!)}
                     onMouseEnter={() => expandedIndex === null && setHoveredIndex(i)}
                     onMouseLeave={() => setHoveredIndex(null)}
                     className={itemClassName}
@@ -256,7 +298,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
                   <Link
                     key={item.label}
                     to={{ pathname: '/', hash: item.href }}
-                    onClick={onClose}
+                    onClick={(e) => handleLinkClick(e, { pathname: '/', hash: item.href! })}
                     onMouseEnter={() => expandedIndex === null && setHoveredIndex(i)}
                     onMouseLeave={() => setHoveredIndex(null)}
                     className={itemClassName}
@@ -359,7 +401,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
                                 key={nestedPage.label}
                                 to={nestedPage.href}
                                 state={nestedPage.course ? { course: nestedPage.course } : undefined}
-                                onClick={onClose}
+                                onClick={(e) => handleLinkClick(e, nestedPage.href, nestedPage.course ? { course: nestedPage.course } : undefined)}
                                 className={nestedClassName}
                                 style={nestedStyle}
                               >
@@ -373,7 +415,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
                               <Link
                                 key={nestedPage.label}
                                 to={{ pathname: '/', hash: nestedPage.href }}
-                                onClick={onClose}
+                                onClick={(e) => handleLinkClick(e, { pathname: '/', hash: nestedPage.href })}
                                 className={nestedClassName}
                                 style={nestedStyle}
                               >
@@ -404,7 +446,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
                         key={subPage.label}
                         to={subPage.href}
                         state={subPage.course ? { course: subPage.course } : undefined}
-                        onClick={onClose}
+                        onClick={(e) => handleLinkClick(e, subPage.href, subPage.course ? { course: subPage.course } : undefined)}
                         className={subItemClassName}
                         style={subItemStyle}
                       >
@@ -418,7 +460,7 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
                       <Link
                         key={subPage.label}
                         to={{ pathname: '/', hash: subPage.href }}
-                        onClick={onClose}
+                        onClick={(e) => handleLinkClick(e, { pathname: '/', hash: subPage.href })}
                         className={subItemClassName}
                         style={subItemStyle}
                       >
