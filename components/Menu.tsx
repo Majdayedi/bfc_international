@@ -137,18 +137,18 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
   // ready by the time the user clicks — eliminates the lazy-load delay.
   useEffect(() => {
     if (isOpen) {
-      import('./AboutUsPage');
-      import('./ArticlesPage');
-      import('./ArticleDetailPage');
-      import('./ContactPage');
-      import('./OurProjectsPage');
-      import('./ProjectArticlePage');
-      import('./HistoryPage');
-      import('./BfcAcademy');
-      import('./CourseDetail');
-      import('./ServiceDetail');
-      import('./RepresentativeDetail');
-      import('./EnrollmentForm');
+      import('../pages/AboutUsPage');
+      import('../pages/ArticlesPage');
+      import('../pages/ArticleDetailPage');
+      import('../pages/ContactPage');
+      import('../pages/OurProjectsPage');
+      import('../pages/ProjectArticlePage');
+      import('../pages/HistoryPage');
+      import('../pages/BfcAcademy');
+      import('../pages/CourseDetail');
+      import('../pages/ServiceDetail');
+      import('../pages/RepresentativeDetail');
+      import('../pages/EnrollmentForm');
     }
   }, [isOpen]);
 
@@ -495,9 +495,8 @@ export const Menu: React.FC<MenuProps> = ({ isOpen, onClose }) => {
         <div className="menu__footer-inner">
           <p>© 2026 BFC Consulting & Innovation</p>
           <div className="menu__footer-links">
-            <a href="#" className="menu__footer-link">LinkedIn</a>
-            <a href="#" className="menu__footer-link">Twitter</a>
-            <a href="#" className="menu__footer-link">Instagram</a>
+            <a href="https://tn.linkedin.com/company/bfc-international-academy" className="menu__footer-link">LinkedIn</a>
+            <a href="https://www.youtube.com/@BFCGROUPOFFICIAL" className="menu__footer-link">YouTube</a>
           </div>
         </div>
       </div>

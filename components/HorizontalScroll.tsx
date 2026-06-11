@@ -81,7 +81,7 @@ export const HorizontalScroll: React.FC = () => {
           scrollTrigger: {
             trigger: triggerRef.current,
             start: "top top",
-            end: "2000 top",
+            end: () => "+=" + (sectionRef.current?.scrollWidth || 0) * 0.8,
             scrub: 0.1,
             pin: true,
           },

@@ -2,13 +2,27 @@
   background: #fff;
   color: #204383;
   padding: 10rem 0;
+  padding-top: 3%;
+  padding-bottom: 3%;
   border-top: 1px solid #f3f4f6;
+  margin-top: -2rem;
+  margin-bottom: -2rem;
 }
+
+
 
 .stats__container {
   max-width: 80rem;
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+.stats__logo {
+  display: block;
+  margin: 0 auto 2rem;
+  max-width: 250px;
+  width: 100%;
+  height: auto;
 }
 
 .stats__title {

@@ -8,6 +8,7 @@ import { Philosophy } from './components/Philosophy';
 import { HorizontalScroll } from './components/HorizontalScroll';
 import { ShowMoreArticles } from './components/ShowMoreArticles';
 import { Stats } from './components/Stats';
+import { Certifications } from './components/Certifications';
 import { Expertise } from './components/Expertise';
 import { Footer } from './components/Footer';
 import { Menu } from './components/Menu';
@@ -15,19 +16,19 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { FloatingContactIcon } from './components/FloatingContactIcon';
 import './App.css';
 
-const ArticlesPage = lazy(() => import('./components/ArticlesPage').then((m) => ({ default: m.ArticlesPage })));
-const ArticleDetailPage = lazy(() => import('./components/ArticleDetailPage').then((m) => ({ default: m.ArticleDetailPage })));
-const ContactPage = lazy(() => import('./components/ContactPage').then((m) => ({ default: m.ContactPage })));
-const AboutUsPage = lazy(() => import('./components/AboutUsPage').then((m) => ({ default: m.AboutUsPage })));
-const OurProjectsPage = lazy(() => import('./components/OurProjectsPage').then((m) => ({ default: m.OurProjectsPage })));
-const ProjectArticlePage = lazy(() => import('./components/ProjectArticlePage').then((m) => ({ default: m.ProjectArticlePage })));
-const HistoryPage = lazy(() => import('./components/HistoryPage').then((m) => ({ default: m.HistoryPage })));
-const BfcAcademy = lazy(() => import('./components/BfcAcademy').then((m) => ({ default: m.BfcAcademy })));
-const CourseDetail = lazy(() => import('./components/CourseDetail'));
-const ServiceDetail = lazy(() => import('./components/ServiceDetail').then((m) => ({ default: m.ServiceDetail })));
-const RepresentativeDetail = lazy(() => import('./components/RepresentativeDetail').then((m) => ({ default: m.RepresentativeDetail })));
-const AdminDashboard = lazy(() => import('./components/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
-const EnrollmentForm = lazy(() => import('./components/EnrollmentForm'));
+const ArticlesPage = lazy(() => import('./pages/ArticlesPage').then((m) => ({ default: m.ArticlesPage })));
+const ArticleDetailPage = lazy(() => import('./pages/ArticleDetailPage').then((m) => ({ default: m.ArticleDetailPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then((m) => ({ default: m.ContactPage })));
+const AboutUsPage = lazy(() => import('./pages/AboutUsPage').then((m) => ({ default: m.AboutUsPage })));
+const OurProjectsPage = lazy(() => import('./pages/OurProjectsPage').then((m) => ({ default: m.OurProjectsPage })));
+const ProjectArticlePage = lazy(() => import('./pages/ProjectArticlePage').then((m) => ({ default: m.ProjectArticlePage })));
+const HistoryPage = lazy(() => import('./pages/HistoryPage').then((m) => ({ default: m.HistoryPage })));
+const BfcAcademy = lazy(() => import('./pages/BfcAcademy').then((m) => ({ default: m.BfcAcademy })));
+const CourseDetail = lazy(() => import('./pages/CourseDetail'));
+const ServiceDetail = lazy(() => import('./pages/ServiceDetail').then((m) => ({ default: m.ServiceDetail })));
+const RepresentativeDetail = lazy(() => import('./pages/RepresentativeDetail').then((m) => ({ default: m.RepresentativeDetail })));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
+const EnrollmentForm = lazy(() => import('./pages/EnrollmentForm'));
 
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -80,6 +81,7 @@ const App: React.FC = () => {
                 <HorizontalScroll />
                 <ShowMoreArticles />
                 <Stats />
+                <Certifications />
                 <Expertise />
               </main>
               <Footer />
