@@ -1,6 +1,6 @@
 .expertise {
   background: #f8fafc;
-  padding: 8rem 0;
+
 }
 
 @media (min-width: 768px) {
@@ -12,6 +12,8 @@
 .expertise__container {
   max-width: 80rem;
   margin: 0 auto;
+  margin-top: -5rem;
+  margin-bottom: -5rem;
   padding: 0 1.5rem;
 }
 
@@ -24,7 +26,7 @@
 .expertise__header {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 0rem;
   margin-bottom: 6rem;
 }
 

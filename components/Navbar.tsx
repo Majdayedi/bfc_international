@@ -19,7 +19,7 @@ const COUNTRY_LINKS = [
   { label: 'Congo', to: '/representatives/congo' },
   { label: 'Senegal', to: '/representatives/senegal' },
   { label: 'Tunisia', to: '/representatives/tunisia' },
-  { label: 'Guinea', to: '/representatives/guinee' },
+  { label: 'Guinea', to: '/representatives/guinea' },
   { label: 'Mauritania', to: '/representatives/mauritania' },
 ];
 

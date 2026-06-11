@@ -5,7 +5,7 @@ import './OurProjectsPage.css';
 /* ─── Logo assets ──────────────────────────────────────────────────── */
 import logoADPME from '../src/assets/Logo references/ADPME benin.png';
 import logoSONAPI from '../src/assets/Logo references/sonapi.png';
-import logoOfficeRoyale from '../src/assets/Logo references/office royale.jpg';
+import logoOfficeRoyale from '../src/assets/Logo references/office royale .jpg';
 import logoExpertiseFrance from '../src/assets/Logo references/EXPERTISE FRANCE.jpg';
 import logoAPIP from '../src/assets/Logo references/APIP.png';
 import logoAMRTP from '../src/assets/Logo references/amrtp logo.jpg';
@@ -139,9 +139,9 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 4,
-    title: 'Setup of a Risk Management Cell for the Saudi Government',
+    title: 'Setup of a Risk Management process',
     category: 'Organizational Management',
-    client: 'Royal Office',
+    client: 'Saudi Arabia',
     country: 'Saudi Arabia',
     flag: 'https://flagcdn.com/w40/sa.png',
     year: '2025 - Ongoing',
@@ -595,7 +595,7 @@ export const PROJECTS: Project[] = [
   {
     id: 39,
     title: 'Legislative support and Think Tank animation',
-    category: 'State / Government',
+    category: 'Governance',
     client: 'Solidar Tunisie',
     country: 'Tunisia',
     flag: 'https://flagcdn.com/w40/tn.png',
@@ -772,8 +772,59 @@ const INTRO_VH = 120;
 const CTA_AFTER = SLIDER_PROJECTS.length; // triggers after the last slide
 const CTA_VH = 120;
 
-const CATEGORIES = ['All', ...Array.from(new Set(PROJECTS.map((p) => p.category)))];
+// Split multi-category strings (e.g., "ICT / Feasibility Study" → ["ICT", "Feasibility Study"])
+const getAllCategories = () => {
+  const allCats = new Set<string>();
+  PROJECTS.forEach((p) => {
+    const cats = p.category.split('/').map((c) => c.trim());
+    cats.forEach((cat) => allCats.add(cat));
+  });
+  return ['All', ...Array.from(allCats)];
+};
+
+const CATEGORIES = getAllCategories();
 const COUNTRIES = ['All', ...Array.from(new Set(PROJECTS.map((p) => p.country)))];
+
+// Color palette for filter categories
+const CATEGORY_COLORS: Record<string, { bg: string; border: string; text: string }> = {
+  'All': { bg: '#243c8a', border: '#243c8a', text: '#fff' },
+  'Global Strategy': { bg: '#204383', border: '#204383', text: '#fff' },
+  'Digital Trust': { bg: '#30aeb7', border: '#30aeb7', text: '#fff' },
+  'ICT': { bg: '#299bcd', border: '#299bcd', text: '#fff' },
+  'Organizational Management': { bg: '#6b5b95', border: '#6b5b95', text: '#fff' },
+  'Strategy / Organizational Management': { bg: '#8e7cc3', border: '#8e7cc3', text: '#fff' },
+  'Feasibility Study': { bg: '#f59e0b', border: '#f59e0b', text: '#fff' },
+  'Institutional Governance': { bg: '#10b981', border: '#10b981', text: '#fff' },
+  'ICT / Institutional': { bg: '#06b6d4', border: '#06b6d4', text: '#fff' },
+  'Management': { bg: '#f97316', border: '#f97316', text: '#fff' },
+  'Strategy / Governance': { bg: '#8b5cf6', border: '#8b5cf6', text: '#fff' },
+  'Finance / Operations': { bg: '#ec4899', border: '#ec4899', text: '#fff' },
+  'Risk / Audit / Training': { bg: '#ef4444', border: '#ef4444', text: '#fff' },
+  'Training / Strategy': { bg: '#a855f7', border: '#a855f7', text: '#fff' },
+  'Training': { bg: '#d97706', border: '#d97706', text: '#fff' },
+  'State / Government': { bg: '#06b6d4', border: '#06b6d4', text: '#fff' },
+  'ICT / Feasibility Study': { bg: '#14b8a6', border: '#14b8a6', text: '#fff' },
+  'ICT / TIC': { bg: '#0891b2', border: '#0891b2', text: '#fff' },
+};
+
+const getCategoryColor = (category: string) => {
+  return CATEGORY_COLORS[category] || { bg: '#243c8a', border: '#243c8a', text: '#fff' };
+};
+
+// Country to flag mapping
+const COUNTRY_FLAGS: Record<string, string> = {
+  'All': '',
+  'Benin': 'https://flagcdn.com/w40/bj.png',
+  'Mauritania': 'https://flagcdn.com/w40/mr.png',
+  'Guinea': 'https://flagcdn.com/w40/gn.png',
+  'Saudi Arabia': 'https://flagcdn.com/w40/sa.png',
+  'Tunisia': 'https://flagcdn.com/w40/tn.png',
+  'Mali': 'https://flagcdn.com/w40/ml.png',
+  'Niger': 'https://flagcdn.com/w40/ne.png',
+  'Ivory Coast': 'https://flagcdn.com/w40/ci.png',
+  'Cameroon': 'https://flagcdn.com/w40/cm.png',
+  'Djibouti': 'https://flagcdn.com/w40/dj.png',
+};
 
 /* ─── Component ────────────────────────────────────────────────────── */
 export const OurProjectsPage: React.FC = () => {
@@ -809,8 +860,18 @@ export const OurProjectsPage: React.FC = () => {
   const filterOptions = filterMode === 'category' ? CATEGORIES : COUNTRIES;
 
   const filteredProjects = PROJECTS.filter((p) => {
-    const field = filterMode === 'category' ? p.category : p.country;
-    const matchesFilter = activeFilter === 'All' || field === activeFilter;
+    let matchesFilter = false;
+    if (activeFilter === 'All') {
+      matchesFilter = true;
+    } else if (filterMode === 'category') {
+      // Split project's categories and check if activeFilter matches any of them
+      const projectCategories = p.category.split('/').map((c) => c.trim());
+      matchesFilter = projectCategories.includes(activeFilter);
+    } else {
+      // For country filter, use direct comparison
+      matchesFilter = p.country === activeFilter;
+    }
+
     const q = searchQuery.toLowerCase();
     const matchesSearch =
       !q ||
@@ -1015,131 +1076,6 @@ export const OurProjectsPage: React.FC = () => {
   return (
     <main className="projects-page">
 
-      {/* ── Project Slides ────────────────────────────────────────── */}
-      <div ref={driverRef} className="pw-scroll-driver" style={{ height: `${scrollHeight}vh` }}>
-        <div className="pw-sticky">
-
-          {/* Intro title overlay */}
-          <div className="pw-intro" ref={introRef}>
-            <h1 className="pw-intro__title1">
-              Our Top<br />
-              <span className="pw-intro__title-stroke1">References</span>
-            </h1>
-            <div className="pw-intro__line" />
-            <p className="pw-intro__sub">Over 50 projects worldwide.</p>
-          </div>
-
-          {/* CTA interstitial overlay */}
-          <div className="pw-cta" ref={ctaRef} style={{ opacity: 0 }}>
-            <h2 className="pw-cta__title">
-              Interested<br />
-              <span className="pw-cta__title-stroke">in more?</span>
-            </h2>
-            <div className="pw-cta__line" />
-            <div className="pw-cta__scroll-hint">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 5v14" />
-                <path d="m18 13-6 6-6-6" />
-              </svg>
-              <span>Scroll down</span>
-            </div>
-          </div>
-
-          {/* Progress bar */}
-          <div className="pw-progress-bar" ref={progressBarRef}>
-            {SLIDER_PROJECTS.map((_, i) => (
-              <div key={i} className="pw-progress-segment">
-                <div
-                  className="pw-progress-fill"
-                  ref={(el) => { progressFillRefs.current[i] = el; }}
-                />
-              </div>
-            ))}
-          </div>
-
-          {/* Content (left) */}
-          <div className="pw-content-section" ref={contentSectionRef}>
-            <div className="pw-content-inner" ref={contentRef}>
-              
-
-              
-
-              <h2 className="pw-project-title">
-                {titleLine1} <div className="pw-category-badge" style={{ '--badge-accent': project.accent } as React.CSSProperties}>
-                {project.category}
-              </div>
-                <br />
-                <span className="pw-text-stroke">{titleLine2}</span>
-              </h2>
-
-              <p className="pw-project-desc">{project.description}</p>
-
-              <div className="pw-project-meta">
-                <img
-                  src={project.flag}
-                  alt={project.country}
-                  className="pw-project-flag"
-                />
-                <span className="pw-project-country">{project.country}</span>
-                <span className="pw-project-year">{project.year}</span>
-                <span className="pw-project-year">{project.client}</span>
-              </div>
-
-              <button
-                className="pw-discover-btn"
-                onClick={() => openProjectArticle(project)}
-                type="button"
-              >
-                <span>View Details</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          {/* Images (right) */}
-          <div className="pw-wheel-section" ref={wheelSectionRef}>
-            <div className="pw-wheel-container">
-              {SLIDER_PROJECTS.map((p, i) => {
-                const logo = CLIENT_LOGOS[p.id];
-                return (
-                  <div
-                    key={p.id}
-                    className="pw-wheel-item"
-                    ref={(el) => { wheelItemRefs.current[i] = el; }}
-                  >
-                    <div className={`pw-wheel-item-inner${logo ? ' pw-wheel-item-inner--logo' : ''}`}>
-                      <div
-                        className="pw-wheel-glow"
-                        style={{ background: p.accent }}
-                        ref={(el) => { glowRefs.current[i] = el; }}
-                      />
-                      <img
-                        src={logo || p.imageUrl}
-                        alt={p.client}
-                        loading={i === 0 ? 'eager' : 'lazy'}
-                        className={logo ? 'pw-wheel-logo-img' : ''}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="pw-scroll-hint">
-              <span>Scroll</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 5v14" />
-                <path d="m18 13-6 6-6-6" />
-              </svg>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
       {/* ── Project Cards Grid ─────────────────────────────────── */}
       <section className="pw-cards-section">
         <div className="pw-cards-content">
@@ -1197,15 +1133,34 @@ export const OurProjectsPage: React.FC = () => {
 
           {/* Filter pills */}
           <div className="pw-filter-bar">
-            {filterOptions.map((opt) => (
-              <button
-                key={opt}
-                className={`pw-filter-btn${activeFilter === opt ? ' pw-filter-btn--active' : ''}`}
-                onClick={() => setActiveFilter(opt)}
-              >
-                {opt}
-              </button>
-            ))}
+            {filterOptions.map((opt) => {
+              const colors = filterMode === 'category' ? getCategoryColor(opt) : { bg: '#243c8a', border: '#243c8a', text: '#fff' };
+              const isActive = activeFilter === opt;
+              const flagUrl = filterMode === 'country' ? COUNTRY_FLAGS[opt] : null;
+              
+              return (
+                <button
+                  key={opt}
+                  className={`pw-filter-btn${isActive ? ' pw-filter-btn--active' : ''}${filterMode === 'country' && opt !== 'All' ? ' pw-filter-btn--flag' : ''}`}
+                  style={isActive ? {
+                    background: colors.bg,
+                    borderColor: colors.border,
+                    color: colors.text,
+                  } : {
+                    borderColor: colors.bg,
+                    color: colors.bg,
+                  }}
+                  onClick={() => setActiveFilter(opt)}
+                  title={opt}
+                >
+                  {filterMode === 'country' && opt !== 'All' && flagUrl ? (
+                    <img src={flagUrl} alt={opt} className="pw-filter-btn__flag-img" />
+                  ) : (
+                    opt
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           {/* Grid */}
@@ -1229,7 +1184,10 @@ export const OurProjectsPage: React.FC = () => {
                     loading="lazy"
                     className={CLIENT_LOGOS[p.id] ? 'pw-card__logo-img' : ''}
                   />
-                  <span className="pw-card__cat" style={{ background: p.accent }}>
+                  <span 
+                    className="pw-card__cat" 
+                    style={{ background: getCategoryColor(p.category.split('/')[0].trim()).bg }}
+                  >
                     {p.category}
                   </span>
                 </div>

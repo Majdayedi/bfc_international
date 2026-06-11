@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { PROJECTS, Project } from './OurProjectsPage';
+import { PROJECTS, Project, CLIENT_LOGOS } from './OurProjectsPage';
 import './ProjectArticlePage.css';
 
 function toBullets(description: string) {
@@ -145,6 +145,13 @@ export const ProjectArticlePage: React.FC = () => {
         </div>
 
         <div className="project-article__hero-panel">
+          {CLIENT_LOGOS[project.id] && (
+            <img
+              src={CLIENT_LOGOS[project.id]}
+              alt={`${project.client} logo`}
+              className="project-article__hero-logo"
+            />
+          )}
           <div className="project-article__hero-top">
             <Link to="/who-we-are/our-projects" className="project-article__back">
               Back to Projects
@@ -158,25 +165,16 @@ export const ProjectArticlePage: React.FC = () => {
             Detailed mission brief for {project.client}, focused on {project.category.toLowerCase()} outcomes in {project.country}.
           </p>
 
-          <div className="project-article__meta">
-            <span>{project.year}</span>
-            <span>{project.country}</span>
-            <span>{project.category}</span>
-            <span>{project.client}</span>
-          </div>
 
           <div className="project-article__hero-stats">
             <div>
               <p className="project-article__stat-value">{project.country}</p>
-              <p className="project-article__stat-label">Intervention region</p>
             </div>
             <div>
               <p className="project-article__stat-value">{project.year}</p>
-              <p className="project-article__stat-label">Mission period</p>
             </div>
             <div>
               <p className="project-article__stat-value">{project.category}</p>
-              <p className="project-article__stat-label">Project domain</p>
             </div>
           </div>
         </div>

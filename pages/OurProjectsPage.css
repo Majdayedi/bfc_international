@@ -1107,20 +1107,34 @@
   text-transform: uppercase;
   letter-spacing: 0.2em;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+  transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pw-filter-btn:hover {
-  background: #243c8a;
-  color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(36, 60, 138, 0.12);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
+.pw-filter-btn:hover:not(.pw-filter-btn--active) {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .pw-filter-btn--active {
-  background: #243c8a;
-  border-color: #243c8a;
   color: #fff;
+}
+
+.pw-filter-btn--flag {
+  padding: 0.4rem 0.6rem;
+}
+
+.pw-filter-btn__flag-img {
+  width: 32px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 2px;
 }
 
 /* ── Grid layout ───────────── */

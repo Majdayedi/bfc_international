@@ -8,19 +8,15 @@ import reandaLogo from '../src/assets/reanda.png';
 import nadiaImg from '../src/assets/nadia.png';
 import jobImg from '../src/assets/job.jpg';
 import contactImg from '../src/assets/contact.jpg';
-import akremimg from '../src/assets/team/akrem.jpeg';
 import chaimaimg from '../src/assets/team/chaima.jpeg';
 import zeinebImg from '../src/assets/team/zeineb.jpeg';
 import inesimg from '../src/assets/team/ines.jpeg';
 import tasnimImg from '../src/assets/team/tasnim.jpeg';
-import maherimg from '../src/assets/team/maher.jpeg';
 import medamine from '../src/assets/team/medamine.jpeg';
 import nadia from '../src/assets/team/nadia.jpeg';
 
 import abderrahman from '../src/assets/abderrahman.png';
 import cvnadia from '../src/assets/cv/CV Nadia YAICH  Février 2026.pdf';
-import cvakram from '../src/assets/cv/CV de Akrem Cherni (1).pdf';
-import cvmaher from '../src/assets/cv/CV MAHER BEN AMARA  Avril 2026.pdf';
 import cv_medamine from '../src/assets/cv/CV Mohamed Amine Sahli (2).pdf';
 import cvtasnim from '../src/assets/cv/CV Tasnim Zouaoui .pdf';
 import cvzaineb from '../src/assets/cv/CV ZEINEB SBOUI (2).pdf';
@@ -90,6 +86,18 @@ interface TeamMember {
 }
 
 const TEAM_MEMBERS: TeamMember[] = [
+  // Country Managers first
+  {
+    name: 'Nadia Yaich',
+    role: 'CEO & Country Manager Congo',
+    img: nadia,
+    email: 'nadia.yaich@bfc.com.tn',
+    phone: '+216-58-422-199',
+    cvUrl: cvnadia,
+    countryName: 'Republic of the Congo',
+    countryFlagUrl: 'https://flagcdn.com/w80/cg.png',
+    extraFlags: [{ name: 'Tunisia', url: 'https://flagcdn.com/w80/tn.png' }],
+  },
   {
     name: 'Mohamed Amine Sahli',
     role: 'Associate & Country Manager Guinea',
@@ -101,29 +109,29 @@ const TEAM_MEMBERS: TeamMember[] = [
     countryFlagUrl: 'https://flagcdn.com/w80/gn.png',
   },
   {
-    name: 'Maher Ben Amara',
-    role: 'Consultant',
-    img: maherimg,
-    email: 'maher.benamara@bfc.com.tn',
-    phone: '+216-99-536-528',
-    cvUrl: cvmaher,
-    countryName: 'Tunisia',
-    countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
-    showPrimaryFlag: false,
-    showGlobe: true,
+    name: 'Ines Yaich',
+    role: 'Country Manager BFC Senegal',
+    img: inesimg,
+    email: 'ines.yaich@bfc.com.tn',
+    phone: 'Phone not provided',
+    cvUrl: false,
+    countryName: 'Senegal',
+    countryFlagUrl: 'https://flagcdn.com/w80/sn.png',
   },
   {
-    name: 'Akrem Cherni',
-    role: 'Consultant',
-    img: akremimg,
-    email: 'akrem.cherni@bfc.com.tn',
-    phone: '+216 98 194 201',
-    cvUrl: cvakram,
-    countryName: 'Tunisia',
-    countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
-    showPrimaryFlag: false,
-    showGlobe: true,
+    name: 'Tasnim Zouaoui',
+    role: 'Country Manager Mauritania & Mali',
+    img: tasnimImg,
+    email: 'tasnim.zouaoui@bfc.com.tn',
+    phone: '+216-98-194-202',
+    cvUrl: cvtasnim,
+    countryName: 'Mauritania',
+    countryFlagUrl: 'https://flagcdn.com/w80/mr.png',
+    extraFlags: [{ name: 'Mali', url: 'https://flagcdn.com/w80/ml.png' }],
   },
+  // Other team members
+  
+  
   {
     name: 'Zeineb Sboui',
     role: 'Consultant',
@@ -145,38 +153,6 @@ const TEAM_MEMBERS: TeamMember[] = [
     cvUrl: null,
     countryName: 'Tunisia',
     countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
-  },
-  {
-    name: 'Ines Yaich',
-    role: 'Country Manager BFC Senegal',
-    img: inesimg,
-    email: 'ines.yaich@bfc.com.tn',
-    phone: 'Phone not provided',
-    cvUrl: false,
-    countryName: 'Senegal',
-    countryFlagUrl: 'https://flagcdn.com/w80/sn.png',
-  },
-  {
-    name: 'Nadia Yaich',
-    role: 'CEO & Country Manager Congo',
-    img: nadia,
-    email: 'nadia.yaich@bfc.com.tn',
-    phone: '+216-58-422-199',
-    cvUrl: cvnadia,
-    countryName: 'Republic of the Congo',
-    countryFlagUrl: 'https://flagcdn.com/w80/cg.png',
-    extraFlags: [{ name: 'Tunisia', url: 'https://flagcdn.com/w80/tn.png' }],
-  },
-  {
-    name: 'Tasnim Zouaoui',
-    role: 'Country Manager Mauritania & Mali',
-    img: tasnimImg,
-    email: 'tasnim.zouaoui@bfc.com.tn',
-    phone: '+216-98-194-202',
-    cvUrl: cvtasnim,
-    countryName: 'Mauritania',
-    countryFlagUrl: 'https://flagcdn.com/w80/mr.png',
-    extraFlags: [{ name: 'Mali', url: 'https://flagcdn.com/w80/ml.png' }],
   },
 ];
 
@@ -242,10 +218,9 @@ export const AboutUsPage: React.FC = () => {
         <div className="ap-hero-content">
           <div className="ap-scrolling-marquee-bg">STRATEGY • GROWTH • EXCELLENCE •</div>
           <div className="ap-hero-text-box">
-            <h1 className="ap-title rev-slide-up">
-              <span className="text-stroke">Shaping</span> The Future<br/>
-              Of Africa &The Middle East.
-            </h1>
+            <h1 className="ap-title rev-slide-up">  
+              <span className="text-stroke">SHAPING</span>THE FUTURE OF<br/>
+   BUSINESS& INNOVATION            </h1>
             <p className="ap-subtitle rev-slide-up" style={{transitionDelay: '0.2s'}}>
 Driving transformation through governance, innovation and capacity building.
             </p>
@@ -355,6 +330,38 @@ organisational management, public policy.</p>
                 <div className="ap-leader-badges">
                   <span><Globe size={18} /> CFE® COBIT® ITIL® CICP®</span>
                 </div>
+                <div className="ap-leader-actions">
+                  <div className="ap-team-contact-actions">
+                    <button
+                      type="button"
+                      className={`ap-team-contact-toggle ${openContactKey === 'nadia-mail' ? 'is-open' : ''}`}
+                      onClick={() => toggleContact('nadia-mail')}
+                      title="Show Nadia Yaich email"
+                      aria-label="Show Nadia Yaich email"
+                    >
+                      <Mail size={18} />
+                      <span>nadia.yaich@bfc.com.tn</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={`ap-team-contact-toggle ${openContactKey === 'nadia-phone' ? 'is-open' : ''}`}
+                      onClick={() => toggleContact('nadia-phone')}
+                      title="Show Nadia Yaich phone"
+                      aria-label="Show Nadia Yaich phone"
+                    >
+                      <Phone size={18} />
+                      <span>+216-58-422-199</span>
+                    </button>
+                  </div>
+                  <button
+                    className="ap-team-action-btn ap-team-download-btn"
+                    title="Download CV"
+                    aria-label="Download Nadia Yaich CV"
+                    onClick={() => handlePdfDownload(cvnadia, 'nadia-yaich-cv.pdf')}
+                  >
+                    <FileDown size={20} />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -451,8 +458,8 @@ organisational management, public policy.</p>
         <div className="ap-container ap-network-front">
           <div className="ap-network-grid">
             
-            <div className="ap-net-text rev-slide-up">
-              <span className="ap-eyebrow ap-teal-text">Global Footprint</span>
+      <div className="ap-net-text rev-slide-up">
+        <span className="ap-eyebrow ap-teal-text">Global Footprint</span>
               <h2 className="ap-heading-xl ap-text-white" style={{marginBottom: '1.5rem'}}>Reanda<br/>International</h2>
               <div className="ap-styled-divider ap-divider-light"></div>
               <p className="ap-net-p">

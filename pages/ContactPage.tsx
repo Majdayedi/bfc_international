@@ -16,18 +16,16 @@ export const ContactPage: React.FC = () => {
     { value: 'tunisie', label: 'Tunisie' },
   ];
 
-  const serviceOptions: SelectOption[] = [
-    { value: 'faisabilite', label: 'Feasibility Study' },
-    { value: 'reforme', label: 'Preparation of Reform Reports' },
-    { value: 'politiques', label: 'Design, Study and Implementation of Public Policies' },
-    { value: 'strategie', label: 'Strategic Studies' },
-    { value: 'cyber', label: 'Cybersecurity' },
-    { value: 'transformation', label: 'Digital Transformation' },
-    { value: 'gouvernance', label: 'IT Strategy and Governance' },
-    { value: 'pki', label: 'Public Key Infrastructure (PKI)' },
-    { value: 'organisation', label: 'Organization and Operationalization of Structures' },
-    { value: 'audit', label: 'Audit and Internal Control' },
-  ];
+const serviceOptions: SelectOption[] = [
+  { value: 'Training', label: 'Training' },
+  { value: 'Consulting', label: 'Consulting' },
+  { value: 'Audit', label: 'Audit' },
+  { value: 'Tax and Legal', label: 'Tax and Legal' },
+  { value: 'Expertise', label: 'Expertise' },
+  { value: 'Collaboration', label: 'Collaboration' },
+
+  { value: 'Other', label: 'Other' },
+];
 
   const [representativeValue, setRepresentativeValue] = useState('');
   const [serviceValue, setServiceValue] = useState('');
@@ -113,75 +111,7 @@ export const ContactPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="contact-form__row">
-                <div className="contact-form__field">
-                <label htmlFor="representative">Representative to contact</label>
-                <div
-                  className={`contact-select ${isRepresentativeOpen ? 'contact-select--open' : ''}`}
-                  ref={representativeRef}
-                >
-                  <button
-                    type="button"
-                    className="contact-select__trigger"
-                    aria-haspopup="listbox"
-                    aria-expanded={isRepresentativeOpen}
-                    onClick={() =>
-                      setIsRepresentativeOpen((prev) => {
-                        const next = !prev;
-                        if (next) {
-                          setIsServiceOpen(false);
-                        }
-                        return next;
-                      })
-                    }
-                  >
-                    <span
-                      className={
-                        representativeValue ? 'contact-select__value' : 'contact-select__placeholder'
-                      }
-                    >
-                      {representativeValue
-                        ? representativeOptions.find((option) => option.value === representativeValue)?.label
-                        : 'Select a country'}
-                    </span>
-                    <span className="contact-select__chevron" aria-hidden="true" />
-                  </button>
-                  <div className="contact-select__options" role="listbox">
-                    {representativeOptions.map((option, index) => (
-                      <button
-                        key={option.value}
-                        type="button"
-                        role="option"
-                        aria-selected={representativeValue === option.value}
-                        className="contact-select__option"
-                        style={{ ['--i' as string]: index } as React.CSSProperties}
-                        onClick={() => {
-                          setRepresentativeValue(option.value);
-                          setIsRepresentativeOpen(false);
-                        }}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                  <select
-                    id="representative"
-                    name="representative"
-                    className="contact-select__native"
-                    value={representativeValue}
-                    onChange={(event) => setRepresentativeValue(event.target.value)}
-                    required
-                  >
-                    <option value="">Select a country</option>
-                    {representativeOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
+             
             <div className="contact-form__row contact-form__row--single">
               <div className="contact-form__field contact-form__field--wide">
                 <label htmlFor="service">Service Required</label>
@@ -249,7 +179,7 @@ export const ContactPage: React.FC = () => {
               </div>
             </div>
             <div className="contact-form__field">
-              <label htmlFor="message">Project Summary</label>
+              <label htmlFor="message">Message</label>
               <textarea
                 id="message"
                 name="message"
@@ -269,8 +199,7 @@ export const ContactPage: React.FC = () => {
 
         <div className="contact-map">
           <div className="contact-map__header">
-            <h3>Headquarters</h3>
-            <p>Main address in Tunis, Centre Urbain Nord.</p>
+            <h3>Headquarter</h3>
           </div>
           <div className="contact-map__frame">
             <iframe
@@ -282,21 +211,14 @@ export const ContactPage: React.FC = () => {
           </div>
           <div className="contact-map__details">
             <div>
-              <span className="contact-map__label">Address</span>
+              <span className="contact-map__label">Address HQ :</span>
               <span className="contact-map__value">Tunis, Centre Urbain Nord TN</span>
             </div>
             <div>
-              <span className="contact-map__label">Phone</span>
+              <span className="contact-map__label">Phone :</span>
               <span className="contact-map__value">+216 36 214 357</span>
             </div>
-            <div>
-              <span className="contact-map__label">Website</span>
-              <span className="contact-map__value">
-                <a href="https://internationalbfc.com/" target="_blank" rel="noreferrer">
-                  internationalbfc.com
-                </a>
-              </span>
-            </div>
+            
           </div>
         </div>
       </section>

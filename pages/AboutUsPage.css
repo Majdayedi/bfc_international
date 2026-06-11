@@ -35,7 +35,7 @@
 .ap-navy-bg { background-color: var(--ap-navy); }
 .ap-gray-bg { background-color: #f1f3f5; }
 .ap-container { max-width: 1400px; margin: 0 auto; padding: 0 5%; position: relative; z-index: 2; }
-.ap-section { padding: 8rem 0; position: relative; }
+.ap-section { padding: 4rem 0; position: relative; }
 
 /* --- 1. HERO PARALLAX --- */
 .ap-hero { position: relative; height: 100vh; min-height: 700px; display: flex; align-items: center; overflow: hidden; background: var(--ap-navy); }
@@ -199,6 +199,13 @@
   letter-spacing: 0.1em;
 }
 
+.ap-leader-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
 @media (max-width: 1200px) {
   .ap-leadership-grid {
     grid-template-columns: 1fr;
@@ -214,10 +221,17 @@
   }
   .ap-leader-image {
     width: 100%;
-    aspect-ratio: 4 / 3;
+    height: 320px;
+    aspect-ratio: unset;
+  }
+  .ap-leader-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
   }
   .ap-leader-info {
-    padding: 2.5rem;
+    padding: 2rem;
   }
 }
 
@@ -471,7 +485,7 @@
 
 
 /* --- 5. NETWORK MAP WITH 3D SPINNING GLOBE --- */
-.ap-network-section { position: relative; padding: 10rem 0; min-height: 800px; display: flex; align-items: center; background: var(--ap-navy); overflow: hidden; }
+.ap-network-section { position: relative; padding: 5rem 0; min-height: 800px; display: flex; align-items: center; background: var(--ap-navy); overflow: hidden; }
 .ap-net-overlay { position: absolute; inset: 0; background: radial-gradient(circle at right center, rgba(32, 67, 131, 0.5) 0%, rgba(15, 30, 60, 0.95) 80%); z-index: 2; pointer-events: none; }
 
 /* 3D Globe CSS Architecture */
@@ -676,8 +690,8 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 6rem;
-  padding: 5rem 0;
+  gap: 4rem;
+  padding: 3rem 0;
 }
 
 .ap-vision-layout {

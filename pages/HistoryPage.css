@@ -999,6 +999,12 @@
     pointer-events: none;
   }
 
+  .hi-bar.hi-bar--hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(20px);
+  }
+
   /* SVG arc — same coordinate system as the disc (480×480, centre 240 240) */
   .hi-wheel__arc {
     position: absolute;

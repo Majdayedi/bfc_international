@@ -4,6 +4,8 @@ import bfcLogo    from '../src/assets/bfc.png';
 import MGIBFCImg  from '../src/assets/MGI-BFC.png';
 import guineeLogo from '../src/assets/bfc.png';
 import senegalLogo from '../src/assets/bfc_senegal.png';
+import bfcguinee from '../src/assets/BFC_GUINEE.jpeg';
+import bfc from '../src/assets/bfc.jpg';
 import congoLogo  from '../src/assets/bfc_congo.png';
 import mauritaniaLogo from '../src/assets/bfc_mauritania.png';
 import senegalimg from '../src/assets/history/senegal.png';
@@ -57,9 +59,9 @@ const MS: Milestone[] = [
     location: 'Tunisia',
     img: tunisiaimg2,
     desc: "Founded in 2020, BFC International & Academy is a consulting and training firm. As a partner of IRM and ICI in Africa, it also provides outsourcing services in France and Canada.",
-    logo: bfcLogo,
+    logo: bfc,
     flag: 'https://flagcdn.com/w80/tn.png',
-    path: '/standard-training',
+    path: '/representatives/tunisia',
     email: 'nadia.yaich@bfc.com.tn'
   },
   {
@@ -68,7 +70,7 @@ const MS: Milestone[] = [
     location: 'Conakry, Guinea',
     img: guineeimg,
     desc: "Our expansion began with the launch of BFC Guinea in 2022. This entity was created to serve the sub-region and ensure closer expert support to meet client needs.",
-    logo: guineeLogo,
+    logo: bfcguinee,
     flag: 'https://flagcdn.com/w80/gn.png',
     path: '/representatives/guinea',
     email: 'mohamedamine.sahli@bfc.com.tn'
@@ -131,6 +133,8 @@ export const HistoryPage: React.FC = () => {
   const activeMsIdxRef  = useRef(0);
   const [wheelHidden, setWheelHidden] = useState(false);
   const wheelHiddenRef  = useRef(false);
+  const [barHidden, setBarHidden] = useState(false);
+  const barHiddenRef   = useRef(false);
   const wheelItemRefs   = useRef<(HTMLDivElement | null)[]>([]);
   const wheelTargetRef  = useRef(0);   // target rotation degrees
   const wheelRotRef     = useRef(0);   // current lerped rotation
@@ -236,12 +240,16 @@ export const HistoryPage: React.FC = () => {
           page.style.backgroundColor = `rgb(${r},${g},${b})`;
         }
 
-        // Hide wheel near the bottom of the page (when footer approaches)
-        const docHeight = document.documentElement.scrollHeight;
-        const scrolledToBottom = window.scrollY + window.innerHeight >= docHeight - 250;
+        // Hide wheel and bar when the footer enters the viewport
+        const footer = document.querySelector('footer') as HTMLElement | null;
+        const scrolledToBottom = footer ? footer.getBoundingClientRect().top < window.innerHeight : false;
         if (scrolledToBottom !== wheelHiddenRef.current) {
           wheelHiddenRef.current = scrolledToBottom;
           setWheelHidden(scrolledToBottom);
+        }
+        if (scrolledToBottom !== barHiddenRef.current) {
+          barHiddenRef.current = scrolledToBottom;
+          setBarHidden(scrolledToBottom);
         }
       }
 
@@ -355,7 +363,8 @@ export const HistoryPage: React.FC = () => {
         className={[
           'hi-bar',
           phase >= 1 ? 'hi-bar--show'    : '',
-          phase >= 2 ? 'hi-bar--compact' : ''
+          phase >= 2 ? 'hi-bar--compact' : '',
+          barHidden   ? 'hi-bar--hidden'  : '',
         ].join(' ')}
       >
         <div className="hi-bar__inner">

@@ -2,6 +2,7 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import reandaLogo from '../src/assets/reanda.png';
 import './Stats.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -44,6 +45,7 @@ export const Stats: React.FC = () => {
   return (
     <section className="stats" ref={containerRef}>
       <div className="stats__container">
+        <img src={reandaLogo} alt="Reanda International Logo" className="stats__logo" />
         <h2 className="stats__title">Reanda International - Our Network</h2>
         <div className="stats__grid">
           {STATS.map((stat, i) => (
