@@ -26,6 +26,12 @@ function getDefaultCertificationDescription(courseTitle: string, institution: st
   return `This certification path in ${courseTitle} focuses on practical skills, applied frameworks, and operational implementation for immediate professional impact.`;
 }
 
+const getUploadUrl = (path: string) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  return `http://localhost:8085${path}`;
+};
+
 const CourseDetail: React.FC = () => {
   const params = useParams();
   const location = useLocation();
@@ -46,8 +52,7 @@ const CourseDetail: React.FC = () => {
     stateCourse?.certificationDescription || getDefaultCertificationDescription(title, institution);
   const brochureUrl = stateCourse?.brochureUrl || '/pdfs/team-member-cv.pdf';
 
-  const previewLogo = stateCourse?.imageUrl
-    || (/risk management|irm/i.test(institution) ? irm : /internal control|ici/i.test(institution) ? ici : bfcLogo);
+  const previewLogo = stateCourse?.logo ? getUploadUrl(stateCourse.logo) : (/risk management|irm/i.test(institution) ? irm : /internal control|ici/i.test(institution) ? ici : bfcLogo);
 
   const introText = stateCourse?.intro || 
     'Welcome to this advanced certification program. Designed by industry experts, this course combines structured theory, real-world case studies, and applied workshops so you can build immediately usable professional skills.';
@@ -60,12 +65,9 @@ const CourseDetail: React.FC = () => {
     'Lead governance and control transformation in changing environments.',
   ];
 
-  const relatedTopics = stateCourse?.relatedTopics || ['Governance', 'Risk Management', 'Internal Audit', 'Compliance'];
-
   const participants = stateCourse?.participants || 'Executives, Managers, Controllers, Auditors, and Governance professionals.';
   const duration = stateCourse?.duration || programs;
   const locationInfo = stateCourse?.location || 'International';
-  const price = stateCourse?.price || 'Contact BFC for pricing details';
 
   const includes = [
     { icon: BadgeCheck, text: 'Official certification branding and resources' },
@@ -74,65 +76,10 @@ const CourseDetail: React.FC = () => {
     { icon: Trophy, text: 'Certificate of completion' },
   ];
 
-  const irmContentSections = [
-    {
-      title: 'Journée 01 - Introduction au management des risques',
-      lectures: 12,
-      duration: '1j',
-      topics: [
-        "Qu'est-ce que le risque et le management du risque ?",
-        'Pourquoi gérer les risques ?',
-        "Caractéristiques d'une gestion des risques efficace",
-        'Principes du management des risques.',
-        'Le processus du management des risques',
-        'Communication & consultation',
-        'Définir le contexte',
-        'Évaluation des risques',
-        
-        
-        "Outils d'identification et d'analyse des risques",
-        'Définition du risque - Conséquences',
-        'Matrice des probabilités - cartographie des risques',
-        "Appétit des risques et tolérance aux risques",
-        'Traitement des risques',
-      ]
-    },
-    {
-      title: 'Journée 02 - Suite du processus du management des risques',
-      lectures: 8,
-      duration: '1j',
-      topics: [
-        'Transfert des risques',
-        'Management de la continuité des activités',
-        'Surveillance et pilotage',
-        
-        
-        
-        
-        
-        "Intégration d'une culture du risque",
-        'Intégrer le management des risques',
-        'Politique des risques',
-        'Avantages du management des risques',
-        'Examen final à la fin de la 2ème journée',
-      ]
-    }
-  ];
-
-  const contentSections =
-    /risk management|irm/i.test(institution)
-      ? irmContentSections
-      : stateCourse?.contentSections || [
-          { title: 'Day 01 - Internal Control Foundations', lectures: 2, duration: '55m' },
-          { title: 'Day 02 - Control Environment and Risk Drivers', lectures: 2, duration: '1h 05m' },
-          { title: 'Day 03 - Risk Assessment and Monitoring', lectures: 2, duration: '48m' },
-          { title: 'Day 04 - Governance Review and Final Assessment', lectures: 2, duration: '52m' },
-        ];
-
   const suggestedCourses = [
-    { id: 1, title: 'Risk Management Advanced', rating: 4.8, students: 1204, price: '.99', image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80' },
-    { id: 2, title: 'Corporate Governance & Compliance', rating: 4.9, students: 890, price: '.99', image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80' },
-    { id: 3, title: 'Financial Audit Masterclass', rating: 4.7, students: 2310, price: '.99', image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80' },
+    { id: 1, title: 'Risk Management Advanced', rating: 4.8, students: 1204, image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&q=80' },
+    { id: 2, title: 'Corporate Governance & Compliance', rating: 4.9, students: 890, image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80' },
+    { id: 3, title: 'Financial Audit Masterclass', rating: 4.7, students: 2310, image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&q=80' },
   ];
 
   const journeySteps = stateCourse?.journeySteps || [
@@ -169,11 +116,12 @@ const CourseDetail: React.FC = () => {
       <section className="ud-hero">
         <div className="ud-shell ud-hero-grid">
           <div className="ud-left">
-            <button type="button" className="ud-back" onClick={handleBack}>
-              <ChevronLeft size={16} /> Back
-            </button>
+            
             <div className="ud-hero-topline">
               <div className="ud-badges">
+                <button type="button" className="ud-back" onClick={handleBack}>
+              <ChevronLeft size={16} /> Back
+            </button>
                 <span className="ud-pill">Bestseller</span>
               </div>
               <div className="ud-mobile-course-thumb" aria-hidden="true">
@@ -260,14 +208,13 @@ const CourseDetail: React.FC = () => {
 
             <section className="ud-box ud-content-list">
               <div className="ud-content-head">
-                <h3>Course content</h3>
-                <p>{contentSections.length} sections • {programs}</p>
+                <h3>Journey</h3>
+                <p>{journeySteps.length} days • {programs}</p>
               </div>
-              {contentSections.map((section: any, index: number) => {
+              {journeySteps.map((step: any, index: number) => {
                 const isActive = activeJourneyIndex === index;
-                const rowJourney = journeySteps[index];
                 return (
-                  <div key={section.title} className="ud-content-row-wrap">
+                  <div key={step.title} className="ud-content-row-wrap">
                     <button
                       type="button"
                       className={`ud-content-row${isActive ? ' is-active' : ''}`}
@@ -276,29 +223,13 @@ const CourseDetail: React.FC = () => {
                       aria-expanded={isActive}
                     >
                       <span className="ud-content-row-left">
-                        <ChevronDown size={16} /> {section.title}
-                      </span>
-                      <span className="ud-content-row-right">
-                        {section.lectures} lectures • {section.duration}
+                        <ChevronDown size={16} /> {step.title}
                       </span>
                     </button>
 
                     {isActive && (
-                      <div key={activeJourneyIndex} className="ud-content-row-panel">
-                        {section.topics ? (
-                          <ul>
-                            {section.topics.map((topic: string, i: number) => (
-                              <li key={i}>{topic}</li>
-                            ))}
-                          </ul>
-                        ) : (
-                          rowJourney && (
-                            <>
-                              <p><strong>{rowJourney.title}</strong></p>
-                              <p>{rowJourney.detail}</p>
-                            </>
-                          )
-                        )}
+                      <div key={index} className="ud-content-row-panel">
+                        <p>{step.detail}</p>
                       </div>
                     )}
                   </div>
@@ -306,14 +237,7 @@ const CourseDetail: React.FC = () => {
               })}
             </section>
             
-            <section className="ud-box ud-topics">
-              <h3>Explore related topics</h3>
-              <div className="ud-topic-list">
-                {relatedTopics.map((topic: string) => (
-                  <span key={topic}>{topic}</span>
-                ))}
-              </div>
-            </section>
+{/* Related topics hidden for now */}
 
             
           </div>

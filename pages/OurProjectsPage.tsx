@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../utils/constants';
 import './OurProjectsPage.css';
 
 /* ─── Logo assets ──────────────────────────────────────────────────── */
@@ -36,52 +37,63 @@ import logoRoseBlanche from '../src/assets/Logo references/rose blanche.png';
 import logoRedGO from '../src/assets/Logo references/redgo.png';
 import logoVILAVI from '../src/assets/Logo references/VILAVI.png';
 import logoDjibouti from '../src/assets/Logo references/Office de la Voirie de Djibouti.jpg';
-import logoWorldBank from '../src/assets/Logo references/world bank.png';
-import logoPDACG from '../src/assets/Logo references/LOGO-PDACG-removebg-preview.png';
 
-/** Maps project ID → logo asset. Projects without a matching logo use imageUrl. */
-export const CLIENT_LOGOS: Record<number, string> = {
-  1:  logoADPME,
-  3:  logoSONAPI,
-  4:  logoOfficeRoyale,
-  5:  logoExpertiseFrance,
-  6:  logoAPIP,
-  7:  logoAMRTP,
-  8:  logoWorldBank,
-  9:  logoCILSS,
-  10: logoEuropeanBank,
-  11: logoAMFUMOA,
-  12: logoCAMPOST,
-  14: logoSOGUIPAH,
-  15: logoConnectInnov,
-  16: logoSelect,
-  17: logoLaPosteBenin,
-  18: logoMinNumerique,
-  19: logoMinNumerique,
-  20: logoAMICommerciale,
-  22: logoWikiStartup,
-  23: logoAZIZA,
-  25: logoMunathara,
-  26: logoMinFinance,
-  27: logoNGTech,
-  29: logoOIT,
-  30: logoSOTUGAR,
-  31: logoKALYS,
-  32: logoUGFS,
-  33: logoSOROUBAT,
-  34: logoTUNEPS,
-  36: logoSOLIDAR,
-  39: logoSOLIDAR,
-  40: logoNGOBeninAction,
-  41: logoAMICommerciale,
-  45: logoRoseBlanche,
-  46: logoRedGO,
-  47: logoVILAVI,
-  48: logoRedGO,
-  49: logoAZIZA,
-  50: logoDjibouti,
-  6:  logoPDACG,
+/* Maps client name → logo asset.
+
+   This used to be keyed by project id, which broke as soon as the database was
+   re-seeded: ids are auto-increment, so adding or removing a single project
+   shifted every id and attached each logo to the wrong client (the World Bank
+   logo ended up on the Boutilimit hospital card, for example). Client names are
+   stable, so key on those instead. Clients with no logo here fall back to the
+   project's imageUrl. */
+const LOGO_BY_CLIENT: Record<string, string> = {
+  'ADPME': logoADPME,
+  'SONAPI SA': logoSONAPI,
+  'Saudi Arabia': logoOfficeRoyale,
+  'Expertise France': logoExpertiseFrance,
+  'APIP (Project PDACG)': logoAPIP,
+  'AMRTP': logoAMRTP,
+  'AGRHYMET (World Bank Group)': logoCILSS,
+  'EBRD (BERD)': logoEuropeanBank,
+  'CREPMF (AMF-UMOA)': logoAMFUMOA,
+  'CAMPOST': logoCAMPOST,
+  'SOGUIPAH SA': logoSOGUIPAH,
+  'Connect Innov': logoConnectInnov,
+  'Select Hardware Company': logoSelect,
+  'La Poste du Benin (Ministry of Digital)': logoLaPosteBenin,
+  'Ministry of Digitalization': logoMinNumerique,
+  'AMI Commerciale': logoAMICommerciale,
+  'Wiki Start Up': logoWikiStartup,
+  'AZIZA': logoAZIZA,
+  'Initiative Munathara': logoMunathara,
+  'Ministry of Finance (Finance Computer Center)': logoMinFinance,
+  'NG Technologies': logoNGTech,
+  'ILO (OIT)': logoOIT,
+  'SOTUGAR (World Bank)': logoSOTUGAR,
+  'Various Startups (Kalys, Etakwin, Gofield)': logoKALYS,
+  'UGFS North Africa': logoUGFS,
+  'SOROUBAT International': logoSOROUBAT,
+  'TUNEPS (E-Procurement)': logoTUNEPS,
+  'Solidar Tunisie': logoSOLIDAR,
+  'NGO Benin Action': logoNGOBeninAction,
+  'AMI (Industrial Workshops)': logoAMICommerciale,
+  'Rose Blanche Group': logoRoseBlanche,
+  'RedGO': logoRedGO,
+  'RedGO (Henkel Distributor)': logoRedGO,
+  'VILAVI': logoVILAVI,
+  'State of Djibouti': logoDjibouti,
 };
+
+/** Client names are free text in the database, so compare on a normalised form. */
+const normalizeClientName = (name?: string | null): string =>
+  (name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+const LOGO_BY_NORMALIZED_CLIENT: Record<string, string> = Object.fromEntries(
+  Object.entries(LOGO_BY_CLIENT).map(([name, src]) => [normalizeClientName(name), src]),
+);
+
+export const getClientLogo = (client?: string | null): string | undefined =>
+  LOGO_BY_NORMALIZED_CLIENT[normalizeClientName(client)];
 
 /* ─── Types & Data ─────────────────────────────────────────────────── */
 export interface Project {
@@ -89,8 +101,11 @@ export interface Project {
   title: string;
   category: string;
   client: string;
+  clientImageUrl?: string;
   country: string;
   flag: string;
+  startDate?: string;
+  endDate?: string;
   year: string;
   description: string;
   accent: string;
@@ -827,11 +842,95 @@ const COUNTRY_FLAGS: Record<string, string> = {
 };
 
 /* ─── Component ────────────────────────────────────────────────────── */
+/* ─── Recency ordering ──────────────────────────────────────────────
+   The API returns projects in database order, which only roughly tracks
+   recency — one inserted test row is enough to break it. Derive an explicit
+   sort key instead: prefer the real dates, fall back to the year label, and
+   treat anything still "Ongoing" as current work.
+   ────────────────────────────────────────────────────────────────── */
+const yearsIn = (value?: string): number[] =>
+  (value?.match(/\d{4}/g) || []).map(Number);
+
+const lastYearIn = (value?: string): number | null => {
+  const years = yearsIn(value);
+  return years.length ? Math.max(...years) : null;
+};
+
+const firstYearIn = (value?: string): number | null => {
+  const years = yearsIn(value);
+  return years.length ? Math.min(...years) : null;
+};
+
+const sortByMostRecent = (list: Project[]): Project[] =>
+  [...list].sort((a, b) => {
+    const aOngoing = /ongoing/i.test(`${a.year ?? ''} ${a.endDate ?? ''}`) ? 1 : 0;
+    const bOngoing = /ongoing/i.test(`${b.year ?? ''} ${b.endDate ?? ''}`) ? 1 : 0;
+    if (aOngoing !== bOngoing) return bOngoing - aOngoing;
+
+    const aEnd = lastYearIn(a.endDate) ?? lastYearIn(a.year) ?? 0;
+    const bEnd = lastYearIn(b.endDate) ?? lastYearIn(b.year) ?? 0;
+    if (aEnd !== bEnd) return bEnd - aEnd;
+
+    const aStart = firstYearIn(a.startDate) ?? firstYearIn(a.year) ?? 0;
+    const bStart = firstYearIn(b.startDate) ?? firstYearIn(b.year) ?? 0;
+    if (aStart !== bStart) return bStart - aStart;
+
+    return a.id - b.id; // same period — keep the existing order
+  });
+
 export const OurProjectsPage: React.FC = () => {
   const navigate = useNavigate();
 
+  const [projectsList, setProjectsList] = useState<Project[]>(() => sortByMostRecent(PROJECTS));
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/projects`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const mapped = data.filter((p: any) => {
+            try {
+              const c = JSON.parse(p.contentJson || '{}');
+              return c.isPublished !== false;
+            } catch { return true; }
+          }).map((p: any) => ({
+            id: p.id,
+            title: p.title,
+            category: p.category || 'Uncategorized',
+            client: p.client || 'Client',
+            clientImageUrl: p.clientImageUrl || '',
+            country: p.country || 'Tunisia',
+            flag: p.flag || 'https://flagcdn.com/w40/tn.png',
+            startDate: p.startDate || '',
+            endDate: p.endDate || '',
+            year: p.year || '2025',
+            description: p.description || '',
+            accent: p.accent || '#243c8a',
+            imageUrl: p.imageUrl || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop'
+          }));
+          setProjectsList(sortByMostRecent(mapped));
+        }
+      })
+      .catch((err) => console.error('Error fetching projects:', err));
+  }, []);
+
+  const CATEGORIES = useMemo(() => {
+    const allCats = new Set<string>();
+    projectsList.forEach((p) => {
+      const cats = p.category.split('/').map((c) => c.trim());
+      cats.forEach((cat) => allCats.add(cat));
+    });
+    return ['All', ...Array.from(allCats)];
+  }, [projectsList]);
+
+  const COUNTRIES = useMemo(() => {
+    return ['All', ...Array.from(new Set(projectsList.map((p) => p.country)))];
+  }, [projectsList]);
+
+  const sliderProjects = useMemo(() => projectsList.slice(0, 3), [projectsList]);
+
   /* ── Project slides state & refs ────────────────────────────────── */
-  const totalItems = SLIDER_PROJECTS.length;
+  const totalItems = sliderProjects.length;
   const scrollHeight = totalItems * VH_PER_ITEM + INTRO_VH + CTA_VH;
 
   const driverRef = useRef<HTMLDivElement>(null);
@@ -859,7 +958,7 @@ export const OurProjectsPage: React.FC = () => {
 
   const filterOptions = filterMode === 'category' ? CATEGORIES : COUNTRIES;
 
-  const filteredProjects = PROJECTS.filter((p) => {
+  const filteredProjects = projectsList.filter((p) => {
     let matchesFilter = false;
     if (activeFilter === 'All') {
       matchesFilter = true;
@@ -1063,7 +1162,7 @@ export const OurProjectsPage: React.FC = () => {
     return () => obs.disconnect();
   }, []);
 
-  const project = SLIDER_PROJECTS[activeIndex];
+  const project = sliderProjects[activeIndex] || sliderProjects[0] || PROJECTS[0];
   const titleWords = project.title.split(' ');
   const midpoint = Math.ceil(titleWords.length / 2);
   const titleLine1 = titleWords.slice(0, midpoint).join(' ');
@@ -1080,7 +1179,12 @@ export const OurProjectsPage: React.FC = () => {
       <section className="pw-cards-section">
         <div className="pw-cards-content">
           <span className="pw-cards__eyebrow">Full Portfolio</span>
-          <h2 className="pw-cards__title">All <span className="pw-cards__title-stroke">Projects</span></h2>
+          <h2 className="pw-cards__title">
+            All <span className="pw-cards__title-stroke">Projects</span>
+            <span style={{ fontSize: '0.45em', fontWeight: 500, color: 'var(--color-text-light, rgba(32,67,131,0.6))', marginLeft: '0.8rem', verticalAlign: 'middle', textTransform: 'none', letterSpacing: 'normal' }}>
+              ({filteredProjects.length})
+            </span>
+          </h2>
 
           {/* Search bar */}
           <div className="pw-search-bar">
@@ -1177,12 +1281,16 @@ export const OurProjectsPage: React.FC = () => {
                   '--card-delay': `${i * 100}ms`,
                 } as React.CSSProperties}
               >
-                <div className={`pw-card__img-wrap${CLIENT_LOGOS[p.id] ? ' pw-card__img-wrap--logo' : ''}`}>
+                <div className={`pw-card__img-wrap${(p.clientImageUrl || getClientLogo(p.client)) ? ' pw-card__img-wrap--logo' : ''}`}>
                   <img
-                    src={CLIENT_LOGOS[p.id] || p.imageUrl}
+                    src={p.clientImageUrl
+                      ? (p.clientImageUrl.startsWith('/uploads/')
+                          ? `${API_URL}${p.clientImageUrl}`
+                          : p.clientImageUrl)
+                      : (getClientLogo(p.client) || p.imageUrl)}
                     alt={p.client}
                     loading="lazy"
-                    className={CLIENT_LOGOS[p.id] ? 'pw-card__logo-img' : ''}
+                    className={(p.clientImageUrl || getClientLogo(p.client)) ? 'pw-card__logo-img' : ''}
                   />
                   <span 
                     className="pw-card__cat" 

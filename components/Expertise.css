@@ -5,15 +5,15 @@
 
 @media (min-width: 768px) {
   .expertise {
-    padding: 12rem 0;
+    padding: 5.5rem 0;
   }
 }
 
 .expertise__container {
   max-width: 80rem;
   margin: 0 auto;
-  margin-top: -5rem;
-  margin-bottom: -5rem;
+  margin-top: -2.25rem;
+  margin-bottom: -2.25rem;
   padding: 0 1.5rem;
 }
 
@@ -165,7 +165,7 @@
 
 @media (max-width: 767px) {
   .expertise {
-    padding: 5.25rem 0;
+    padding: 2.5rem 0;
   }
 
   .expertise__container {

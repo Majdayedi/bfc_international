@@ -5,7 +5,7 @@
 
 .certif {
   background: linear-gradient(180deg, #f8fafc 0%, #ffffff 30%, #ffffff 70%, #f8fafc 100%);
-  padding: 3rem 1.5rem;
+  padding: 1.5rem;
   border-top: 1px solid #f3f4f6;
   position: relative;
   overflow: hidden;
@@ -25,7 +25,7 @@
 
 @media (min-width: 768px) {
   .certif {
-    padding: 4rem 3rem;
+    padding: 1.75rem 3rem;
   }
 }
 
@@ -155,12 +155,12 @@
 /* ── Mobile ── */
 @media (max-width: 767px) {
   .certif {
-    padding: 3rem 1rem;
+    padding: 1.5rem 1rem;
   }
 
   .certif__header {
     margin-bottom: 2rem;
-    text-align: left;
+    text-align: center;
   }
 
   .certif__eyebrow {
@@ -171,12 +171,12 @@
     max-width: 100%;
     font-size: 0.95rem;
     line-height: 1.6;
-    text-align: left;
+    text-align: center;
   }
 
   .certif__logos {
     gap: 1.5rem;
-    justify-content: flex-start;
+    justify-content: center;
   }
 
   .certif__logo-window {

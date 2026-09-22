@@ -10,7 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 const STATS = [
   { label: 'Offices', value: 140, suffix: '+' },
   { label: 'Countries', value: 58, suffix: '+' },
-  { label: 'prefoessionals', value: 5000, suffix: '+' },
+  { label: 'professionals', value: 5000, suffix: '+' },
   { label: 'Global rank', value: 23, suffix: '' },
 ];
 

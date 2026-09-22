@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { PROJECTS, Project, CLIENT_LOGOS } from './OurProjectsPage';
+import { PROJECTS, Project, getClientLogo } from './OurProjectsPage';
+import { API_URL } from '../utils/constants';
+import { DetailBlock } from './ArticleBuilder';
 import './ProjectArticlePage.css';
 
-function toBullets(description: string) {
+export function toBullets(description: string) {
   const semicolonItems = description
     .split(';')
     .map((item) => item.trim())
@@ -20,7 +22,7 @@ function toBullets(description: string) {
     .slice(0, 7);
 }
 
-function computeStrategicImpact(project: Project) {
+export function computeStrategicImpact(project: Project) {
   const c = project.category.toLowerCase();
 
   if (c.includes('digital trust')) {
@@ -50,7 +52,7 @@ function computeStrategicImpact(project: Project) {
   return `The mission delivers concrete modernization outcomes by combining strategy, execution support, and institutional capability development.`;
 }
 
-function computeFocusAreas(project: Project) {
+export function computeFocusAreas(project: Project) {
   const category = project.category.toLowerCase();
 
   if (category.includes('strategy')) {
@@ -74,23 +76,46 @@ function computeFocusAreas(project: Project) {
 
 export const ProjectArticlePage: React.FC = () => {
   const { projectId } = useParams();
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [heroProgress, setHeroProgress] = useState(0);
+  const progressRef = React.useRef<HTMLSpanElement>(null);
+  const articleRef = React.useRef<HTMLElement>(null);
 
-  const project = useMemo(() => {
+  const staticFallback = useMemo(() => {
     const id = Number(projectId);
     if (Number.isNaN(id)) return null;
     return PROJECTS.find((p) => p.id === id) ?? null;
   }, [projectId]);
+
+  const [project, setProject] = useState<any>(() => staticFallback);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!projectId) return;
+    setLoading(true);
+    fetch(`${API_URL}/api/projects/${projectId}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('Not found');
+        return res.json();
+      })
+      .then((data) => {
+        setProject(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching project details:', err);
+        setProject(staticFallback);
+        setLoading(false);
+      });
+  }, [projectId, staticFallback]);
 
   useEffect(() => {
     const updateProgress = () => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
-      setScrollProgress(progress);
+      if (progressRef.current) progressRef.current.style.transform = `scaleX(${progress})`;
       const heroDistance = Math.max(window.innerHeight * 0.65, 1);
-      setHeroProgress(Math.min(scrollTop / heroDistance, 1));
+      const hp = Math.min(scrollTop / heroDistance, 1);
+      if (articleRef.current) articleRef.current.style.setProperty('--hero-progress', hp.toString());
     };
 
     const handleScroll = () => {
@@ -103,6 +128,7 @@ export const ProjectArticlePage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!project) return;
     const elements = Array.from(document.querySelectorAll('.project-article__reveal')) as HTMLElement[];
 
     const observer = new IntersectionObserver(
@@ -118,7 +144,15 @@ export const ProjectArticlePage: React.FC = () => {
 
     elements.forEach((element) => observer.observe(element));
     return () => observer.disconnect();
-  }, [projectId]);
+  }, [project]);
+
+  if (loading && !project) {
+    return (
+      <section className="project-article-empty">
+        <p>Loading project details...</p>
+      </section>
+    );
+  }
 
   if (!project) {
     return (
@@ -133,10 +167,28 @@ export const ProjectArticlePage: React.FC = () => {
   const bullets = toBullets(project.description);
   const focusAreas = computeFocusAreas(project);
 
+  let customFont = 'Inter';
+  let customColor = '#374151';
+  let customSize = '1rem';
+  try {
+    const c = JSON.parse(project.contentJson || '{}');
+    customFont = c.fontFamily || customFont;
+    customColor = c.textColor || customColor;
+    customSize = c.fontSize || customSize;
+  } catch (e) {}
+
   return (
-    <article className="project-article" style={{ ['--hero-progress' as any]: heroProgress }}>
+    <article className="project-article" ref={articleRef} style={{ 
+      ['--hero-progress' as any]: 0,
+      ['--ab-font' as any]: customFont,
+      ['--ab-color' as any]: customColor,
+      ['--ab-size' as any]: customSize,
+      fontFamily: 'var(--ab-font)',
+      color: 'var(--ab-color)',
+      fontSize: 'var(--ab-size)'
+    }}>
       <div className="project-article__progress">
-        <span style={{ transform: `scaleX(${scrollProgress})` }} />
+        <span ref={progressRef} style={{ transform: `scaleX(0)` }} />
       </div>
 
       <header className="project-article__hero">
@@ -145,9 +197,13 @@ export const ProjectArticlePage: React.FC = () => {
         </div>
 
         <div className="project-article__hero-panel">
-          {CLIENT_LOGOS[project.id] && (
+          {(project.clientImageUrl || getClientLogo(project.client)) && (
             <img
-              src={CLIENT_LOGOS[project.id]}
+              src={project.clientImageUrl
+                ? (project.clientImageUrl.startsWith('/uploads/')
+                    ? `${API_URL}${project.clientImageUrl}`
+                    : project.clientImageUrl)
+                : getClientLogo(project.client)}
               alt={`${project.client} logo`}
               className="project-article__hero-logo"
             />
@@ -168,13 +224,64 @@ export const ProjectArticlePage: React.FC = () => {
 
           <div className="project-article__hero-stats">
             <div>
-              <p className="project-article__stat-value">{project.country}</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.25rem' }}>
+                {project.flag && (
+                  <img 
+                    src={project.flag} 
+                    alt={project.country} 
+                    style={{ width: '20px', height: '14px', objectFit: 'cover', borderRadius: '2px', border: '1px solid rgba(0,0,0,0.1)' }} 
+                  />
+                )}
+                <p className="project-article__stat-value" style={{ margin: 0 }}>{project.country}</p>
+              </div>
+              <p className="project-article__stat-label">Country</p>
             </div>
             <div>
-              <p className="project-article__stat-value">{project.year}</p>
+              {(() => {
+                const sd = project.startDate?.trim();
+                const ed = project.endDate?.trim();
+                let periodText = project.year || '—';
+                let monthsText = '';
+                
+                if (sd) {
+                  const s = new Date(sd);
+                  if (!isNaN(s.getTime())) {
+                    const fmt = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' });
+                    
+                    if (ed === 'ongoing') {
+                      periodText = `${fmt.format(s)} – Present`;
+                      const e = new Date();
+                      const months = (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth());
+                      if (months >= 0) monthsText = ` (${months} months)`;
+                    } else if (ed) {
+                      const e = new Date(ed);
+                      if (!isNaN(e.getTime())) {
+                        periodText = `${fmt.format(s)} – ${fmt.format(e)}`;
+                        const months = (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth());
+                        if (months >= 0) monthsText = ` (${months} months)`;
+                      } else {
+                        periodText = `${sd} – ${ed}`;
+                      }
+                    } else {
+                      periodText = fmt.format(s);
+                    }
+                  } else {
+                    periodText = ed ? `${sd} – ${ed}` : sd;
+                  }
+                }
+                
+                return (
+                  <div>
+                    <p className="project-article__stat-value" style={{ fontSize: monthsText ? '0.9rem' : undefined }}>{periodText}</p>
+                    {monthsText && <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, fontWeight: 600 }}>{monthsText.trim()}</p>}
+                  </div>
+                );
+              })()}
+              <p className="project-article__stat-label">Period</p>
             </div>
             <div>
               <p className="project-article__stat-value">{project.category}</p>
+              <p className="project-article__stat-label">Category</p>
             </div>
           </div>
         </div>
@@ -182,51 +289,81 @@ export const ProjectArticlePage: React.FC = () => {
 
       <section className="project-article__body">
         <div className="project-article__content">
-          <p className="project-article__lead project-article__reveal">
-            This project was delivered as a strategic intervention to improve organizational performance,
-            implementation capability, and measurable impact for the client institution.
-          </p>
+          {(() => {
+            let parsedSections = null;
+            try {
+              const c = JSON.parse(project.contentJson || '{}');
+              if (c.sections && c.sections.length > 0) parsedSections = c.sections;
+            } catch { /* ignore */ }
 
-          <div className="project-article__callout project-article__reveal">
-            <p className="project-article__callout-title">Executive summary</p>
-            <p>{project.description}</p>
-          </div>
+            if (parsedSections) {
+              return parsedSections.map((s: any, i: number) => {
+                const heading = s.title || s.h2;
+                return (
+                  <div key={i} className="project-article__reveal">
+                    {heading && <h2 id={heading.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}>{heading}</h2>}
+                    {s.blocks && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                      {s.blocks.map((block: any, bi: number) => (
+                        <DetailBlock key={block.id || bi} block={block} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+                );
+              });
+            }
 
-          <h2 id="context" className="project-article__reveal">Mission Context</h2>
-          <p>
-            In {project.country}, {project.client} commissioned this mission to address priorities in {project.category.toLowerCase()}.
-            The engagement combined assessment, design, and implementation support to ensure practical and sustainable outcomes.
-          </p>
+            return (
+              <>
+                <p className="project-article__lead project-article__reveal">
+                  This project was delivered as a strategic intervention to improve organizational performance,
+                  implementation capability, and measurable impact for the client institution.
+                </p>
 
-          <h2 id="focus" className="project-article__reveal">Key Workstreams</h2>
-          <div className="project-article__insights project-article__reveal">
-            <div>
-              <h3>Primary focus</h3>
-              <ul>
-                {focusAreas.map((focus) => (
-                  <li key={focus}>{focus}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3>Executed activities</h3>
-              <ul>
-                {bullets.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
+                <div className="project-article__callout project-article__reveal">
+                  <p className="project-article__callout-title">Executive summary</p>
+                  <p>{project.description}</p>
+                </div>
 
-          <h2 id="impact" className="project-article__reveal">Strategic Impact</h2>
-          <blockquote className="project-article__reveal">{computeStrategicImpact(project)}</blockquote>
+                <h2 id="context" className="project-article__reveal">Mission Context</h2>
+                <p>
+                  In {project.country}, {project.client} commissioned this mission to address priorities in {project.category.toLowerCase()}.
+                  The engagement combined assessment, design, and implementation support to ensure practical and sustainable outcomes.
+                </p>
 
-          <h2 id="delivery" className="project-article__reveal">Delivery Approach</h2>
-          <ol className="project-article__roadmap project-article__reveal">
-            <li><strong>Diagnosis:</strong> baseline assessment of context, systems, and constraints.</li>
-            <li><strong>Design:</strong> co-construction of a realistic roadmap with stakeholders.</li>
-            <li><strong>Execution support:</strong> operational guidance, capacity transfer, and follow-up actions.</li>
-          </ol>
+                <h2 id="focus" className="project-article__reveal">Key Workstreams</h2>
+                <div className="project-article__insights project-article__reveal">
+                  <div>
+                    <h3>Primary focus</h3>
+                    <ul>
+                      {focusAreas.map((focus) => (
+                        <li key={focus}>{focus}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h3>Executed activities</h3>
+                    <ul>
+                      {bullets.map((bullet) => (
+                        <li key={bullet}>{bullet}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <h2 id="impact" className="project-article__reveal">Strategic Impact</h2>
+                <blockquote className="project-article__reveal">{computeStrategicImpact(project)}</blockquote>
+
+                <h2 id="delivery" className="project-article__reveal">Delivery Approach</h2>
+                <ol className="project-article__roadmap project-article__reveal">
+                  <li><strong>Diagnosis:</strong> baseline assessment of context, systems, and constraints.</li>
+                  <li><strong>Design:</strong> co-construction of a realistic roadmap with stakeholders.</li>
+                  <li><strong>Execution support:</strong> operational guidance, capacity transfer, and follow-up actions.</li>
+                </ol>
+              </>
+            );
+          })()}
         </div>
 
         <aside className="project-article__sidebar">
@@ -240,11 +377,54 @@ export const ProjectArticlePage: React.FC = () => {
 
           <div className="project-article__card project-article__reveal">
             <p className="project-article__card-label">Project facts</p>
+            {project.clientImageUrl && (
+              <div style={{ marginBottom: '0.6rem' }}>
+                <img 
+                  src={project.clientImageUrl.startsWith('/uploads/')
+                    ? `${API_URL}${project.clientImageUrl}`
+                    : project.clientImageUrl}
+                  alt={project.client}
+                  style={{ maxHeight: 40, maxWidth: '80%', objectFit: 'contain' }}
+                />
+              </div>
+            )}
             <p className="project-article__card-copy"><strong>Client:</strong> {project.client}</p>
             <p className="project-article__card-copy"><strong>Country:</strong> {project.country}</p>
-            <p className="project-article__card-copy"><strong>Period:</strong> {project.year}</p>
+            <p className="project-article__card-copy"><strong>Period:</strong> {
+              (() => {
+                const sd = project.startDate?.trim();
+                const ed = project.endDate?.trim();
+                if (sd) return ed && ed !== sd ? `${sd} – ${ed}` : sd;
+                return project.year || '—';
+              })()
+            }</p>
             <p className="project-article__card-copy"><strong>Domain:</strong> {project.category}</p>
           </div>
+
+          {project.relatedArticles && project.relatedArticles.length > 0 && (
+            <div className="project-article__card project-article__reveal">
+              <p className="project-article__card-label">Related Articles</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '150px', overflowY: 'auto', paddingRight: '4px' }}>
+                {project.relatedArticles.map((article: any) => (
+                  <Link
+                    key={article.id}
+                    to={`/articles/${article.slug}`}
+                    className="project-article__toc-link"
+                    style={{ 
+                      color: '#1f4a96', 
+                      margin: 0, 
+                      fontSize: '0.88rem', 
+                      lineHeight: '1.4', 
+                      borderBottom: '1px solid rgba(31, 74, 150, 0.1)', 
+                      paddingBottom: '0.5rem' 
+                    }}
+                  >
+                    <span style={{ marginRight: '6px' }}>↗</span> {article.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </aside>
       </section>
 

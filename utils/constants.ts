@@ -8,6 +8,8 @@ export const COLORS = {
   black: '#000000'
 };
 
+export const API_URL = process.env.VITE_API_URL || 'http://localhost:8085';
+
 export const LOGO_SVG = `
 <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
   <text x="10" y="140" font-family="Inter" font-weight="900" font-size="160" fill="${COLORS.primary}">BFC</text>

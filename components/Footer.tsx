@@ -1,48 +1,76 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Mail, Phone } from 'lucide-react';
+import { API_URL } from '../utils/constants';
 import './Footer.css';
 
 interface Office {
   country: string;
-  city: string;
-  phone: string;
+  location: string;
+  managerEmail?: string;
+  phone?: string;
   flag: string;
 }
 
 const OFFICES: Office[] = [
   {
     country: 'Tunisia',
-    city: 'Tunis',
+    location: 'Tunis',
     phone: '+216 58 422 199',
     flag: 'https://flagcdn.com/w80/tn.png',
   },
   {
     country: 'Guinea',
-    city: 'Conakry',
+    location: 'Conakry',
     phone: '+224 623 27 30 73',
     flag: 'https://flagcdn.com/w80/gn.png',
   },
   {
     country: 'Senegal',
-    city: 'Dakar',
+    location: 'Dakar',
     phone: '',
     flag: 'https://flagcdn.com/w80/sn.png',
   },
   {
     country: 'Congo',
-    city: 'Kinshasa',
+    location: 'Kinshasa',
     phone: '',
     flag: 'https://flagcdn.com/w80/cg.png',
   },
   {
     country: 'Mauritania',
-    city: 'Nouakchott',
+    location: 'Nouakchott',
     phone: '+216 98 194 202',
     flag: 'https://flagcdn.com/w80/mr.png',
   },
 ];
 
 export const Footer: React.FC = () => {
+  const [offices, setOffices] = useState<Office[]>([]);
+
+  useEffect(() => {
+    const fetchOffices = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/representatives`);
+        if (res.ok) {
+          const data = await res.json();
+          const mapped = data.map((rep: any) => ({
+            country: rep.title.replace('BFC ', ''),
+            location: rep.location,
+            managerEmail: rep.manager?.email || '',
+            phone: rep.manager?.phone || '',
+            flag: rep.flagIconUrl,
+          }));
+          setOffices(mapped);
+        } else {
+          setOffices(OFFICES);
+        }
+      } catch {
+        setOffices(OFFICES);
+      }
+    };
+    fetchOffices();
+  }, []);
+
   return (
     <footer className="footer">
       <div className="footer__container">
@@ -95,7 +123,7 @@ export const Footer: React.FC = () => {
         <div className="footer__countries">
           <span className="footer__label">( OUR OFFICES )</span>
           <div className="footer__countries-grid">
-            {OFFICES.map((office) => (
+            {offices.map((office) => (
               <div key={office.country} className="footer__country">
                 <img
                   src={office.flag}
@@ -104,12 +132,18 @@ export const Footer: React.FC = () => {
                 />
                 <div className="footer__country-info">
                   <span className="footer__country-name">{office.country}</span>
-                  <span className="footer__country-city">{office.city}</span>
+                  <span className="footer__country-city" style={{ fontWeight: 400, opacity: 0.8, marginTop: '4px' }}>{office.location}</span>
+                  {office.managerEmail && (
+                    <a href={`mailto:${office.managerEmail}`} className="footer__country-email" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.75rem', color: '#99cdb3', textDecoration: 'none', marginTop: 2 }}>
+                      <Mail size={12} />
+                      {office.managerEmail}
+                    </a>
+                  )}
                   {office.phone && (
-                    <span className="footer__country-phone">
-                      <Phone size={10} />
+                    <a href={`tel:${office.phone}`} className="footer__country-phone" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: '0.75rem', color: '#99cdb3', textDecoration: 'none', marginTop: 2 }}>
+                      <Phone size={12} />
                       {office.phone}
-                    </span>
+                    </a>
                   )}
                 </div>
               </div>

@@ -1,10 +1,10 @@
 :root {
   --rd-navy: #204383;
-  --rd-teal: #26c0af;
+  --rd-teal: #99cdb3;
   --rd-blue: #299bcd;
   --rd-light: #f8fafc;
   --rd-white: #ffffff;
-  --rd-gray: #334155;
+  --rd-gray: #4b5563;
   --rd-dark: #0f172a;
 }
 
@@ -28,22 +28,7 @@
   margin: 0 auto;
 }
 
-/* Sharp corners utility */
-.sharp-card {
-  border-radius: 0 !important;
-}
-
-.sharp-btn {
-  border-radius: 0 !important;
-}
-
-.sharp-text {
-  letter-spacing: 0.05em;
-}
-
-.sharp-border {
-  border-radius: 0 !important;
-}
+/* Sharp utilities removed to align with global rounded styles */
 
 /* Split Layout */
 .rd-split-layout {
@@ -74,11 +59,12 @@
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  background: var(--rd-dark);
+  background: var(--rd-navy);
   color: #fff;
   border: none;
   padding: 12px 24px;
   cursor: pointer;
+  border-radius: 9999px;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   font-size: 0.75rem;
   font-weight: 700;
@@ -100,9 +86,10 @@
 
 .rd-eyebrow {
   display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.75rem;
   font-weight: 800;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--rd-teal);
 }
@@ -121,13 +108,19 @@
   object-fit: cover;
 }
 
+/* Second copy of the office logo, shown only on phones beside the title — see
+   the mobile block. Desktop renders it in .rd-image-section instead. */
+.rd-title-logo {
+  display: none;
+}
+
 .rd-title {
   font-size: clamp(3rem, 6vw, 5rem);
   font-weight: 900;
-  line-height: 0.95;
-  color: var(--rd-dark);
+  line-height: 0.9;
+  color: var(--rd-navy);
   margin: 0;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
 }
 
 .rd-divider {
@@ -154,10 +147,13 @@
 
 /* Glass Card */
 .rd-glass-card {
-  background: var(--rd-white);
-  border: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
   padding: 40px;
-  box-shadow: 20px 20px 0 rgba(38, 192, 175, 0.1);
+  box-shadow: 0 15px 35px rgba(32, 67, 131, 0.08);
   margin-top: 20px;
 }
 
@@ -194,7 +190,8 @@
   overflow: hidden;
   background: #fff;
   border: 1px solid #e2e8f0;
-  box-shadow: 20px 20px 0 rgba(26, 42, 74, 0.05);
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(32, 67, 131, 0.1);
   
   display: flex;
   justify-content: center;
@@ -203,7 +200,7 @@
 
 @media (min-width: 1024px) {
   .rd-logo-wrapper {
-    box-shadow: 40px 40px 0 rgba(26, 42, 74, 0.05);
+    box-shadow: 0 30px 60px rgba(32, 67, 131, 0.12);
   }
 }
 
@@ -248,7 +245,7 @@
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  background: var(--rd-dark);
+  background: linear-gradient(135deg, var(--rd-dark), var(--rd-navy));
   padding: 60px 5vw;
   box-sizing: border-box;
   overflow: hidden;
@@ -272,9 +269,13 @@
   justify-content: center;
   align-items: flex-start;
   padding: 60px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 24px;
   gap: 40px;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 /* Globe section (right) */
@@ -297,8 +298,10 @@
 
 .rd-globe-container {
   position: relative;
-  width: 560px;
-  height: 560px;
+  /* Was 560px. The .rd-globe-animate scale below multiplies this, so both the
+     resting and the zoomed size come down together. */
+  width: 400px;
+  height: 400px;
   perspective: 1000px;
   transform: scale(1);
   transition: transform 2.8s cubic-bezier(0.22, 1, 0.36, 1);
@@ -569,8 +572,9 @@
   width: 200px;
   height: 200px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 20px 20px 0 var(--rd-teal);
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
   margin-bottom: 10px;
 }
 
@@ -653,25 +657,44 @@
 }
 
 .rd-projects-eyebrow {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.75rem;
   font-weight: 800;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.4em;
   color: var(--rd-teal);
   text-transform: uppercase;
 }
 
 .rd-projects-title {
-  font-size: 2.5rem;
+  font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 900;
-  color: var(--rd-dark);
+  color: var(--rd-navy);
+  letter-spacing: -0.02em;
+  line-height: 0.9;
   margin: 0;
 }
 
-.rd-rep-projects-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 40px;
+.rd-rep-projects-scroll {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 20px;
   margin-top: 20px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rd-rep-projects-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+.rd-rep-projects-scroll::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.4);
+  border-radius: 4px;
+}
+.rd-rep-projects-scroll::-webkit-scrollbar-thumb {
+  background: var(--rd-navy);
+  border-radius: 4px;
 }
 
 .rd-rep-projects-empty {
@@ -685,23 +708,29 @@
 }
 
 @media (min-width: 768px) {
-  .rd-rep-projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .rd-rep-projects-scroll {
+    gap: 30px;
   }
 }
 
 .rd-rep-project-card {
   background: var(--rd-white);
-  box-shadow: 20px 20px 0 rgba(26, 42, 74, 0.05);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(32, 67, 131, 0.08);
+  border: 1px solid rgba(32, 67, 131, 0.05);
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: transform 0.4s ease;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  min-width: 320px;
+  width: 320px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
 }
 
 .rd-rep-project-card:hover {
   transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(32, 67, 131, 0.15);
 }
 
 .rd-rep-project-img-wrap {
@@ -724,9 +753,10 @@
 
 .rd-rep-project-cat {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  background: var(--rd-teal);
+  bottom: 12px;
+  left: 12px;
+  background: var(--rd-navy);
+  border-radius: 9999px;
   color: #fff;
   padding: 6px 16px;
   font-size: 0.7rem;
@@ -768,9 +798,13 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
-  background: linear-gradient(120deg, #f8fafc 0%, #ecf3ff 100%);
-  border: 1px solid #dbe6f4;
-  padding: 28px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
+  box-shadow: 0 15px 35px rgba(32, 67, 131, 0.08);
+  padding: 40px;
 }
 
 .rd-congo-motivation__content {
@@ -972,6 +1006,50 @@
 }
 
 @media (max-width: 768px) {
+  /* Title on the left with the office logo opposite it on the right. The flag
+     that used to sit here is gone, and the logo no longer drops into its own
+     stacked section below the text. */
+  .rd-title-wrapper {
+    gap: 12px;
+  }
+
+  .rd-title-flag {
+    display: none;
+  }
+
+  /* Smaller so the country name, the logo and the gap all fit on one row: at
+     the base 3rem floor, "BFC MAURITANIA" alone is wider than the column. */
+  .rd-title {
+    font-size: clamp(2rem, 8vw, 2.6rem);
+  }
+
+  .rd-title-logo {
+    display: block;
+    height: 130px;
+    width: auto;
+    object-fit: contain;
+    flex-shrink: 0;
+    /* Auto margin rather than leaning on the row gap: it takes up whatever
+       space the country name leaves, so the logo lands on the right of the
+       column whether the name is "BFC CONGO" or "BFC MAURITANIA". The right
+       margin then eases it back off the very edge. The row gap still holds as
+       the 12px minimum between name and logo. */
+    margin-left: auto;
+    margin-right: 34px;
+  }
+
+  /* The logo is beside the title now, so this section has nothing left to
+     show — and leaving it in would leave an 80px gap with no content. */
+  .rd-image-section {
+    display: none;
+  }
+
+  /* No globe on phones. It was already shrunk to 320px here and would sit below
+     the manager card on its own, so the block ends on the manager instead. */
+  .rd-globe-section {
+    display: none;
+  }
+
   .rd-references-section {
     margin-top: 80px;
     padding: 60px 5vw 80px;

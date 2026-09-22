@@ -1,13 +1,13 @@
 .footer {
   background: #204383;
   color: #fff;
-  padding: 5rem 1.5rem 2.5rem;
+  padding: 2.25rem 1.5rem 2.5rem;
   border-top: 1px solid rgba(153, 205, 179, 0.2);
 }
 
 @media (min-width: 768px) {
   .footer {
-    padding: 6rem 3rem 3rem;
+    padding: 2.75rem 3rem 3rem;
   }
 }
 

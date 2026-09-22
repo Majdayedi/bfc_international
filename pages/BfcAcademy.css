@@ -130,6 +130,8 @@ body {
   gap: 2.5rem;
 }
 
+
+
 /* International Title */
 .intl-title-block {
   position: sticky;
@@ -202,16 +204,19 @@ body {
   position: absolute;
   top: 1.25rem;
   right: 1.25rem;
-  background: #fff0f6;
-  color: #ff4d8d;
+  background: #e8f5ee;
+  color: #99cdb3;
   padding: 0.45rem 1.3rem;
   font-size: 0.82rem;
   font-weight: 800;
   border-radius: 8px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  box-shadow: 0 2px 8px 0 rgba(255, 77, 141, 0.08);
+  box-shadow: 0 2px 8px 0 rgba(153, 205, 179, 0.08);
   z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .certificate-header {
@@ -270,7 +275,7 @@ body {
 
 .certificate-info-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 1.2rem;
   background: #f8fafb;
   padding: 1.1rem 1.25rem;
@@ -1273,6 +1278,42 @@ body {
   text-transform: uppercase;
   margin-top: 0.25rem;
   letter-spacing: 0.1em;
+}
+
+/* =============================================
+   LOADING / ERROR / EMPTY STATES
+   ============================================= */
+
+.intl-loading,
+.intl-error,
+.intl-empty,
+.formations-loading,
+.formations-error,
+.formations-empty {
+  padding: 3rem 2rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #6b7280;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intl-error,
+.formations-error {
+  color: #dc2626;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.category-item--disabled {
+  cursor: default;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /* =============================================

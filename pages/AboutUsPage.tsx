@@ -1,6 +1,7 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
-import { Globe, Target, Eye, Shield, Users, Award, Zap, Crosshair, FileDown, Mail, Phone } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Globe, Shield, Users, Award, Zap, Crosshair, FileDown, Mail, Phone } from 'lucide-react';
 import './AboutUsPage.css';
+import { API_URL } from '../utils/constants';
 
 import aboutHero from '../src/assets/about_us1.png';
 import bfcLogo from '../src/assets/bfc.png';
@@ -8,18 +9,7 @@ import reandaLogo from '../src/assets/reanda.png';
 import nadiaImg from '../src/assets/nadia.png';
 import jobImg from '../src/assets/job.jpg';
 import contactImg from '../src/assets/contact.jpg';
-import chaimaimg from '../src/assets/team/chaima.jpeg';
-import zeinebImg from '../src/assets/team/zeineb.jpeg';
-import inesimg from '../src/assets/team/ines.jpeg';
-import tasnimImg from '../src/assets/team/tasnim.jpeg';
-import medamine from '../src/assets/team/medamine.jpeg';
-import nadia from '../src/assets/team/nadia.jpeg';
-
 import abderrahman from '../src/assets/abderrahman.png';
-import cvnadia from '../src/assets/cv/CV Nadia YAICH  Février 2026.pdf';
-import cv_medamine from '../src/assets/cv/CV Mohamed Amine Sahli (2).pdf';
-import cvtasnim from '../src/assets/cv/CV Tasnim Zouaoui .pdf';
-import cvzaineb from '../src/assets/cv/CV ZEINEB SBOUI (2).pdf';
 
 
 
@@ -64,7 +54,14 @@ const SpinningGlobeBackdrop = () => {
   );
 }
 
-const DEFAULT_TEAM_CV_URL = '/pdfs/team-member-cv.pdf';
+// Resolve backend upload URLs (relative paths like /uploads/...) to full URLs
+const getUploadUrl = (url: string | null | undefined): string => {
+  if (!url) return '';
+  if (url.startsWith('/uploads/')) {
+    return `${API_URL}${url}`;
+  }
+  return url;
+};
 
 interface TeamBadgeFlag {
   name: string;
@@ -72,93 +69,27 @@ interface TeamBadgeFlag {
 }
 
 interface TeamMember {
+  id?: number;
   name: string;
   role: string;
+  roleType?: string;
   img: string;
-  email: string;
-  phone: string;
-  cvUrl: string | null | false;
-  countryName: string;
-  countryFlagUrl: string;
-  showPrimaryFlag?: boolean;
+  email?: string;
+  phone?: string;
+  cvUrl?: string | null;
+  countryName?: string;
+  countryFlagUrl?: string;
+  showPrimaryFlag?: boolean | null;
   extraFlags?: TeamBadgeFlag[];
-  showGlobe?: boolean;
+  displayOrder?: number;
 }
-
-const TEAM_MEMBERS: TeamMember[] = [
-  // Country Managers first
-  {
-    name: 'Nadia Yaich',
-    role: 'CEO & Country Manager Congo',
-    img: nadia,
-    email: 'nadia.yaich@bfc.com.tn',
-    phone: '+216-58-422-199',
-    cvUrl: cvnadia,
-    countryName: 'Republic of the Congo',
-    countryFlagUrl: 'https://flagcdn.com/w80/cg.png',
-    extraFlags: [{ name: 'Tunisia', url: 'https://flagcdn.com/w80/tn.png' }],
-  },
-  {
-    name: 'Mohamed Amine Sahli',
-    role: 'Associate & Country Manager Guinea',
-    img: medamine,
-    email: 'mohamedamine.sahli@bfc.com.tn',
-    phone: '+216 98 747 836 / +224 623 27 30 73',
-    cvUrl: cv_medamine,
-    countryName: 'Guinea',
-    countryFlagUrl: 'https://flagcdn.com/w80/gn.png',
-  },
-  {
-    name: 'Ines Yaich',
-    role: 'Country Manager BFC Senegal',
-    img: inesimg,
-    email: 'ines.yaich@bfc.com.tn',
-    phone: 'Phone not provided',
-    cvUrl: false,
-    countryName: 'Senegal',
-    countryFlagUrl: 'https://flagcdn.com/w80/sn.png',
-  },
-  {
-    name: 'Tasnim Zouaoui',
-    role: 'Country Manager Mauritania & Mali',
-    img: tasnimImg,
-    email: 'tasnim.zouaoui@bfc.com.tn',
-    phone: '+216-98-194-202',
-    cvUrl: cvtasnim,
-    countryName: 'Mauritania',
-    countryFlagUrl: 'https://flagcdn.com/w80/mr.png',
-    extraFlags: [{ name: 'Mali', url: 'https://flagcdn.com/w80/ml.png' }],
-  },
-  // Other team members
-  
-  
-  {
-    name: 'Zeineb Sboui',
-    role: 'Consultant',
-    img: zeinebImg,
-    email: 'zeineb.sboui@bfc.com.tn',
-    phone: '+216-98-135-930',
-    cvUrl: cvzaineb,
-    countryName: 'Tunisia',
-    countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
-    showPrimaryFlag: false,
-    showGlobe: true,
-  },
-  {
-    name: 'Chaima Gader',
-    role: 'Auditing Accountant',
-    img: chaimaimg,
-    email: 'chaima.gader@bfc.com.tn',
-    phone: '+216-98-747-842',
-    cvUrl: null,
-    countryName: 'Tunisia',
-    countryFlagUrl: 'https://flagcdn.com/w80/tn.png',
-  },
-];
 
 export const AboutUsPage: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const [openContactKey, setOpenContactKey] = useState<string | null>(null);
+  const [teamMembersList, setTeamMembersList] = useState<TeamMember[]>([]);
+  const [teamLoading, setTeamLoading] = useState(true);
+  const [teamError, setTeamError] = useState<string | null>(null);
   const currentYear = new Date().getFullYear();
   const result = currentYear - 2010;
 
@@ -176,6 +107,27 @@ export const AboutUsPage: React.FC = () => {
   };
 
   useEffect(() => {
+    // Fetch team members dynamically from the backend
+    const fetchTeamMembers = async () => {
+      setTeamLoading(true);
+      setTeamError(null);
+      try {
+        const res = await fetch(`${API_URL}/api/team-members`);
+        if (res.ok) {
+          const data: TeamMember[] = await res.json();
+          setTeamMembersList(data);
+        } else {
+          setTeamError(`Server responded with ${res.status}`);
+        }
+      } catch (err) {
+        console.error('Failed to fetch team members:', err);
+        setTeamError('Could not connect to the server. Make sure the backend is running.');
+      } finally {
+        setTeamLoading(false);
+      }
+    };
+    fetchTeamMembers();
+
     window.scrollTo(0, 0);
 
     const observer = new IntersectionObserver((entries) => {
@@ -267,7 +219,44 @@ in implementing high‑impact transformation programs.              </p>
         </div>
       </section>
 
-      {/* 3. NOS VALEURS */}
+      {/* 3. MISSION & VISION */}
+      <section className="ap-section">
+        <div className="ap-container">
+          <div className="ap-text-center rev-fade">
+            <h2 className="ap-heading-lg">Our Mission &amp; Vision</h2>
+          </div>
+
+          <div className="ap-mv-merged-grid">
+            <div className="ap-mv-merged-card rev-slide-up">
+              <div className="ap-mv-merged-media">
+                <img src={jobImg} alt="BFC Mission" />
+                <div className="ap-mv-merged-overlay">
+                  <span className="ap-eyebrow">Our Mission</span>
+                  <h2 className="ap-mv-merged-title">Empowering<br/>Transformation.</h2>
+                </div>
+              </div>
+              <p className="ap-mv-merged-text">
+                Our mission is to support and guide businesses, governments, and organizations by offering tailored consulting services rooted in local expertise and focused on sustainable growth.
+              </p>
+            </div>
+
+            <div className="ap-mv-merged-card ap-mv-merged-card--vision rev-slide-up" style={{transitionDelay: '0.15s'}}>
+              <div className="ap-mv-merged-media">
+                <img src={contactImg} alt="BFC Vision" />
+                <div className="ap-mv-merged-overlay">
+                  <span className="ap-eyebrow">Our Vision</span>
+                  <h2 className="ap-mv-merged-title">Courage<br/>To Change.</h2>
+                </div>
+              </div>
+              <p className="ap-mv-merged-text">
+                To become a leading consulting and executive training firm specialized in public sector transformation and governance across emerging markets.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. CORE VALUES */}
       <section className="ap-section">
         <div className="ap-container">
           <div className="ap-text-center rev-fade">
@@ -295,7 +284,53 @@ in implementing high‑impact transformation programs.              </p>
         </div>
       </section>
 
-      {/* 4. EQUIPE DIRIGEANTE */}
+      {/* 5. REANDA & NETWORK */}
+      <section className="ap-network-section">
+        <div className="ap-network-bg">
+          <div className="ap-net-overlay"></div>
+          <SpinningGlobeBackdrop />
+        </div>
+
+        <div className="ap-container ap-network-front">
+          <div className="ap-network-grid">
+            <div className="ap-net-text rev-slide-up">
+              <span className="ap-eyebrow ap-teal-text">Global Footprint</span>
+              <h2 className="ap-net-title ap-text-white">Reanda<br/>International</h2>
+              <div className="ap-styled-divider ap-divider-light"></div>
+              <p className="ap-net-p">
+                <strong>Reanda International</strong> is a leading global network of accounting
+                and consulting firms. With more than 5,000 professionals and 240 partners
+                across 144 offices in 58 countries, we provide high-quality accounting,
+                audit, tax, and consulting services tailored to our clients' international needs.
+              </p>
+
+              <div className="ap-net-stats">
+                <div className="ap-n-stat">
+                  <div className="ap-n-num">23rd</div>
+                  <div className="ap-n-label"> Accounting Network</div>
+                </div>
+                <div className="ap-n-stat">
+                  <div className="ap-n-num">60</div>
+                  <div className="ap-n-label">Countries</div>
+                </div>
+                <div className="ap-n-stat">
+                  <div className="ap-n-num">140+</div>
+                  <div className="ap-n-label">Offices</div>
+                </div>
+                <div className="ap-n-stat">
+                  <div className="ap-n-num">5000+</div>
+                  <div className="ap-n-label">Staff</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="ap-net-visuals rev-scale" style={{transitionDelay: '0.3s'}}></div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 6. EXECUTIVE LEADERSHIP */}
       <section className="ap-section ap-gray-bg ap-overflow-hidden">
         <div className="ap-container">
           <div className="ap-text-center rev-slide-up">
@@ -309,7 +344,7 @@ in implementing high‑impact transformation programs.              </p>
                 <img src={abderrahman} alt="abderrahman" />
               </div>
               <div className="ap-leader-info">
-                <h3>Amin Abdelrahman</h3>
+                <h3>Amin Abderrahman</h3>
                 <p className="ap-leader-role"> Partner</p>
                 <p className="ap-leader-desc">Chartered accountant and international consultant in financial and economic analysis.</p>
                 <div className="ap-leader-badges">
@@ -357,7 +392,7 @@ organisational management, public policy.</p>
                     className="ap-team-action-btn ap-team-download-btn"
                     title="Download CV"
                     aria-label="Download Nadia Yaich CV"
-                    onClick={() => handlePdfDownload(cvnadia, 'nadia-yaich-cv.pdf')}
+                    onClick={() => handlePdfDownload(getUploadUrl('/uploads/cv/CV Nadia YAICH  Février 2026.pdf'), 'nadia-yaich-cv.pdf')}
                   >
                     <FileDown size={20} />
                   </button>
@@ -371,16 +406,39 @@ organisational management, public policy.</p>
         <div className="ap-dec-circle c-right"></div>
       </section>
 
-      {/* TEAM MEMBERS SECTION */}
+      {/* 7. MEET THE MANAGERS */}
       <section className="ap-section">
         <div className="ap-container">
           <div className="ap-text-center rev-fade">
-            <span className="ap-eyebrow">Our Experts</span>
-            <h2 className="ap-heading-lg">Meet the Team</h2>
+            <span className="ap-eyebrow">Our Team</span>
+            <h2 className="ap-heading-lg">Meet The Mangers </h2>
           </div>
           <div className="ap-team-scroll-container">
+            {teamLoading && (
+              <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--ap-gray)' }}>
+                <div className="ap-loading-spinner"></div>
+                <p>Loading team members...</p>
+              </div>
+            )}
+            {teamError && !teamLoading && (
+              <div style={{ textAlign: 'center', padding: '3rem', color: '#e74c3c' }}>
+                <p style={{ fontWeight: 600, marginBottom: '0.5rem' }}>Could not load team</p>
+                <p style={{ fontSize: '0.85rem', opacity: 0.7 }}>{teamError}</p>
+                <button 
+                  onClick={() => window.location.reload()}
+                  style={{
+                    marginTop: '1rem', padding: '0.5rem 1.5rem',
+                    background: 'var(--ap-navy)', color: 'white',
+                    border: 'none', borderRadius: '8px', cursor: 'pointer'
+                  }}
+                >
+                  Retry
+                </button>
+              </div>
+            )}
+            {!teamLoading && !teamError && (
             <div className="ap-team-scroll">
-              {TEAM_MEMBERS.map((member, index) => (
+              {teamMembersList.map((member, index) => (
                 <div className="ap-team-card" key={index}>
                   <div className="ap-team-badges">
                     {member.showPrimaryFlag !== false && (
@@ -393,13 +451,13 @@ organisational management, public policy.</p>
                         <img src={flag.url} alt={flag.name + ' flag'} />
                       </span>
                     ))}
-                    {member.showGlobe && (
+                    {member.extraFlags && member.extraFlags.length >= 2 && (
                       <span className="ap-team-globe" title="Global network member" aria-label="Global network member">
                         <Globe size={14} />
                       </span>
                     )}
                   </div>
-                  <img src={member.img} alt={member.name} className="ap-team-card-img" />
+                  <img src={getUploadUrl(member.img)} alt={member.name} className="ap-team-card-img" />
                   <div className="ap-team-card-info">
                     <div className="ap-team-member-text">
                       <h4>{member.name}</h4>
@@ -415,7 +473,7 @@ organisational management, public policy.</p>
                           aria-label={`Show ${member.name} email`}
                         >
                           <Mail size={18} />
-                          <span>{member.email}</span>
+                          <span>{member.email || ''}</span>
                         </button>
                         <button
                           type="button"
@@ -425,7 +483,7 @@ organisational management, public policy.</p>
                           aria-label={`Show ${member.name} phone`}
                         >
                           <Phone size={18} />
-                          <span>{member.phone}</span>
+                          <span>{member.phone || ''}</span>
                         </button>
                       </div>
                       {member.cvUrl && (
@@ -433,7 +491,7 @@ organisational management, public policy.</p>
                           className="ap-team-action-btn ap-team-download-btn"
                           title="Download CV"
                           aria-label={`Download ${member.name} CV`}
-                          onClick={() => handlePdfDownload(member.cvUrl as string, `${member.name.toLowerCase().replace(/\s+/g, '-')}-cv.pdf`)}
+                          onClick={() => handlePdfDownload(getUploadUrl(member.cvUrl as string), `${member.name.toLowerCase().replace(/\s+/g, '-')}-cv.pdf`)}
                         >
                           <FileDown size={20} />
                         </button>
@@ -443,138 +501,9 @@ organisational management, public policy.</p>
                 </div>
               ))}
             </div>
+            )}
           </div>
           
-        </div>
-      </section>
-
-      {/* 5. REANDA & NETWORK - 3D Globe Implementation */}
-      <section className="ap-network-section">
-        <div className="ap-network-bg">
-          <div className="ap-net-overlay"></div>
-          <SpinningGlobeBackdrop />
-        </div>
-
-        <div className="ap-container ap-network-front">
-          <div className="ap-network-grid">
-            
-      <div className="ap-net-text rev-slide-up">
-        <span className="ap-eyebrow ap-teal-text">Global Footprint</span>
-              <h2 className="ap-heading-xl ap-text-white" style={{marginBottom: '1.5rem'}}>Reanda<br/>International</h2>
-              <div className="ap-styled-divider ap-divider-light"></div>
-              <p className="ap-net-p">
-                <strong>Reanda International</strong> is a leading global network of accounting
-                and consulting firms. With more than 5,000 professionals and 240 partners
-                across 144 offices in 58 countries, we provide high-quality accounting,
-                audit, tax, and consulting services tailored to our clients' international needs.
-              </p>
-
-              <div className="ap-net-stats">
-                <div className="ap-n-stat">
-                  <div className="ap-n-num">23rd</div>
-                  <div className="ap-n-label"> Accounting Network</div>
-                </div>
-                <div className="ap-n-stat">
-                  <div className="ap-n-num">60</div>
-                  <div className="ap-n-label">Countries</div>
-                </div>
-                <div className="ap-n-stat">
-                  <div className="ap-n-num">140+</div>
-                  <div className="ap-n-label">Offices</div>
-                </div>
-                <div className="ap-n-stat">
-                  <div className="ap-n-num">5000+</div>
-                  <div className="ap-n-label">Staff</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="ap-net-visuals rev-scale" style={{transitionDelay: '0.3s'}}></div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* REANDA VIDEO SECTION */}
-      <section className="ap-reanda-video-section ap-section">
-        <div className="ap-container">
-          <div className="ap-reanda-video-layout">
-            <div className="ap-reanda-video-copy">
-              <span className="ap-eyebrow">Reanda Network </span>
-              <h2 className="ap-heading-lg">Signing Ceremony</h2>
-            </div>
-
-            <div className="ap-reanda-video-wrap">
-              <video
-                className="ap-reanda-video"
-                controls
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                poster={aboutHero}
-              >
-                <source src="/videos/reanda_accord.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. MISSION SECTION */}
-      <section className="ap-mission-section ap-section">
-        <div className="ap-container">
-          <div className="ap-mission-layout">
-            <div className="ap-mv-image-wrapper rev-scale">
-              <div className="ap-mv-image-backdrop teal-backdrop"></div>
-              <img src={jobImg} className="ap-mv-image" alt="BFC Mission" />
-              <div className="ap-mv-floating-badge">
-                <Target size={20} />
-                <span>Strategic Impact</span>
-              </div>
-            </div>
-            <div className="ap-mission-content rev-slide-up">
-              <div className="ap-mv-icon-wrapper">
-                <Target className="ap-mv-icon" />
-              </div>
-              <span className="ap-eyebrow">Our Mission</span>
-              <h2 className="ap-heading-xl ap-navy-text">Empowering<br/>Transformation.</h2>
-              <div className="ap-styled-divider"></div>
-              <p className="ap-mission-text">
-Our mission is to support and guide businesses, governments, and organizations by offering tailored consulting services rooted in local expertise and focused on sustainable growth.       </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. VISION SECTION */}
-      <section className="ap-vision-section ap-section ap-navy-bg ap-overflow-hidden">
-        <div className="ap-vision-bg-glow"></div>
-        <div className="ap-container relative-z">
-          <div className="ap-vision-layout">
-            <div className="ap-vision-content rev-slide-up">
-              <div className="ap-mv-icon-wrapper teal-icon">
-                <Eye className="ap-mv-icon" />
-              </div>
-              <span className="ap-eyebrow ap-teal-text">Our Vision</span>
-              <h2 className="ap-heading-xl ap-text-white">Courage<br/>To Change.</h2>
-              <div className="ap-styled-divider ap-divider-light"></div>
-              <p className="ap-vision-text">
-To become a leading consulting and executive training firm specialized in public sector transformation
-and governance across emerging markets.
-              </p>
-            </div>
-            <div className="ap-mv-image-wrapper rev-scale" style={{transitionDelay: '0.2s'}}>
-              <div className="ap-mv-image-backdrop white-backdrop"></div>
-              <img src={contactImg} className="ap-mv-image" alt="BFC Vision" />
-              <div className="ap-mv-floating-badge dark-badge">
-                <Eye size={20} />
-                <span>Global Foresight</span>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
     </div>

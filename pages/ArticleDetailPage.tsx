@@ -1,5 +1,7 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { API_URL } from '../utils/constants';
+import { DetailBlock } from './ArticleBuilder';
 import './ArticleDetailPage.css';
 import mauritaniaRep from '/src/assets/representatives/mauritania.png';
 import tunisiaRep from '/src/assets/representatives/tunisia.png';
@@ -747,13 +749,47 @@ const CONTENT: Record<string, any> = {
 
 export const ArticleDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const data = slug ? CONTENT[slug] : null;
+  
+  const [data, setData] = useState<any>(slug ? CONTENT[slug] : null);
+  const [loading, setLoading] = useState(!data);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [heroProgress, setHeroProgress] = useState(0);
 
   useEffect(() => {
+    if (slug && !CONTENT[slug]) {
+      fetch(`${API_URL}/api/articles`)
+        .then(r => r.json())
+        .then(articles => {
+          const found = articles.find((a: any) => slugify(a.title) === slug || String(a.id) === slug);
+          if (found) {
+            try {
+              const content = JSON.parse(found.contentJson || '{}');
+              setData({
+                id: found.id,
+                h1: found.title,
+                metaDescription: found.subtitle,
+                heroPhoto: found.heroImage,
+                readTime: found.readingTime,
+                publishDate: found.publishDate,
+                takeaways: content.takeaways || [],
+                references: content.references || [],
+                sections: content.sections || [],
+                contentJson: found.contentJson,
+                flag: found.flag
+              });
+            } catch(e) {}
+          }
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
+    } else {
+      setLoading(false);
+    }
+  }, [slug]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
-    if (data) document.title = data.metaTitle || data.h1;
+    if (data) document.title = data.metaTitle || data.h1 || 'Article';
   }, [data]);
 
   useEffect(() => {
@@ -779,12 +815,33 @@ export const ArticleDetailPage: React.FC = () => {
     return () => obs.disconnect();
   }, [data]);
 
+  if (loading) return <div style={{ padding: '8rem 4rem', textAlign: 'center', color: '#204383', fontWeight: 600 }}>Loading article...</div>;
   if (!data) return <div style={{ padding: '4rem', textAlign: 'center' }}>Article not found.</div>;
 
-  const h2Sections = data.sections.filter((s: any) => s.h2);
+  const h2Sections = data.sections.map((s: any) => s.h2 || s.title).filter(Boolean);
+
+  let customFont = 'Inter';
+  let customColor = '#374151';
+  let customSize = '1rem';
+  try {
+    if (data.contentJson) {
+      const c = JSON.parse(data.contentJson);
+      customFont = c.fontFamily || customFont;
+      customColor = c.textColor || customColor;
+      customSize = c.fontSize || customSize;
+    }
+  } catch (e) {}
 
   return (
-    <article className="article-detail" style={{ ['--hero-progress' as any]: heroProgress }}>
+    <article className="article-detail" style={{ 
+      ['--hero-progress' as any]: heroProgress,
+      ['--ab-font' as any]: customFont,
+      ['--ab-color' as any]: customColor,
+      ['--ab-size' as any]: customSize,
+      fontFamily: 'var(--ab-font)',
+      color: 'var(--ab-color)',
+      fontSize: 'var(--ab-size)'
+    }}>
       {/* ── Reading progress bar ─────────────────────────────── */}
       <div className="article-detail__progress">
         <span style={{ transform: `scaleX(${scrollProgress})` }} />
@@ -830,8 +887,18 @@ export const ArticleDetailPage: React.FC = () => {
           {data.sections.map((s: any, i: number) => (
             <div key={i} className="article-detail__reveal">
               {s.h2 && <h2 id={slugify(s.h2)}>{s.h2}</h2>}
+              {s.title && <h2 id={slugify(s.title)}>{s.title}</h2>}
               {s.h3 && <h3>{s.h3}</h3>}
-              {s.p && <RenderLines lines={s.p} />}
+              
+              {s.blocks ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {s.blocks.map((block: any, bi: number) => (
+                    <DetailBlock key={block.id || bi} block={block} />
+                  ))}
+                </div>
+              ) : (
+                s.p && <RenderLines lines={s.p} />
+              )}
             </div>
           ))}
 
@@ -842,12 +909,22 @@ export const ArticleDetailPage: React.FC = () => {
             <div className="article-detail__references article-detail__reveal">
               <h2>References</h2>
               <ol>
-                {(data.references as Reference[]).map((ref, i) => (
-                  <li key={i} className="article-detail__reference-item">
-                    <a href={ref.url} target="_blank" rel="noopener noreferrer">{ref.label}</a>
-                    <span className="article-detail__ref-meta"> — {ref.author}, {ref.year}</span>
-                  </li>
-                ))}
+                {data.references.map((ref: any, i: number) => {
+                  const label = typeof ref === 'string' ? ref : ref.label;
+                  const url = typeof ref === 'string' ? '' : ref.url;
+                  const author = typeof ref === 'string' ? '' : ref.author;
+                  const year = typeof ref === 'string' ? '' : ref.year;
+                  return (
+                    <li key={i} className="article-detail__reference-item">
+                      {url ? (
+                        <a href={url} target="_blank" rel="noopener noreferrer">{label}</a>
+                      ) : (
+                        <span>{label}</span>
+                      )}
+                      {author && <span className="article-detail__ref-meta"> — {author}, {year}</span>}
+                    </li>
+                  );
+                })}
               </ol>
             </div>
           )}
@@ -867,9 +944,9 @@ export const ArticleDetailPage: React.FC = () => {
           {h2Sections.length > 0 && (
             <div className="article-detail__card article-detail__reveal">
               <p className="article-detail__card-label">In this article</p>
-              {h2Sections.map((s: any, i: number) => (
-                <a key={i} href={`#${slugify(s.h2)}`} className="article-detail__toc-link">
-                  {s.h2}
+              {h2Sections.map((title: string, i: number) => (
+                <a key={i} href={`#${slugify(title)}`} className="article-detail__toc-link">
+                  {title}
                 </a>
               ))}
             </div>

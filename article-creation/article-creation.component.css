@@ -1,0 +1,55 @@
+        :root {
+            --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+            --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+        }
+        .article-detail { min-height: 100vh; background: #f4f2ed; color: #1f2629; --hero-progress: 0; font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+        .article-detail__progress { position: sticky; top: 0; z-index: 100; height: 4px; background: rgba(31, 38, 41, 0.08); }
+        .article-detail__progress span { display: block; height: 100%; background: #1f6f5c; width: 0%; transition: width 0.1s linear; }
+        
+        .article-detail__hero { position: relative; min-height: 80vh; display: flex; align-items: flex-end; padding: 4rem 1.5rem 2rem; overflow: hidden; isolation: isolate; }
+        .article-detail__hero-media { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
+        .article-detail__hero-media img { 
+            width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85) brightness(0.9); 
+            transform: scale(calc(1 - (var(--hero-progress) * 0.05))) translateY(calc(var(--hero-progress) * -18px));
+        }
+
+        .article-detail__hero-panel {
+            position: relative; z-index: 2; max-width: 72rem; margin: 0 auto; padding: 2.5rem; border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+            transform: translateY(calc(var(--hero-progress) * -24px)); opacity: calc(1 - (var(--hero-progress) * 0.12));
+        }
+
+        .article-detail__body { max-width: 80rem; margin: 0 auto; padding: 4rem 1.5rem; display: grid; gap: 2.5rem; grid-template-columns: 1fr; }
+        @media (min-width: 1024px) { .article-detail__body { grid-template-columns: 2.2fr 1fr; } }
+
+        .article-detail__content { background: #fff; padding: 2.5rem; border-radius: 2rem; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08); line-height: 1.8; }
+        
+        /* Sidebar Cards */
+        .article-detail__card { background: #fff; padding: 1.75rem; border-radius: 1.5rem; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08); }
+        .article-detail__card-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(31, 38, 41, 0.6); margin-bottom: 1rem; font-weight: 700; }
+
+        .editable-field { background: transparent; border: none; padding: 0; width: 100%; font: inherit; color: inherit; outline: none; resize: none; transition: background 0.2s ease; }
+        .edit-mode .editable-field:hover, .edit-mode .editable-field:focus { background: rgba(0, 0, 0, 0.03); border-radius: 4px; }
+
+        /* --- UI & LAYOUT --- */
+        #main-container { display: flex; height: 100vh; overflow: hidden; }
+        .sidebar-left { width: 300px; background: white; border-right: 1px solid #E5E7EB; display: flex; flex-direction: column; z-index: 50; }
+        .canvas { flex: 1; overflow-y: auto; background: #F8F9FA; position: relative; scroll-behavior: smooth; }
+        
+        .preview-mode .editor-only { display: none !important; }
+        .preview-mode .sidebar-left { display: none; }
+
+        /* --- DYNAMIC DRAG & DROP STYLES --- */
+        .block-item { position: relative; border-radius: 1rem; border: 2px solid transparent; transition: all 0.2s; padding: 0.5rem; }
+        .edit-mode .block-item:hover { border-color: rgba(0,0,0,0.05); background: rgba(0,0,0,0.01); }
+        
+        /* Edge indicators drawn dynamically via CSS ::after */
+        .block-item::after { content: ''; position: absolute; inset: -2px; pointer-events: none; border-radius: 1rem; transition: all 0.15s; z-index: 10; }
+        .block-item.drop-top::after { box-shadow: inset 0 4px 0 #1f6f5c; background: linear-gradient(to bottom, rgba(31,111,92,0.1) 0%, transparent 20px); }
+        .block-item.drop-bottom::after { box-shadow: inset 0 -4px 0 #1f6f5c; background: linear-gradient(to top, rgba(31,111,92,0.1) 0%, transparent 20px); }
+        .block-item.drop-left::after { box-shadow: inset 4px 0 0 #1f6f5c; background: linear-gradient(to right, rgba(31,111,92,0.1) 0%, transparent 20px); }
+        .block-item.drop-right::after { box-shadow: inset -4px 0 0 #1f6f5c; background: linear-gradient(to left, rgba(31,111,92,0.1) 0%, transparent 20px); }
+
+        .append-zone { min-height: 4rem; border: 2px dashed transparent; border-radius: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; margin-top: 1rem; }
+        .edit-mode .append-zone:hover { border-color: #E5E7EB; }
+        .append-zone.drag-over { border-color: #1f6f5c; background: rgba(31, 111, 92, 0.05); }

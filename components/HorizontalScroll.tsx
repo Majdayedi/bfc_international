@@ -1,96 +1,123 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './HorizontalScroll.css';
-
-// Importing your specific assets
-
-
-import mauritaniaRep from '/src/assets/representatives/mauritania.png';
-import tunisiaRep from '/src/assets/representatives/tunisia.png';
-import guineeRep from '/src/assets/representatives/guinee.png';
-import senegalRep from '/src/assets/representatives/senegal.png';
+import { API_URL } from '../utils/constants';
 
 gsap.registerPlugin(ScrollTrigger);
-
-const ARTICLES = [
-  {
-    id: '01',
-    category: 'Strategy',
-    title: 'Digital Transformation in Africa and MENA: Why Strategy, Not Technology, Determines Outcomes',
-    slug: 'digitalization-strategy',
-    image: tunisiaRep,
-    flag: 'https://flagcdn.com/tn.svg',
-    metaTitle: 'Digital Transformation in Africa and MENA | BFC Consulting',
-    description: 'Strategy, governance, and trust infrastructure are the real drivers of successful digital transformation—not technology alone.',
-    metaDescription: 'Learn why successful digital transformation in Africa depends on strategy, governance, and trust infrastructure—not just technology.',
-    tags: ['Digital Transformation', 'Government Strategy', 'Digital Economy', 'Public Sector', 'Africa Innovation', 'Policy & Governance'],
-  },
-  {
-    id: '02',
-    category: 'Policy',
-    title: 'SME Formalization and Digitalization in Africa: A Strategic Lever for Growth, Tax Revenue, and Financial Inclusion',
-    slug: 'sme-formalization',
-    image: senegalRep,
-    flag: 'https://flagcdn.com/sn.svg',
-    metaTitle: 'SME Formalization and Digitalization in Africa | BFC Consulting',
-    description: 'How digitalization helps SMEs formalize, access financing, and drive economic growth across Africa and MENA.',
-    metaDescription: 'Discover how digitalization enables SME formalization, financial inclusion, and economic growth across Africa and MENA.',
-    tags: ['SMEs', 'Financial Inclusion', 'Digital Economy', 'Entrepreneurship', 'Africa Growth', 'Informal Economy'],
-  },
-  {
-    id: '03',
-    category: 'Tech',
-    title: 'Why Timing Matters: The Cost of Delaying PKI Implementation In Africa',
-    slug: 'pki-timing-matters',
-    image: guineeRep,
-    flag: 'https://flagcdn.com/gn.svg',
-    metaTitle: 'Why Timing Matters: The Cost of Delaying PKI in Africa | BFC Consulting',
-    description: "Delaying PKI adoption raises costs and complexity. Find out why acting early is essential to securing Africa's digital future.",
-    metaDescription: 'Delaying PKI implementation increases costs, complexity, and risks in national digital strategies. Learn why trust infrastructure is critical for digital economies in Africa and MENA.',
-    tags: ['Digital Strategy', 'PKI', 'Government Transformation', 'Interoperability', 'Public Sector Innovation', 'Africa Governance'],
-  },
-  {
-    id: '04',
-    category: 'Tech',
-    title: 'Public Key Infrastructure (PKI) in Africa: The Strategic Backbone of Digital Trust, Sovereignty, and Scalable Services',
-    slug: 'pki-strategic-backbone',
-    image: mauritaniaRep,
-    flag: 'https://flagcdn.com/cg.svg',
-    metaTitle: 'PKI in Africa: The Backbone of Digital Trust and Sovereignty | BFC Consulting',
-    description: 'A deep dive into how PKI forms the backbone of digital trust, sovereignty, and scalable e-government services across Africa.',
-    metaDescription: 'Explore how Public Key Infrastructure (PKI) enables secure digital identity, trusted transactions, and scalable e-government systems across Africa and MENA.',
-    tags: ['PKI', 'Digital Trust', 'Cybersecurity', 'E-Government', 'Digital Identity', 'Africa Digital Transformation'],
-  }
-];
 
 export const HorizontalScroll: React.FC = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
+  const [articles, setArticles] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/articles/top`)
+      .then((res) => res.json())
+      .then((data) => {
+        const mapped = data.map((a: any) => {
+          let flag = null;
+          
+          const slugFlags: Record<string, { alt: string; src: string }> = {
+            'digitalization-strategy': { alt: 'tunisia', src: 'https://flagcdn.com/w80/tn.png' },
+            'sme-formalization': { alt: 'senegal', src: 'https://flagcdn.com/w80/sn.png' },
+            'pki-timing-matters': { alt: 'guinee', src: 'https://flagcdn.com/w80/gn.png' },
+            'pki-strategic-backbone': { alt: 'mauritania', src: 'https://flagcdn.com/cg.svg' }
+          };
+          flag = slugFlags[a.slug] || null;
+
+          return {
+            id: String(a.id),
+            category: a.category || 'Uncategorized',
+            title: a.title,
+            slug: a.slug,
+            image: a.heroImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800',
+            description: a.summary || a.subtitle || '',
+            flag: flag ? flag.src : ''
+          };
+        });
+        setArticles(mapped);
+      })
+      .catch(console.error);
+  }, []);
 
   useLayoutEffect(() => {
+    if (articles.length < 2) return;
+
     const mm = gsap.matchMedia();
     mm.add("(min-width: 769px)", () => {
-      const pin = gsap.fromTo(sectionRef.current,
-        { translateX: 0 },
-        {
-          translateX: "-70vw",
-          ease: "none",
-          scrollTrigger: {
-            trigger: triggerRef.current,
-            start: "top top",
-            end: () => "+=" + (sectionRef.current?.scrollWidth || 0) * 0.8,
-            scrub: 0.1,
-            pin: true,
-          },
-        }
-      );
-      return () => pin.kill();
+      const track = sectionRef.current;
+      const section = triggerRef.current;
+      if (!track || !section) return;
+
+      // Measured on demand instead of once, so a resize (or any layout change
+      // in the blocks above) keeps the travel distance and the scroll distance
+      // in sync.
+      const getDistance = () =>
+        Math.max(track.scrollWidth - window.innerWidth + 100, 0); // +100 for some right padding
+
+      if (getDistance() <= 0) return; // Do not pin if there is no horizontal overflow
+
+      const pin = gsap.to(track, {
+        x: () => -getDistance(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => "+=" + getDistance(), // Scrolling distance exactly matches horizontal distance to avoid void
+          scrub: 0.1,
+          pin: true,
+          // Engage the pin a frame early so it cannot "kick" when it starts.
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      // ScrollTrigger measures the section's position on Scroll only once. The
+      // page keeps reflowing after that though: the Google Fonts swap in
+      // (index.html uses display=swap) which changes the height of every block
+      // above this one, and this section doesn't even mount until the articles
+      // fetch resolves. A start offset that is stale by even a few pixels makes
+      // the pin engage at the wrong scroll position, so the section snaps
+      // upward the first time it is reached. Re-measure whenever the document
+      // actually changes height.
+      let frame = 0;
+      let disposed = false;
+      let lastHeight = document.body.offsetHeight;
+
+      const refresh = () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          if (disposed) return;
+          ScrollTrigger.refresh();
+          lastHeight = document.body.offsetHeight;
+        });
+      };
+
+      const observer = new ResizeObserver(() => {
+        // Ignore the height change caused by this pin's own spacer, otherwise
+        // the observer and refresh() would keep re-triggering each other.
+        if (document.body.offsetHeight === lastHeight) return;
+        refresh();
+      });
+      observer.observe(document.body);
+      document.fonts?.ready.then(refresh);
+      window.addEventListener("load", refresh, { once: true });
+
+      return () => {
+        disposed = true;
+        cancelAnimationFrame(frame);
+        observer.disconnect();
+        window.removeEventListener("load", refresh);
+        pin.kill();
+      };
     });
     return () => mm.revert();
-  }, []);
+  }, [articles]);
+
+  if (articles.length < 2) return null;
 
   return (
     <section className="hscroll" ref={triggerRef}>
@@ -101,13 +128,13 @@ export const HorizontalScroll: React.FC = () => {
       </div>
 
       <div ref={sectionRef} className="hscroll__track">
-        {ARTICLES.map((article) => (
+        {articles.map((article) => (
           <div key={article.id} className="hscroll__card">
             <div className="hscroll__card-media">
               <img src={article.image} alt={article.title} className="hscroll__card-image" />
               <div className="hscroll__card-topline">
                 <span className="hscroll__category">{article.category}</span>
-                <img src={article.flag} className="hscroll__flag" alt="flag" style={{width: '44px'}} />
+                {article.flag && <img src={article.flag} className="hscroll__flag" alt="flag" style={{width: '44px'}} />}
               </div>
             </div>
             <div className="hscroll__card-body">
