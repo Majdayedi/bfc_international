@@ -1,75 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../utils/constants';
 import './ArticlesPage.css';
-
-export const ARTICLES = [
-  {
-    id: '01',
-    category: 'Strategy',
-    title: 'Digital Transformation in Africa and MENA: Why Strategy, Not Technology, Determines Outcomes',
-    slug: 'digitalization-strategy',
-    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800',
-    metaDescription: 'Learn why successful digital transformation in Africa depends on strategy, governance, and trust infrastructure—not just technology.',
-    tags: ['Digital Transformation', 'Government Strategy', 'Digital Economy', 'Public Sector', 'Africa Innovation', 'Policy & Governance'],
-    flag: {
-      alt: 'tunisia',
-      src: 'https://flagcdn.com/w80/tn.png',
-    },
-  },
-  {
-    id: '02',
-    category: 'Policy',
-    title: 'SME Formalization and Digitalization in Africa: A Strategic Lever for Growth, Tax Revenue, and Financial Inclusion',
-    slug: 'sme-formalization',
-    image: 'https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=800',
-    metaDescription: 'Discover how digitalization enables SME formalization, financial inclusion, and economic growth across Africa and MENA.',
-    tags: ['SMEs', 'Financial Inclusion', 'Digital Economy', 'Entrepreneurship', 'Africa Growth', 'Informal Economy'],
-    flag: {
-      alt: 'senegal',
-      src: 'https://flagcdn.com/w80/sn.png',
-    },
-  },
-  {
-    id: '03',
-    category: 'Tech',
-    title: 'Why Timing Matters: The Cost of Delaying PKI Implementation In Africa',
-    slug: 'pki-timing-matters',
-    image: 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800',
-    metaDescription: 'Delaying PKI implementation increases costs, complexity, and risks in national digital strategies. Learn why trust infrastructure is critical for digital economies in Africa and MENA.',
-    tags: ['Digital Strategy', 'PKI', 'Government Transformation', 'Interoperability', 'Public Sector Innovation', 'Africa Governance'],
-     flag: {
-      alt: 'guinee',
-      src: 'https://flagcdn.com/w80/gn.png',
-    },
-  },
-  {
-    id: '04',
-    category: 'Tech',
-    title: 'Public Key Infrastructure (PKI) in Africa: The Strategic Backbone of Digital Trust, Sovereignty, and Scalable Services',
-    slug: 'pki-strategic-backbone',
-    image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800',
-    // description removed
-    metaDescription: 'Explore how Public Key Infrastructure (PKI) enables secure digital identity, trusted transactions, and scalable e-government systems across Africa and MENA.',
-    tags: ['PKI', 'Digital Trust', 'Cybersecurity', 'E-Government', 'Digital Identity', 'Africa Digital Transformation'],
-    flag: {
-      alt: 'mauritania',
-      src:'https://flagcdn.com/cg.svg',
-    },
-  },
-];
-
 
 const COUNTRY_LABEL: Record<string, string> = { guinee: 'Guinea' };
 const countryLabel = (alt: string) => COUNTRY_LABEL[alt] || (alt.charAt(0).toUpperCase() + alt.slice(1));
-const ALL_CATEGORIES = ['All', ...Array.from(new Set(ARTICLES.map((a) => a.category)))];
-const ALL_COUNTRIES = ['All', ...Array.from(new Set(ARTICLES.filter((a) => a.flag).map((a) => a.flag!.alt)))];
 
 export const ArticlesPage: React.FC = () => {
+  const [articles, setArticles] = useState<any[]>([]);
   const [filterMode, setFilterMode] = useState<'category' | 'country'>('category');
   const [activeCategory, setActiveCategory] = useState('All');
   const [activeCountry, setActiveCountry] = useState('All');
 
-  const filtered = ARTICLES.filter((a) => {
+  useEffect(() => {
+    fetch(`${API_URL}/api/articles`)
+      .then((res) => res.json())
+      .then((data) => {
+        const mapped = data.map((a: any) => {
+          let isDraft = false;
+          let isTopArticle = false;
+          try {
+            const content = JSON.parse(a.contentJson || '{}');
+            isDraft = content.isPublished === false;
+            isTopArticle = content.isTopArticle === true;
+          } catch { /* ignore */ }
+
+          let tags: string[] = [];
+          let flag = null;
+          
+          const slugFlags: Record<string, { alt: string; src: string }> = {
+            'digitalization-strategy': { alt: 'tunisia', src: 'https://flagcdn.com/w80/tn.png' },
+            'sme-formalization': { alt: 'senegal', src: 'https://flagcdn.com/w80/sn.png' },
+            'pki-timing-matters': { alt: 'guinee', src: 'https://flagcdn.com/w80/gn.png' },
+            'pki-strategic-backbone': { alt: 'mauritania', src: 'https://flagcdn.com/cg.svg' }
+          };
+          flag = slugFlags[a.slug] || null;
+
+          const slugTags: Record<string, string[]> = {
+            'digitalization-strategy': ['Digital Transformation', 'Government Strategy', 'Digital Economy', 'Public Sector', 'Africa Innovation', 'Policy & Governance'],
+            'sme-formalization': ['SMEs', 'Financial Inclusion', 'Digital Economy', 'Entrepreneurship', 'Africa Growth', 'Informal Economy'],
+            'pki-timing-matters': ['Digital Strategy', 'PKI', 'Government Transformation', 'Interoperability', 'Public Sector Innovation', 'Africa Governance'],
+            'pki-strategic-backbone': ['PKI', 'Digital Trust', 'Cybersecurity', 'E-Government', 'Digital Identity', 'Africa Digital Transformation']
+          };
+          tags = slugTags[a.slug] || (a.category ? [a.category] : []);
+
+          return {
+            id: String(a.id),
+            category: a.category || 'Uncategorized',
+            title: a.title,
+            slug: a.slug,
+            image: a.heroImage || 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800',
+            metaDescription: a.summary || a.subtitle || '',
+            tags: tags,
+            flag: flag,
+            isDraft,
+            isTopArticle
+          };
+        }).filter((a: any) => !a.isDraft);
+        setArticles(mapped);
+      })
+      .catch((err) => console.error('Error fetching articles:', err));
+  }, []);
+
+  const ALL_CATEGORIES = useMemo(() => ['All', ...Array.from(new Set(articles.map((a) => a.category)))], [articles]);
+  const ALL_COUNTRIES = useMemo(() => ['All', ...Array.from(new Set(articles.filter((a) => a.flag).map((a) => a.flag!.alt)))], [articles]);
+
+  const filtered = articles.filter((a) => {
     if (filterMode === 'category') return activeCategory === 'All' || a.category === activeCategory;
     return activeCountry === 'All' || a.flag?.alt === activeCountry;
   });
@@ -85,10 +81,9 @@ export const ArticlesPage: React.FC = () => {
               Explore our latest research, insights, and case studies.
             </p>
           </div>
-          
         </header>
 
-       
+
 
         <div className="articles__filters">
           <div className="articles__filter-toggle">

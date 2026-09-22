@@ -1,13 +1,13 @@
 .philosophy {
   background: #fff;
-  padding: 8rem 0;
+  padding: 3.5rem 0;
   position: relative;
   overflow: hidden;
 }
 
 @media (min-width: 768px) {
   .philosophy {
-    padding: 14rem 0;
+    padding: 6.25rem 0;
   }
 }
 
@@ -17,8 +17,8 @@
   padding: 0 1.5rem;
   position: relative;
   z-index: 1;
-  margin-top: -8rem;
-  margin-bottom: -8rem;
+  margin-top: -3.5rem;
+  margin-bottom: -3.5rem;
 }
 
 @media (min-width: 768px) {
@@ -223,11 +223,19 @@
 
 @media (max-width: 767px) {
   .philosophy {
-    padding: 5rem 0;
+    padding: 2.25rem 0 3rem;
   }
 
+  /* The container's -3.5rem margins are tuned for the desktop 6.25rem padding.
+     Against the mobile 2.25rem they pull the content 1.25rem past BOTH edges of
+     the section, and because .philosophy has overflow: hidden that cuts the
+     first and last lines away rather than just closing the gap. Winding them
+     back to -1rem keeps the overlapped feel while leaving real space above and
+     below the content. */
   .philosophy__container {
     padding: 0 1rem;
+    margin-top: -1rem;
+    margin-bottom: -1rem;
   }
 
   .philosophy__grid {

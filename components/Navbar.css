@@ -148,8 +148,10 @@
   position: absolute;
   inset: 0;
   margin: auto;
-  height: 2rem;
-  width: auto;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  object-fit: contain;
   opacity: 0;
   transform: translateY(6px) scale(0.98);
   animation: navbar-logo-cycle 10s infinite;
@@ -170,7 +172,7 @@
   }
 
   .navbar__logo-img {
-    height: 2.5rem;
+    height: 100%;
   }
 }
 
@@ -270,7 +272,7 @@
   }
 
   .navbar__logo-img {
-    height: 1.9rem;
+    height: 100%;
   }
 
   .navbar__logo-menu {

@@ -1,29 +1,15 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './RepresentativeDetail.css';
-import { PROJECTS, CLIENT_LOGOS, type Project } from './OurProjectsPage';
+import { PROJECTS, getClientLogo, type Project } from './OurProjectsPage';
 
-import bfcCongo from '../src/assets/bfc_congo.png';
-import bfcSenegal from '../src/assets/bfc_senegal.png';
-import bfcGuinee from '../src/assets/BFC_GUINEE.jpeg';
-import bfcMauritania from '../src/assets/bfc_mauritania.png';
-import bfcTunisia from '../src/assets/bfc.jpg';
-
-import reandaLogo from '../src/assets/reanda.png';
-import mgiBfcLogo from '../src/assets/MGI-BFC.png';
-import akremimg from '../src/assets/team/akrem.jpeg';
-import chaimaimg from '../src/assets/team/chaima.jpeg';
-import zeinebImg from '../src/assets/team/zeineb.jpeg';
-import inesimg from '../src/assets/team/ines.jpeg';
-import tasnimImg from '../src/assets/team/tasnim.jpeg';
-import maherimg from '../src/assets/team/maher.jpeg';
-import medamine from '../src/assets/team/medamine.jpeg';
-import nadia from '../src/assets/team/nadia.jpeg';
 import congo from '../src/assets/representatives/congo.png';
 import senegal from '../src/assets/representatives/senegal.png';
 import guinee from '../src/assets/representatives/guinee.png';
 import tunisia from '../src/assets/representatives/tunisia.png';
 import mauritania from '../src/assets/representatives/mauritania.png';
+import { API_URL } from '../utils/constants';
+
 
 
 interface RepresentativeData {
@@ -32,120 +18,23 @@ interface RepresentativeData {
   description: string;
   image: string;
   location: string;
-  manager: {
-    name: string;
-    email: string;
-    phone: string;
-    photo: string;
-  };
-  globeMarker: {
-    top: string;
-    left: string;
-  };
-  globeView: {
-    rotateY: string;
-    mapX: string;
-  };
-  flagIcon: string;
+  manager?: any;
+  globeMarkerTop: string;
+  globeMarkerLeft: string;
+  globeViewRotateY: string;
+  globeViewMapX: string;
+  flagIconUrl: string;
+  imageUrl: string;
   projectCountries: string[];
   fallbackCountries?: string[];
 }
-
-const representativeData: Record<string, RepresentativeData> = {
-  'congo': {
-    title: 'BFC Congo',
-    subtitle: 'Your partner in Central Africa',
-    description: 'BFC Congo supports you through tailored solutions combining regional nuances with international standard consulting. We help businesses navigate the dynamic economy of the Congo Basin.',
-    image: bfcCongo,
-    location: 'Brazzaville, Republic of Congo',
-    manager: {
-      name: 'Nadia Yaich',
-      email: 'nadia.yaich@bfc.com.tn',
-      phone: '+216-58-422-199',
-      photo: nadia
-    },
-    globeMarker: { top: '52%', left: '53%' },
-    globeView: { rotateY: '148deg', mapX: '58%' },
-    flagIcon: 'https://flagcdn.com/w80/cg.png',
-    projectCountries: ['Republic of Congo', 'Congo', 'Congo rdc'],
-    fallbackCountries: ['Cameroon', 'Ivory Coast']
-  },
-  'senegal': {
-    title: 'BFC Senegal',
-    subtitle: 'Influence in West Africa',
-    description: 'Located in the heart of West Africa, BFC Senegal is dedicated to business transformation and institutional capacity building through innovative strategies.',
-    image: bfcSenegal,
-    location: 'Dakar, Senegal',
-    manager: {
-      name: 'Ines Yaich',
-      email: 'ines.yaich@bfc.com.tn',
-      phone: 'Phone not provided',
-      photo: inesimg
-    },
-    globeMarker: { top: '43%', left: '46%' },
-    globeView: { rotateY: '140deg', mapX: '55%' },
-    flagIcon: 'https://flagcdn.com/w80/sn.png',
-    projectCountries: ['Senegal'],
-    fallbackCountries: ['Benin', 'Guinea', 'Niger', 'Mali', 'Ivory Coast']
-  },
-  'tunisia': {
-    title: 'BFC Tunisia',
-    subtitle: 'The bridge between Africa and Europe',
-    description: 'BFC Tunisia operates as a strategic hub offering high-level consulting by leveraging exceptional human capital and mastery of North African markets.',
-    image: bfcTunisia,
-    location: 'Tunis, Tunisia',
-    manager: {
-     name: 'Nadia Yaich',
-      email: 'nadia.yaich@bfc.com.tn',
-      phone: '+216-58-422-199',
-      photo: nadia
-        },
-    globeMarker: { top: '32%', left: '40%' },
-    globeView: { rotateY: '165deg', mapX: '63%' },
-    flagIcon: 'https://flagcdn.com/w80/tn.png',
-    projectCountries: ['Tunisia']
-  },
-  'guinea': {
-    title: 'BFC Guinea',
-    subtitle: 'Expertise driving growth',
-    description: 'Our firm is committed to providing pragmatic solutions and tailored support to businesses and institutions in Guinea for sustainable growth.',
-    image: bfcGuinee,
-    location: 'Conakry, Guinea',
-    manager: {
-      name: 'Mohamed Amine Sahli',
-      email: 'mohamedamine.sahli@bfc.com.tn',
-      phone: '+216 98 747 836 / +224 623 27 30 73',
-      photo: medamine
-    },
-    globeMarker: { top: '46%', left: '47%' },
-    globeView: { rotateY: '145deg', mapX: '56%' },
-    flagIcon: 'https://flagcdn.com/w80/gn.png',
-    projectCountries: ['Guinea']
-  },
-  'mauritania': {
-    title: 'BFC Mauritania',
-    subtitle: 'Strategic support and development',
-    description: 'BFC continues its expansion with a strengthened presence, developing new local partnerships to address your economic and structural challenges.',
-    image: bfcMauritania,
-    location: 'Nouakchott, Mauritania',
-    manager: {
-      name: 'Tasnim Zouaoui',
-      email: 'tasnim.zouaoui@bfc.com.tn',
-      phone: '+216-98-194-202',
-      photo: tasnimImg
-    },
-    globeMarker: { top: '42%', left: '46%' },
-    globeView: { rotateY: '142deg', mapX: '54%' },
-    flagIcon: 'https://flagcdn.com/w80/mr.png',
-    projectCountries: ['Mauritania']
-  }
-};
 
 function selectProjectsForRepresentative(data: RepresentativeData): {
   projects: Project[];
   usesRegionalFallback: boolean;
 } {
-  const directProjects = PROJECTS.filter((project) => data.projectCountries.includes(project.country));
+  const projectCountries = data.projectCountries || [];
+  const directProjects = PROJECTS.filter((project) => projectCountries.includes(project.country));
   if (directProjects.length > 0) {
     return {
       projects: directProjects.slice(0, 4),
@@ -153,8 +42,9 @@ function selectProjectsForRepresentative(data: RepresentativeData): {
     };
   }
 
-  if (data.fallbackCountries && data.fallbackCountries.length > 0) {
-    const fallbackProjects = PROJECTS.filter((project) => data.fallbackCountries?.includes(project.country));
+  const fallbackCountries = data.fallbackCountries || [];
+  if (fallbackCountries.length > 0) {
+    const fallbackProjects = PROJECTS.filter((project) => fallbackCountries.includes(project.country));
     return {
       projects: fallbackProjects.slice(0, 4),
       usesRegionalFallback: fallbackProjects.length > 0,
@@ -172,6 +62,9 @@ export const RepresentativeDetail: React.FC = () => {
   const navigate = useNavigate();
   const [isGlobeAnimating, setIsGlobeAnimating] = useState(false);
   const globeAnimStartedRef = useRef(false);
+  const [data, setData] = useState<RepresentativeData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [dbProjects, setDbProjects] = useState<any[]>([]);
 
   const representativeMotivationPhotos: Record<string, string> = {
     congo,
@@ -182,11 +75,71 @@ export const RepresentativeDetail: React.FC = () => {
   };
   
   const repId = id?.toLowerCase() || '';
-  const data = representativeData[repId];
-  const { projects: representativeProjects, usesRegionalFallback } = useMemo(
-    () => (data ? selectProjectsForRepresentative(data) : { projects: [], usesRegionalFallback: false }),
-    [data],
-  );
+  
+  useEffect(() => {
+    const fetchRep = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`${API_URL}/api/representatives/${repId}`);
+        if (res.ok) {
+          const repData = await res.json();
+          setData(repData);
+        } else {
+          setData(null);
+        }
+      } catch (e) {
+        console.error(e);
+        setData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchProjects = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/projects`);
+        if (res.ok) {
+          const projs = await res.json();
+          setDbProjects(projs);
+        }
+      } catch (e) {
+        console.error('Failed to fetch projects', e);
+      }
+    };
+
+    fetchRep();
+    fetchProjects();
+  }, [repId]);
+
+  const { projects: representativeProjects, usesRegionalFallback } = useMemo(() => {
+    if (!data) return { projects: [], usesRegionalFallback: false };
+    
+    // First try to match by representativeSlug directly
+    let matchedProjects = dbProjects.filter(p => p.representativeSlug === repId);
+    if (matchedProjects.length > 0) return { projects: matchedProjects, usesRegionalFallback: false };
+
+    // Fallback 1: match by projectCountries
+    const projectCountries = data.projectCountries || [];
+    matchedProjects = dbProjects.filter((project) => projectCountries.includes(project.country));
+    if (matchedProjects.length > 0) {
+      return {
+        projects: matchedProjects.slice(0, 8),
+        usesRegionalFallback: false,
+      };
+    }
+
+    // Fallback 2: match by fallbackCountries
+    const fallbackCountries = data.fallbackCountries || [];
+    if (fallbackCountries.length > 0) {
+      matchedProjects = dbProjects.filter((project) => fallbackCountries.includes(project.country));
+      return {
+        projects: matchedProjects.slice(0, 8),
+        usesRegionalFallback: matchedProjects.length > 0,
+      };
+    }
+
+    return { projects: [], usesRegionalFallback: false };
+  }, [data, dbProjects, repId]);
 
 
 
@@ -194,33 +147,57 @@ export const RepresentativeDetail: React.FC = () => {
     window.scrollTo(0, 0);
     setIsGlobeAnimating(false);
     globeAnimStartedRef.current = false;
-
-    const elements = document.querySelectorAll('.rd-reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('rd-visible');
-
-          if (entry.target.classList.contains('rd-globe-section') && !globeAnimStartedRef.current) {
-            globeAnimStartedRef.current = true;
-            setIsGlobeAnimating(true);
-          }
-        }
-      });
-    }, { threshold: 0.1 });
-    
-    elements.forEach(el => observer.observe(el));
-
-    return () => {
-      observer.disconnect();
-    };
   }, [id]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    // Small delay to let React paint the DOM before observing
+    const timeout = setTimeout(() => {
+      const elements = document.querySelectorAll('.rd-reveal');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('rd-visible');
+
+            if (entry.target.classList.contains('rd-globe-section') && !globeAnimStartedRef.current) {
+              globeAnimStartedRef.current = true;
+              setIsGlobeAnimating(true);
+            }
+          }
+        });
+      }, { threshold: 0.05 });
+
+      elements.forEach(el => observer.observe(el));
+
+      // Safety fallback: force all rd-reveal elements visible after 1.2s
+      // in case the IntersectionObserver doesn't fire (e.g. content already in viewport)
+      const fallback = setTimeout(() => {
+        document.querySelectorAll('.rd-reveal').forEach(el => el.classList.add('rd-visible'));
+      }, 1200);
+
+      return () => {
+        observer.disconnect();
+        clearTimeout(fallback);
+      };
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, [data]);
+
+  if (loading) {
+    return (
+      <div className="rd-page" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div style={{ color: '#204383', fontSize: '1.2rem', fontWeight: 600 }}>Loading...</div>
+      </div>
+    );
+  }
 
   if (!data) {
     return (
       <div className="rd-page rd-not-found">
-        <h2 className="sharp-text">OFFICE NOT FOUND</h2>
-        <button className="rd-back-btn sharp-btn" onClick={() => navigate(-1)}>
+        <h2>OFFICE NOT FOUND</h2>
+        <button className="rd-back-btn" onClick={() => navigate(-1)}>
           <span>&larr;</span> BACK
         </button>
       </div>
@@ -239,14 +216,24 @@ export const RepresentativeDetail: React.FC = () => {
             <div className="rd-content">
               <span className="rd-eyebrow rd-reveal">GLOBAL NETWORK</span>
               <div className="rd-title-wrapper rd-reveal">
-                <img src={data.flagIcon} alt="Flag" className="rd-title-flag" />
-                <h1 className="rd-title">{data.title.toUpperCase()}</h1>
+                <img src={data.flagIconUrl} alt="Flag" className="rd-title-flag" />
+                <h1 className="rd-title">{data.title?.toUpperCase() || ''}</h1>
+                {/* Phones only: the office logo sits opposite the title instead of
+                    dropping into its own stacked section below the text. Hidden
+                    above 768px, where .rd-image-section renders the same image. */}
+                {data.imageUrl && (
+                  <img
+                    src={data.imageUrl}
+                    alt={`${data.title} logo`}
+                    className="rd-title-logo"
+                  />
+                )}
               </div>
               <div className="rd-divider rd-reveal"></div>
-              <h2 className="rd-subtitle rd-reveal">{data.subtitle.toUpperCase()}</h2>
+              <h2 className="rd-subtitle rd-reveal">{data.subtitle?.toUpperCase() || ''}</h2>
               <p className="rd-desc rd-reveal">{data.description}</p>
               
-              <div className="rd-glass-card rd-reveal sharp-card">
+              <div className="rd-glass-card rd-reveal">
                 <h3 className="rd-glass-title">LOCAL EXPERTISE, GLOBAL VISION</h3>
                 <p>
                   Our offices are deeply integrated into the local economic fabric while upholding the world-class methodologies and standards that define the BFC brand.
@@ -256,8 +243,8 @@ export const RepresentativeDetail: React.FC = () => {
           </div>
 
           <div className="rd-image-section rd-reveal">
-            <div className="rd-logo-wrapper sharp-card">
-              <img src={data.image} alt={data.title} className="rd-photo" />
+            <div className="rd-logo-wrapper">
+              <img src={data.imageUrl} alt={data.title} className="rd-photo" />
             </div>
           </div>
           
@@ -270,16 +257,16 @@ export const RepresentativeDetail: React.FC = () => {
             <h2 className="rd-projects-title">
               {usesRegionalFallback
                 ? 'Key Regional References'
-                : `Key Projects in ${data.location.split(',')[0]}`}
+                : `Key Projects in ${data.location?.split(',')[0] || ''}`}
             </h2>
           </div>
 
           {representativeProjects.length > 0 ? (
-            <div className="rd-rep-projects-grid">
+            <div className="rd-rep-projects-scroll">
               {representativeProjects.map((project) => {
-                const logo = CLIENT_LOGOS[project.id];
+                const logo = getClientLogo(project.client);
                 return (
-                  <div className="rd-rep-project-card sharp-card" key={project.id}>
+                  <div className="rd-rep-project-card" key={project.id}>
                     <div className="rd-rep-project-img-wrap">
                       <img src={project.imageUrl} alt={project.title} className="rd-rep-project-img" />
                       <span className="rd-rep-project-cat">{project.category}</span>
@@ -289,18 +276,25 @@ export const RepresentativeDetail: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    <div className="rd-rep-project-content">
+                    <div className="rd-rep-project-content" style={{ flex: 1 }}>
                       <span className="rd-rep-project-year">{project.year}</span>
                       <h3 className="rd-rep-project-name">{project.title}</h3>
                       <p className="rd-rep-project-desc">{project.description}</p>
-                      <p className="rd-ref-client-name">{project.client}</p>
+                      <p className="rd-ref-client-name" style={{ marginBottom: '1.5rem' }}><strong>Client:</strong> {project.client}</p>
+                      <button
+                        className="rd-back-btn"
+                        style={{ marginTop: 'auto', alignSelf: 'flex-start', padding: '10px 18px', fontSize: '0.75rem', gap: '8px' }}
+                        onClick={() => navigate(`/who-we-are/our-projects/${project.id}`)}
+                      >
+                        READ ARTICLE <span>&rarr;</span>
+                      </button>
                     </div>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <div className="rd-rep-projects-empty sharp-card">
+            <div className="rd-rep-projects-empty">
               No published references are available yet for this representative office.
             </div>
           )}
@@ -308,22 +302,34 @@ export const RepresentativeDetail: React.FC = () => {
 
         {/* Enhanced Bottom Section: Manager Left, Globe Right */}
         <div className="rd-bottom-section rd-reveal">
-          <div className="rd-manager-col sharp-card">
-            <div className="rd-manager-photo-wrapper sharp-border">
-              <img src={data.manager.photo} alt={data.manager.name} className="rd-manager-photo" />
-            </div>
-            <div className="rd-manager-details">
-              <h4 className="rd-manager-name">{data.manager.name.toUpperCase()}</h4>
-              <p className="rd-manager-role">COUNTRY MANAGER</p>
-              <div className="rd-manager-contact">
-                <a href={`mailto:${data.manager.email}`} className="rd-contact-link">
-                  <span className="rd-icon">✉</span> {data.manager.email}
-                </a>
-                <a href={`tel:${data.manager.phone}`} className="rd-contact-link">
-                  <span className="rd-icon">📞</span> {data.manager.phone}
-                </a>
+          <div className="rd-manager-col">
+            {data.manager ? (
+              <>
+                <div className="rd-manager-photo-wrapper">
+                  <img src={data.manager.img?.startsWith('http') ? data.manager.img : `${API_URL}${data.manager.img?.startsWith('/') ? '' : '/'}${data.manager.img || ''}`} alt={data.manager.name} className="rd-manager-photo" />
+                </div>
+                <div className="rd-manager-details">
+                  <h4 className="rd-manager-name">{data.manager.name?.toUpperCase() || ''}</h4>
+                  <p className="rd-manager-role">{data.manager.role?.toUpperCase() || ''}</p>
+                  <div className="rd-manager-contact">
+                    {data.manager.email && (
+                      <a href={`mailto:${data.manager.email}`} className="rd-contact-link">
+                        <span className="rd-icon">✉</span> {data.manager.email}
+                      </a>
+                    )}
+                    {data.manager.phone && (
+                      <a href={`tel:${data.manager.phone}`} className="rd-contact-link">
+                        <span className="rd-icon">📞</span> {data.manager.phone}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="rd-manager-details" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+                <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Branch contact details not assigned.</p>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="rd-globe-section rd-reveal">
@@ -332,8 +338,8 @@ export const RepresentativeDetail: React.FC = () => {
                 className={`rd-globe-container ${isGlobeAnimating ? 'rd-globe-animate' : ''}`}
                 style={
                   {
-                    '--rd-stop-rotate-y': data.globeView.rotateY,
-                    '--rd-map-stop-x': data.globeView.mapX,
+                    '--rd-stop-rotate-y': data.globeViewRotateY,
+                    '--rd-map-stop-x': data.globeViewMapX,
                   } as React.CSSProperties
                 }
               >
@@ -364,26 +370,26 @@ export const RepresentativeDetail: React.FC = () => {
                 <div
                   className="rd-city-marker"
                   style={{
-                    top: data.globeMarker.top,
-                    left: data.globeMarker.left,
+                    top: data.globeMarkerTop,
+                    left: data.globeMarkerLeft,
                   }}
                 >
-                  <div className="rd-marker-label">{data.location.toUpperCase()}</div>
+                  <div className="rd-marker-label">{data.location?.toUpperCase() || ''}</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="rd-congo-motivation rd-reveal sharp-card">
+        <div className="rd-congo-motivation rd-reveal">
           <div className="rd-congo-motivation__content">
             <p className="rd-congo-motivation__text">
-              Connect with our {data.title.replace('BFC ', '')} team. Let&apos;s make something great together!
+              Connect with our {data.title?.replace('BFC ', '') || ''} team. Let&apos;s make something great together!
             </p>
           </div>
           <div className="rd-congo-motivation__photo-wrap">
             <img
-              src={representativeMotivationPhotos[repId] ?? data.image}
+              src={representativeMotivationPhotos[repId] ?? data.imageUrl}
               alt={`${data.title} team`}
               className="rd-congo-motivation__photo"
             />

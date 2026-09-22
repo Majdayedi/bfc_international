@@ -29,6 +29,10 @@ const ServiceDetail = lazy(() => import('./pages/ServiceDetail').then((m) => ({ 
 const RepresentativeDetail = lazy(() => import('./pages/RepresentativeDetail').then((m) => ({ default: m.RepresentativeDetail })));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard').then((m) => ({ default: m.AdminDashboard })));
 const EnrollmentForm = lazy(() => import('./pages/EnrollmentForm'));
+const ComplianceComposer = lazy(() => import('./pages/ComplianceComposer').then((m) => ({ default: m.ComplianceComposer })));
+const ArticleBuilder = lazy(() => import('./pages/ArticleBuilder').then((m) => ({ default: m.ArticleBuilder })));
+const ProjectBuilder = lazy(() => import('./pages/ProjectBuilder').then((m) => ({ default: m.ProjectBuilder })));
+const LoginPage = lazy(() => import('./pages/LoginPage').then((m) => ({ default: m.default })));
 
 const App: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -64,7 +68,7 @@ const App: React.FC = () => {
 
   return (
     <div className={`app ${isMenuOpen ? 'menu-open' : ''}`}>
-      {!location.pathname.startsWith('/admin') && (
+      {!location.pathname.startsWith('/admin') && !location.pathname.startsWith('/login') && !location.pathname.startsWith('/compliance-composer') && !location.pathname.startsWith('/article-builder') && !location.pathname.startsWith('/project-builder') && (
         <Navbar onOpenMenu={() => toggleMenu(true)} />
       )}
 
@@ -157,15 +161,19 @@ const App: React.FC = () => {
             </>
           }
         />
+        <Route path="/login" element={<ErrorBoundary><LoginPage /></ErrorBoundary>} />
         <Route path="/admin" element={<ErrorBoundary><AdminDashboard /></ErrorBoundary>} />
+        <Route path="/compliance-composer" element={<ErrorBoundary><ComplianceComposer /></ErrorBoundary>} />
+        <Route path="/article-builder" element={<ErrorBoundary><ArticleBuilder /></ErrorBoundary>} />
+        <Route path="/project-builder" element={<ErrorBoundary><ProjectBuilder /></ErrorBoundary>} />
       </Routes>
       </Suspense>
 
-      {!location.pathname.startsWith('/admin') && (
+      {!location.pathname.startsWith('/admin') && !location.pathname.startsWith('/login') && !location.pathname.startsWith('/compliance-composer') && !location.pathname.startsWith('/article-builder') && !location.pathname.startsWith('/project-builder') && (
         <Menu isOpen={isMenuOpen} onClose={() => toggleMenu(false)} />
       )}
 
-      {!location.pathname.startsWith('/admin') && <FloatingContactIcon />}
+      {!location.pathname.startsWith('/admin') && !location.pathname.startsWith('/login') && !location.pathname.startsWith('/compliance-composer') && !location.pathname.startsWith('/article-builder') && !location.pathname.startsWith('/project-builder') && <FloatingContactIcon />}
     </div>
   );
 };

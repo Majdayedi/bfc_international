@@ -13,8 +13,20 @@
   text-decoration: none;
   box-shadow: 0 12px 28px rgba(32, 67, 131, 0.26), 0 3px 8px rgba(0, 0, 0, 0.16);
   z-index: 500;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease, opacity 0.3s ease, visibility 0.3s ease;
   animation: fc-float 3.2s ease-in-out infinite;
+  /* Hidden until the page is scrolled — see the note in the component. Hidden
+     this way rather than with a transform because `transform` is already spoken
+     for by the fc-float animation. */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.fc-contact--visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .fc-contact:hover {

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './HistoryPage.css';
 import bfcLogo    from '../src/assets/bfc.png';
 import MGIBFCImg  from '../src/assets/MGI-BFC.png';
@@ -13,10 +13,20 @@ import guineeimg from '../src/assets/history/guinee.png';
 import congoimg from '../src/assets/history/congo.png';
 import tunisiaimg from '../src/assets/history/tunisia.png';
 import tunisiaimg2 from '../src/assets/history/tunisia2.png';
+import comingSoonImg from '../src/assets/history/coming-soon.png';
 
-import coming  from '../src/assets/history/coming-soon.png';
-import { g } from 'framer-motion/client';
+import { API_URL } from '../utils/constants';
 
+interface HistoryEvent {
+  id?: number;
+  eventYear: number;
+  title: string;
+  description: string;
+  backgroundColor?: string;
+  countryFlag?: string;
+  logoUrl?: string;
+  photoUrl?: string;
+}
 
 /* ─── Data ──────────────────────────────────────────────────── */
 interface Milestone {
@@ -29,86 +39,17 @@ interface Milestone {
   flag?: string | false;
   path?: string;
   email?: string;
+  managerName?: string;
 }
 
-/* Background colour for each milestone — interpolated as you scroll */
-const MS_COLORS = [
-  [248, 249, 255],  // 2010 MGI BFC        — barely-blue white
-  [237, 244, 255],  // 2020 International  — soft periwinkle
-  [236, 247, 240],  // 2022 Guinée         — mint veil
-  [253, 246, 235],  // 2022 Sénégal        — warm sand
-  [235, 240, 252],  // 2023 Congo          — slate blue
-  [228, 236, 252],  // 2025 En cours…     — deep horizon
-] as const;
-
-const MS: Milestone[] = [
-  {
-    year: '2010',
-    title: 'MGI BFC',
-    location: 'Tunis, Tunisia',
-    img: tunisiaimg,
-    desc: "MGI BFC is the parent entity. It is an accounting and audit firm founded in 2010 and based in Tunis. MGI BFC is a member of the international MGI WORLDWIDE network, one of the top 20 global consulting and audit networks.",
-    logo: MGIBFCImg,
-    flag: 'https://flagcdn.com/w80/tn.png',
-    path: '/representatives/tunisia',
-    email: 'nadia.yaich@bfc.com.tn'
-  },
-  {
-    year: '2020',
-    title: 'BFC International & Academy',
-    location: 'Tunisia',
-    img: tunisiaimg2,
-    desc: "Founded in 2020, BFC International & Academy is a consulting and training firm. As a partner of IRM and ICI in Africa, it also provides outsourcing services in France and Canada.",
-    logo: bfc,
-    flag: 'https://flagcdn.com/w80/tn.png',
-    path: '/representatives/tunisia',
-    email: 'nadia.yaich@bfc.com.tn'
-  },
-  {
-    year: '2022',
-    title: 'BFC Guinea',
-    location: 'Conakry, Guinea',
-    img: guineeimg,
-    desc: "Our expansion began with the launch of BFC Guinea in 2022. This entity was created to serve the sub-region and ensure closer expert support to meet client needs.",
-    logo: bfcguinee,
-    flag: 'https://flagcdn.com/w80/gn.png',
-    path: '/representatives/guinea',
-    email: 'mohamedamine.sahli@bfc.com.tn'
-  },
-  {
-    year: '2022',
-    title: 'BFC Senegal',
-    location: 'Dakar, Senegal',
-    img: senegalimg,
-    desc: "BFC Senegal further strengthened our presence in West Africa. The firm offers a wide range of services related to IT, management, training, and organizational development.",
-    logo: senegalLogo,
-    flag: 'https://flagcdn.com/w80/sn.png',
-    path: '/representatives/senegal',
-    email: 'ines.yaich@bfc.com.tn'
-  },
-  {
-    year: '2023',
-    title: 'BFC Bassin du Congo',
-    location: 'Kinshasa, Congo rdc',
-    img: congoimg,
-    desc: "BFC expanded its footprint into the Congo Basin. The firm entered Central Africa by delivering high-level consulting and training services.",
-    logo: congoLogo,
-    flag: 'https://flagcdn.com/w80/cg.png',
-    path: '/representatives/congo',
-    email: 'nadia.yaich@bfc.com.tn'
-  },
-  {
-    year: '2025',
-    title: 'In Progress...',
-    location: 'Mauritania ,Saudi Arabia, China and more ',
-    img: coming,
-    desc: "BFC continues its strategic expansion across the world, developing new local and international partnerships that support sustainable development.",
-    logo: mauritaniaLogo,
-    flag: false,
-    path: '/representatives/mauritania',
-    email: 'tasnim.zouaoui@bfc.com.tn'
-  },
-];
+/* Background colour for each milestone — parsed from hex */
+const hexToRgb = (hex: string) => {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return [r, g, b] as const;
+};
 
 /*
   Phases:
@@ -121,6 +62,7 @@ const MS: Milestone[] = [
 type Phase = 0 | 1 | 2 | 3 | 4;
 
 export const HistoryPage: React.FC = () => {
+  const [historyEvents, setHistoryEvents] = useState<HistoryEvent[]>([]);
   const [phase, setPhase]     = useState<Phase>(0);
   const [dotCount, setDotCount] = useState(0);
 
@@ -138,14 +80,97 @@ export const HistoryPage: React.FC = () => {
   const wheelItemRefs   = useRef<(HTMLDivElement | null)[]>([]);
   const wheelTargetRef  = useRef(0);   // target rotation degrees
   const wheelRotRef     = useRef(0);   // current lerped rotation
+  
+  const getUploadUrl = (url: string | undefined) => {
+    if (!url) return '';
+    return url.startsWith('http') || url.startsWith('/') ? url : `${API_URL}${url}`;
+  };
+
+  const fetchHistoryEvents = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/history-events`);
+      if (res.ok) {
+        const data = await res.json();
+        setHistoryEvents(data);
+        setTimeout(() => setPhase(1), 600);
+      }
+    } catch (err) {
+      console.error('Failed to fetch history events:', err);
+    }
+  };
+
+  const parseDescription = (rawDesc: string) => {
+    let desc = rawDesc || '';
+    let path = '';
+    let email = '';
+    let managerName = '';
+    
+    if (desc && desc.includes('::link=')) {
+      const parts = desc.split('::link=');
+      desc = parts[0];
+      let remainder = parts[1] || '';
+      
+      if (remainder.includes('::email=')) {
+        const subParts = remainder.split('::email=');
+        path = subParts[0];
+        remainder = subParts[1] || '';
+        
+        if (remainder.includes('::managerName=')) {
+          const mParts = remainder.split('::managerName=');
+          email = mParts[0];
+          managerName = mParts[1];
+        } else {
+          email = remainder;
+        }
+      } else {
+        path = remainder;
+      }
+    }
+    return { desc, path, email, managerName };
+  };
+
+  const MS: Milestone[] = historyEvents.map(e => {
+    const { desc, path, email, managerName } = parseDescription(e.description);
+    return {
+      year: String(e.eventYear),
+      title: e.title,
+      location: '', // Can be extended later if needed
+      img: getUploadUrl(e.photoUrl),
+      desc: desc,
+      logo: getUploadUrl(e.logoUrl),
+      flag: e.countryFlag || false,
+      path: path,
+      email: email,
+      managerName: managerName
+    };
+  });
+
+  const STATIC_EN_COURS: Milestone = {
+    year: '2025',
+    title: 'En cours...',
+    location: '',
+    img: comingSoonImg,
+    desc: 'BFC Mauritania is currently being established to provide ongoing local presence and tailored consulting services in Mauritania.',
+    logo: mauritaniaLogo,
+    flag: 'https://flagcdn.com/w80/mr.png',
+    path: '',
+    email: '',
+    managerName: ''
+  };
+
+  MS.push(STATIC_EN_COURS);
+
+  const MS_COLORS = historyEvents.map(e => 
+    e.backgroundColor ? hexToRgb(e.backgroundColor) : [255, 255, 255] as const
+  );
+  MS_COLORS.push(hexToRgb('#e4ecfc'));
+
   const WHEEL_R         = 240;         // radius (px) — matches CSS
-  const DEGS_PER        = 360 / MS.length;
+  const DEGS_PER        = MS.length > 0 ? 360 / MS.length : 360;
 
   /* ── Intro sequence ── */
   useEffect(() => {
-    // small delay before starting
-    const t0 = setTimeout(() => setPhase(1), 600);
-    return () => clearTimeout(t0);
+    fetchHistoryEvents();
   }, []);
 
   useEffect(() => {
@@ -201,6 +226,7 @@ export const HistoryPage: React.FC = () => {
     if (phase < 3) return;
     const page = document.querySelector('.hi-page') as HTMLElement | null;
     const onScroll = () => {
+      if (MS.length === 0) return;
       /* compute milestone fraction first — used by both bar and wheel */
       const sections = sectionRefs.current.filter(Boolean) as HTMLElement[];
       let fracIdx = 0;
@@ -230,7 +256,7 @@ export const HistoryPage: React.FC = () => {
         }
 
         /* interpolate background colour */
-        if (page) {
+        if (page && MS_COLORS.length > 0) {
           const lo = Math.max(0, Math.floor(fracIdx));
           const hi = Math.min(MS_COLORS.length - 1, lo + 1);
           const t  = fracIdx - lo;
@@ -439,8 +465,8 @@ export const HistoryPage: React.FC = () => {
 
         {/* Label for the active item */}
         <div className="hi-wheel__label">
-          <span className="hi-wheel__label-year">{MS[activeMsIdx].year}</span>
-          <span className="hi-wheel__label-title">{MS[activeMsIdx].title}</span>
+          <span className="hi-wheel__label-year">{MS[activeMsIdx]?.year}</span>
+          <span className="hi-wheel__label-title">{MS[activeMsIdx]?.title}</span>
         </div>
       </div>
 
@@ -535,7 +561,7 @@ export const HistoryPage: React.FC = () => {
                     className="hi-ms__contact-cta"
                     href={`mailto:${m.email}`}
                   >
-                    Contact our Country Manager
+                    Contact Country Manager {m.managerName ? `(${m.managerName})` : ''}
                   </a>
                 )}
               </div>

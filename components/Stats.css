@@ -1,12 +1,12 @@
 .stats {
   background: #fff;
   color: #204383;
-  padding: 10rem 0;
-  padding-top: 3%;
-  padding-bottom: 3%;
+  padding: 4.5rem 0;
+  padding-top: 1.35%;
+  padding-bottom: 1.35%;
   border-top: 1px solid #f3f4f6;
-  margin-top: -2rem;
-  margin-bottom: -2rem;
+  margin-top: -0.9rem;
+  margin-bottom: -0.9rem;
 }
 
 
@@ -94,7 +94,7 @@
 
 @media (max-width: 767px) {
   .stats {
-    padding: 5rem 0;
+    padding: 2.25rem 0;
   }
 
   .stats__container {
@@ -106,9 +106,10 @@
     margin-bottom: 2rem;
   }
 
+  /* 2 x 2 instead of a single stack, so all four figures stay scannable. */
   .stats__grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 0.75rem;
   }
 
   .stats__item {
@@ -120,12 +121,15 @@
     letter-spacing: 0.24em;
   }
 
+  /* Halving the column width means the figures must come down too, or
+     "5,000+" overflows its cell. */
   .stats__number {
-    font-size: clamp(2.25rem, 14vw, 3.5rem);
+    font-size: clamp(1.7rem, 8.5vw, 2.45rem);
     line-height: 1;
   }
 
   .stats__suffix {
-    font-size: clamp(1.3rem, 8vw, 2rem);
+    font-size: clamp(1rem, 5vw, 1.5rem);
+    margin-left: 0.25rem;
   }
 }

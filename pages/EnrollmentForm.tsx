@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ChevronLeft, Send, ChevronDown } from 'lucide-react';
+import { ChevronLeft, Send, ChevronDown, Loader } from 'lucide-react';
+import { API_URL } from '../utils/constants';
 import './EnrollmentForm.css';
-
-const ALL_COURSES = [
-  'Fundamentals of Risk Management (FoRM)',
-  'Certified Internal Control Specialist (CICS)',
-  'Innovation Workshop: Designing Innovation',
-  'Generative AI for Audit and Internal Control',
-];
 
 const COUNTRIES = [
   'Tunisia', 'Algeria', 'Morocco', 'Libya', 'Egypt', 'Mauritania', 'Senegal',
   'Mali', 'Ivory Coast', 'Cameroon', 'Congo', 'Guinea', 'France', 'Belgium',
   'United Arab Emirates', 'Qatar', 'Saudi Arabia', 'Other',
 ];
+
+interface Course {
+  id: number;
+  title: string;
+  institution: string;
+}
 
 interface FormState {
   fullName: string;
@@ -43,12 +43,38 @@ const EnrollmentForm: React.FC = () => {
   const navigate = useNavigate();
   const preselected: string | undefined = (location.state as any)?.courseTitle;
 
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+  const [coursesError, setCoursesError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const [form, setForm] = useState<FormState>({
     ...EMPTY,
     courses: preselected ? [preselected] : [],
   });
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
+
+  // Fetch courses from backend API
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setCoursesLoading(true);
+        const res = await fetch(`${API_URL}/api/courses/show`);
+        if (!res.ok) throw new Error('Failed to load courses');
+        const data: Course[] = await res.json();
+        setCourses(data);
+        setCoursesError(null);
+      } catch (err) {
+        console.error('Error fetching courses:', err);
+        setCoursesError('Unable to load courses. Please try again later.');
+      } finally {
+        setCoursesLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
 
   const set = (field: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -81,11 +107,40 @@ const EnrollmentForm: React.FC = () => {
     return Object.keys(next).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    // In production: POST to an API endpoint here.
-    setSubmitted(true);
+
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch(`${API_URL}/api/enrollments/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: form.fullName,
+          email: form.email,
+          country: form.country,
+          phone: form.phone,
+          jobTitle: form.jobTitle,
+          organization: form.organization,
+          courses: form.courses,
+          message: form.message,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Failed to submit enrollment. Please try again.');
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Error submitting enrollment:', err);
+      setSubmitError(
+        err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.'
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleBack = () => {
@@ -235,27 +290,42 @@ const EnrollmentForm: React.FC = () => {
           <fieldset className="enroll-fieldset">
             <legend className="enroll-legend">Course Selection *</legend>
             {errors.courses && <span className="enroll-error enroll-error--top">{errors.courses}</span>}
-            <ul className="enroll-course-list">
-              {ALL_COURSES.map((title) => {
-                const checked = form.courses.includes(title);
-                return (
-                  <li key={title}>
-                    <label className={`enroll-course-item${checked ? ' is-checked' : ''}`}>
-                      <input
-                        type="checkbox"
-                        className="enroll-course-checkbox"
-                        checked={checked}
-                        onChange={() => toggleCourse(title)}
-                      />
-                      <span className="enroll-course-check-box" aria-hidden="true">
-                        {checked && '✓'}
-                      </span>
-                      <span className="enroll-course-label">{title}</span>
-                    </label>
-                  </li>
-                );
-              })}
-            </ul>
+
+            {coursesLoading ? (
+              <div className="enroll-loading-courses">
+                <Loader size={20} className="enroll-spinner" />
+                <span>Loading courses…</span>
+              </div>
+            ) : coursesError ? (
+              <div className="enroll-loading-courses enroll-error-message">
+                <span>{coursesError}</span>
+              </div>
+            ) : (
+              <ul className="enroll-course-list">
+                {courses.map((course) => {
+                  const checked = form.courses.includes(course.title);
+                  return (
+                    <li key={course.id}>
+                      <label className={`enroll-course-item${checked ? ' is-checked' : ''}`}>
+                        <input
+                          type="checkbox"
+                          className="enroll-course-checkbox"
+                          checked={checked}
+                          onChange={() => toggleCourse(course.title)}
+                        />
+                        <span className="enroll-course-check-box" aria-hidden="true">
+                          {checked && '✓'}
+                        </span>
+                        <span className="enroll-course-label">
+                          {course.title}
+                          <span className="enroll-course-institution"> — {course.institution}</span>
+                        </span>
+                      </label>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </fieldset>
 
           {/* ── Optional message ── */}
@@ -273,9 +343,28 @@ const EnrollmentForm: React.FC = () => {
             </div>
           </fieldset>
 
+          {submitError && (
+            <div className="enroll-submit-error">
+              {submitError}
+            </div>
+          )}
+
           <div className="enroll-actions">
-            <button type="submit" className="enroll-btn enroll-btn--primary">
-              <Send size={17} /> Submit Enrollment
+            <button
+              type="submit"
+              className="enroll-btn enroll-btn--primary"
+              disabled={submitting || coursesLoading}
+            >
+              {submitting ? (
+                <>
+                  <Loader size={17} className="enroll-spinner" />
+                  Submitting…
+                </>
+              ) : (
+                <>
+                  <Send size={17} /> Submit Enrollment
+                </>
+              )}
             </button>
           </div>
 

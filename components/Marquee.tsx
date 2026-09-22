@@ -18,7 +18,7 @@ export const Marquee: React.FC = () => {
   return (
     <section className="marquee">
       <div className="marquee__header">
-        <span className="marquee__eyebrow">Global Partnerships</span>
+        <span className="marquee__eyebrow">Global Clients</span>
       </div>
       
       <div className="marquee__track">

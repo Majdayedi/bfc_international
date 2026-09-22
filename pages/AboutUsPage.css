@@ -35,7 +35,7 @@
 .ap-navy-bg { background-color: var(--ap-navy); }
 .ap-gray-bg { background-color: #f1f3f5; }
 .ap-container { max-width: 1400px; margin: 0 auto; padding: 0 5%; position: relative; z-index: 2; }
-.ap-section { padding: 4rem 0; position: relative; }
+.ap-section { padding: 1.75rem 0; position: relative; }
 
 /* --- 1. HERO PARALLAX --- */
 .ap-hero { position: relative; height: 100vh; min-height: 700px; display: flex; align-items: center; overflow: hidden; background: var(--ap-navy); }
@@ -247,8 +247,6 @@
 .ap-tm-meta { text-align: center; margin-top: 1.5rem; }
 .ap-tm-meta h3 { font-size: 1.8rem; color: var(--ap-white); font-weight: 800; margin-bottom: 0.3rem; }
 .ap-tm-meta p { color: var(--ap-gray); }
-
-.ap-navy-text { color: var(--ap-navy) !important; }
 
 /* Team member card list under leadership */
 .ap-team-scroll-container {
@@ -485,14 +483,14 @@
 
 
 /* --- 5. NETWORK MAP WITH 3D SPINNING GLOBE --- */
-.ap-network-section { position: relative; padding: 5rem 0; min-height: 800px; display: flex; align-items: center; background: var(--ap-navy); overflow: hidden; }
+.ap-network-section { position: relative; padding: 2.25rem 0; min-height: 620px; display: flex; align-items: center; background: var(--ap-navy); overflow: hidden; }
 .ap-net-overlay { position: absolute; inset: 0; background: radial-gradient(circle at right center, rgba(32, 67, 131, 0.5) 0%, rgba(15, 30, 60, 0.95) 80%); z-index: 2; pointer-events: none; }
 
 /* 3D Globe CSS Architecture */
-.ap-globe-container { position: absolute; top: 10%; right: -10%; width: 800px; height: 800px; z-index: 1; opacity: 1; perspective: 1000px; pointer-events: none; }
+.ap-globe-container { position: absolute; top: 50%; right: 8%; width: 520px; height: 520px; transform: translateY(-50%); z-index: 1; opacity: 1; perspective: 1000px; pointer-events: none; }
 .ap-globe-logo-wrapper { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2; animation: elegantFloat 6s ease-in-out infinite; }
 .ap-globe-center-logo {
-  width: min(450px, 78%);
+  width: min(300px, 72%);
   max-width: 100%;
   height: auto;
   object-fit: contain;
@@ -579,45 +577,15 @@
 
 /* Network Content Front */
 .ap-network-front { z-index: 5; position: relative; width: 100%; }
-.ap-network-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
-.ap-net-p { color: rgba(255,255,255,0.85); font-size: 1.2rem; line-height: 1.8; margin-bottom: 3rem; font-weight: 300; }
+.ap-net-title { font-size: clamp(2rem, 3.4vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 1.25rem; }
+.ap-network-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+.ap-net-p { color: rgba(255,255,255,0.85); font-size: 1.2rem; line-height: 1.8; margin-bottom: 1.75rem; font-weight: 300; }
 .ap-net-p strong { color: var(--ap-white); font-weight: 700; }
-.ap-net-stats { display: flex; flex-wrap: wrap; gap: 2rem 3rem; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 3rem; }
+.ap-net-text .ap-styled-divider { margin-bottom: 1.75rem; }
+.ap-net-stats { display: flex; flex-wrap: wrap; gap: 1.25rem 2rem; border-top: 1px solid rgba(255,255,255,0.15); padding-top: 1.75rem; }
 .ap-n-stat { min-width: 140px; }
 .ap-n-num { font-size: 3.5rem; font-weight: 800; color: var(--ap-teal); line-height: 1; }
 .ap-n-label { color: rgba(255,255,255,0.7); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 0.7rem; font-weight: 600; }
-
-/* Reanda video section */
-.ap-reanda-video-section {
-  background: linear-gradient(180deg, #f4f7fb 0%, #ffffff 100%);
-}
-
-.ap-reanda-video-layout {
-  display: grid;
-  grid-template-columns: minmax(260px, 1fr) minmax(320px, 520px);
-  gap: 2.5rem;
-  align-items: center;
-}
-
-.ap-reanda-video-copy {
-  max-width: 520px;
-}
-
-.ap-reanda-video-wrap {
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 24px 50px rgba(32, 67, 131, 0.12);
-  border: 1px solid rgba(32, 67, 131, 0.08);
-  width: 100%;
-  justify-self: end;
-}
-
-.ap-reanda-video {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  display: block;
-  background: #0f1e3c;
-}
 
 /* Elegant Glass Integration Card */
 .ap-net-visuals { display: flex; justify-content: flex-end; }
@@ -644,11 +612,11 @@
   .ap-sticky-layout { grid-template-columns: 1fr; gap: 3rem; }
   .ap-sticky-content { position: relative; top: 0; }
   .ap-network-grid { grid-template-columns: 1fr; }
-  .ap-net-visuals { justify-content: center; margin-top: 3rem; }
+  .ap-net-visuals { justify-content: center; margin-top: 1.5rem; }
   .ap-globe-container {
-    top: 4%;
-    right: -12%;
-    width: min(82vw, 560px);
+    top: 50%;
+    right: 6%;
+    width: min(62vw, 420px);
     height: auto;
     aspect-ratio: 1 / 1;
     opacity: 0.3;
@@ -663,182 +631,129 @@
   .ap-team-flex { gap: 2rem; }
   .ap-team-member { width: 100%; max-width: 350px; }
   .ap-elegant-glass-card { padding: 3rem 2rem; }
-  .ap-reanda-video-layout { grid-template-columns: 1fr; gap: 1.5rem; }
-  .ap-reanda-video-wrap { justify-self: stretch; }
-  .ap-reanda-video-wrap { border-radius: 14px; }
   .ap-globe-container {
-    top: 8%;
-    right: -30%;
-    width: min(118vw, 480px);
+    top: 50%;
+    right: -4%;
+    width: min(92vw, 380px);
     height: auto;
     aspect-ratio: 1 / 1;
     opacity: 0.24;
   }
-  .ap-globe-center-logo { width: min(160px, 62vw); }
+  .ap-globe-center-logo { width: min(140px, 56vw); }
 }
 
 
 /* =========================================
-   6 & 7. MISSION AND VISION
+   3. MISSION & VISION — merged into one block
 ========================================= */
-.ap-mission-section, .ap-vision-section {
-  position: relative;
-  overflow: hidden;
-}
-
-.ap-mission-layout, .ap-vision-layout {
+.ap-mv-merged-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-items: center;
-  gap: 4rem;
-  padding: 3rem 0;
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
-.ap-vision-layout {
-  grid-template-columns: 1fr 1fr; /* Image is on right, content left */
-}
-
-@media (max-width: 1024px) {
-  .ap-mission-layout, .ap-vision-layout {
-    grid-template-columns: 1fr;
-    gap: 4rem;
-  }
-
-  .ap-vision-layout .ap-mv-image-wrapper {
-    order: -1;
-  }
-}
-
-.ap-mission-content, .ap-vision-content {
+.ap-mv-merged-card {
   position: relative;
-  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  background: var(--ap-white);
+  border: 1px solid rgba(32, 67, 131, 0.06);
+  box-shadow: 0 15px 35px rgba(32, 67, 131, 0.05);
+  overflow: hidden;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
-.ap-mission-text, .ap-vision-text {
-  font-size: 1.15rem;
-  line-height: 1.8;
-  color: var(--ap-gray);
-  margin-top: 1.5rem;
+.ap-mv-merged-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 50px rgba(32, 67, 131, 0.1);
 }
 
-.ap-vision-text {
-  color: rgba(255,255,255,0.7);
+.ap-mv-merged-card--vision {
+  background: var(--ap-navy);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
-.ap-mv-icon-wrapper {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 70px; height: 70px;
-  border-radius: 20px;
-  background: rgba(32, 67, 131, 0.05);
-  margin-bottom: 2rem;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
-}
-.teal-icon {
-  background: rgba(153, 205, 179, 0.15);
-}
-
-.ap-mv-icon { width: 40px; height: 40px; color: var(--ap-navy); }
-.teal-icon .ap-mv-icon { color: var(--ap-teal); }
-
-.ap-vision-bg-glow {
-  position: absolute;
-  top: 50%;
-  left: 0%;
-  transform: translateY(-50%);
-  width: 50vw;
-  height: 50vw;
-  background: radial-gradient(circle, rgba(153,205,179,0.15) 0%, rgba(32,67,131,0) 70%);
-  pointer-events: none;
-}
-
-.ap-mv-image-wrapper {
+.ap-mv-merged-media {
   position: relative;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  border-radius: 0;
-  z-index: 1;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #dbe5f2;
 }
 
-.ap-mv-image {
+.ap-mv-merged-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 0;
-  position: relative;
+  display: block;
+}
+
+/* Dark scrim so the title stays readable over any photo */
+.ap-mv-merged-overlay {
+  position: absolute;
+  inset: 0;
   z-index: 2;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 2rem 2.25rem;
+  background: linear-gradient(180deg, rgba(15, 30, 60, 0) 30%, rgba(15, 30, 60, 0.9) 100%);
 }
 
-.ap-mv-image-backdrop {
-  position: absolute;
-  top: -20px;
-  left: -20px;
-  right: 20px;
-  bottom: 20px;
-  border-radius: 0;
-  z-index: 0;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+.ap-mv-merged-overlay .ap-eyebrow {
+  margin-bottom: 0;
 }
 
-.ap-vision-layout .ap-mv-image-backdrop {
-  top: 20px; left: 20px; right: -20px; bottom: -20px;
-}
-
-.ap-mv-image-wrapper:hover .ap-mv-image-backdrop {
-  transform: scale(1.03);
-}
-
-.teal-backdrop {
-  background: var(--ap-teal);
-  opacity: 0.3;
-}
-
-.white-backdrop {
-  background: var(--ap-white);
-  opacity: 0.1;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-
-.ap-mv-floating-badge {
-  position: absolute;
-  bottom: 40px;
-  right: -30px;
-  background: var(--ap-white);
-  padding: 1.2rem 2rem;
-  border-radius: 0;
-  box-shadow: 0 20px 40px rgba(32, 67, 131, 0.15);
-  display: inline-flex;
-  align-items: center;
-  gap: 15px;
-  z-index: 3;
-  color: var(--ap-navy);
+.ap-mv-merged-title {
+  margin: 0;
+  font-size: clamp(1.9rem, 3.2vw, 2.9rem);
   font-weight: 800;
-  font-size: 1.1rem;
-  animation: floatBadge 6s ease-in-out infinite;
-}
-
-.ap-vision-layout .ap-mv-floating-badge {
-  right: auto;
-  left: -30px;
-  background: rgba(32, 67, 131, 0.8);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  line-height: 1.05;
+  letter-spacing: -1.5px;
   color: var(--ap-white);
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
-.ap-mv-floating-badge svg { color: var(--ap-teal); }
+.ap-mv-merged-text {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--ap-gray);
+  margin: 0;
+  padding: 2rem 2.25rem 2.25rem;
+}
 
-@keyframes floatBadge {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
+.ap-mv-merged-card--vision .ap-mv-merged-text {
+  color: rgba(255, 255, 255, 0.75);
 }
 
 @media (max-width: 1024px) {
-  .ap-mv-floating-badge { right: 20px; left: auto; bottom: 20px; }
-  .ap-vision-layout .ap-mv-floating-badge { left: 20px; right: auto; }
+  .ap-mv-merged-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .ap-mv-merged-overlay {
+    padding: 1.5rem;
+  }
+
+  .ap-mv-merged-text {
+    padding: 1.5rem;
+  }
 }
+
+.ap-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(32, 67, 131, 0.1);
+  border-top-color: var(--ap-navy);
+  border-radius: 50%;
+  animation: apSpin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes apSpin {
+  to { transform: rotate(360deg); }
+}
+
 

@@ -1,0 +1,221 @@
+/* ========================================
+   Login Page — Fullscreen background photo
+   with 75% opacity form overlay
+   ======================================== */
+
+.login-page {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Full-screen background image */
+.login-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* Dark overlay on the background for legibility */
+.login-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+/* Login form container — 75% opacity background */
+.login-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: loginFadeIn 0.6s ease-out;
+}
+
+@keyframes loginFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-card h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #002244;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: -0.5px;
+}
+
+.login-card .login-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.login-card .login-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.login-card .login-brand h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #002244;
+  margin: 0;
+}
+
+.login-card .login-brand span {
+  color: #00A3A1;
+}
+
+.login-card .login-error {
+  background: #fde8e8;
+  color: #c53030;
+  font-size: 0.85rem;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  border: 1px solid #f8c3c3;
+}
+
+/* Form fields */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.login-input-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 0.3rem;
+}
+
+.login-input-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.login-input-group input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.login-input-group input:focus {
+  border-color: #00A3A1;
+  box-shadow: 0 0 0 3px rgba(0, 163, 161, 0.15);
+}
+
+.login-input-group input::placeholder {
+  color: #aaa;
+}
+
+/* Submit button */
+.login-submit-btn {
+  padding: 0.8rem;
+  background: #002244;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-submit-btn:hover {
+  background: #00152b;
+}
+
+.login-submit-btn:active {
+  transform: scale(0.98);
+}
+
+.login-submit-btn:disabled {
+  background: #888;
+  cursor: not-allowed;
+}
+
+.login-submit-btn .spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Back to site link */
+.login-back-link {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.login-back-link a {
+  color: #002244;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.login-back-link a:hover {
+  color: #00A3A1;
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .login-card {
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+    border-radius: 12px;
+  }
+
+  .login-card h1 {
+    font-size: 1.5rem;
+  }
+}

@@ -1,13 +1,13 @@
 .marquee {
   background: #fff;
   border-bottom: 1px solid #f3f4f6;
-  padding: 5rem 0;
+  padding: 1.25rem 0;
   overflow: hidden;
 }
 
 .marquee__header {
   max-width: 80rem;
-  margin: 0 auto 2.5rem;
+  margin: 0 auto 1rem;
   padding: 0 1.5rem;
   text-align: center;
 }
@@ -109,11 +109,11 @@
 
 @media (max-width: 767px) {
   .marquee {
-    padding: 3rem 0;
+    padding: 1.25rem 0;
   }
 
   .marquee__header {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
     padding: 0 1rem;
   }
 
