@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Globe, Shield, Users, Award, Zap, Crosshair, FileDown, Mail, Phone } from 'lucide-react';
+import { Globe, Shield, Users, Award, Zap, FileDown, Mail, Phone } from 'lucide-react';
 import './AboutUsPage.css';
 import { API_URL } from '../utils/constants';
+import { COUNTRIES_WITH_FLAGS } from '../utils/countriesWithFlags';
 
 import aboutHero from '../src/assets/about_us1.png';
 import bfcLogo from '../src/assets/bfc.png';
@@ -10,9 +11,6 @@ import nadiaImg from '../src/assets/nadia.png';
 import jobImg from '../src/assets/job.jpg';
 import contactImg from '../src/assets/contact.jpg';
 import abderrahman from '../src/assets/abderrahman.png';
-
-
-
 
 // 3D Spinning Globe with Orbiting Data Lines
 const SpinningGlobeBackdrop = () => {
@@ -63,6 +61,56 @@ const getUploadUrl = (url: string | null | undefined): string => {
   return url;
 };
 
+// Look up a country's flagcdn URL by name or ISO code (matches backend countryName values)
+const getFlagUrl = (name: string | undefined): string => {
+  if (!name) return '';
+  const cleanName = name.replace(/\s+flag$/i, '').trim();
+  const c = COUNTRIES_WITH_FLAGS.find(cc =>
+    cc.name.toLowerCase() === cleanName.toLowerCase() ||
+    cc.code.toLowerCase() === cleanName.toLowerCase()
+  );
+  return c ? c.flag : '';
+};
+
+// Resolve a 2-letter ISO code for a country name/code (used as FlagImg fallback badge)
+const getCountryCode = (name: string | undefined): string => {
+  if (!name) return '';
+  const cleanName = name.replace(/\s+flag$/i, '').trim();
+  return COUNTRIES_WITH_FLAGS.find(cc =>
+    cc.name.toLowerCase() === cleanName.toLowerCase() ||
+    cc.code.toLowerCase() === cleanName.toLowerCase()
+  )?.code || '';
+};
+
+// Flag image with graceful fallback: shows a country-code badge if the image URL fails to load
+const FlagImg = ({ src, alt, title }: { src: string; alt?: string; title?: string }) => {
+  const [err, setErr] = useState(false);
+  const resolvedSrc = getUploadUrl(src);
+
+  useEffect(() => {
+    setErr(false);
+  }, [src]);
+
+  if (resolvedSrc && !err) {
+    return (
+      <img
+        src={resolvedSrc}
+        alt={alt || title || 'flag'}
+        title={title || alt}
+        onError={() => setErr(true)}
+        style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+    );
+  }
+
+  const countryCode = getCountryCode(title || alt);
+  return (
+    <span className="flag-fallback" title={title || alt}>
+      {countryCode ? countryCode.toUpperCase() : (alt || title || '?').charAt(0).toUpperCase()}
+    </span>
+  );
+};
+
 interface TeamBadgeFlag {
   name: string;
   url: string;
@@ -73,6 +121,7 @@ interface TeamMember {
   name: string;
   role: string;
   roleType?: string;
+  roleTypes?: string[];
   img: string;
   email?: string;
   phone?: string;
@@ -83,6 +132,16 @@ interface TeamMember {
   extraFlags?: TeamBadgeFlag[];
   displayOrder?: number;
 }
+
+// Primary country flag for a team member: prefer backend countryFlagUrl, else look up by name
+const getPrimaryFlagUrl = (member: TeamMember): string => {
+  return member.countryFlagUrl || getFlagUrl(member.countryName);
+};
+
+// Extra badge flag: prefer stored URL, else resolve by country name
+const getFlagBadgeUrl = (flag: TeamBadgeFlag): string => {
+  return flag.url || getFlagUrl(flag.name);
+};
 
 export const AboutUsPage: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -128,7 +187,7 @@ export const AboutUsPage: React.FC = () => {
     };
     fetchTeamMembers();
 
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -159,7 +218,8 @@ export const AboutUsPage: React.FC = () => {
 
   return (
     <div className="about-pro-page">
-      
+      {/* NOTE: Sections 1–6 are static content. Section 7 (Meet The Managers) fetches from /api/team-members. */}
+
       {/* 1. HERO */}
       <section className="ap-hero">
         <div className="ap-hero-parallax" ref={heroRef}>
@@ -330,7 +390,7 @@ in implementing high‑impact transformation programs.              </p>
         </div>
       </section>
 
-      {/* 6. EXECUTIVE LEADERSHIP */}
+      {/* 6. EXECUTIVE LEADERSHIP — static, does not use the team API */}
       <section className="ap-section ap-gray-bg ap-overflow-hidden">
         <div className="ap-container">
           <div className="ap-text-center rev-slide-up">
@@ -348,6 +408,20 @@ in implementing high‑impact transformation programs.              </p>
                 <p className="ap-leader-role"> Partner</p>
                 <p className="ap-leader-desc">Chartered accountant and international consultant in financial and economic analysis.</p>
                 <div className="ap-leader-badges">
+                </div>
+                <div className="ap-leader-actions">
+                  <div className="ap-team-contact-actions">
+                    <button
+                      type="button"
+                      className={`ap-team-contact-toggle ${openContactKey === 'abderrahman-mail' ? 'is-open' : ''}`}
+                      onClick={() => toggleContact('abderrahman-mail')}
+                      title="Show abderrahman email"
+                      aria-label="Show abderrahman email"
+                    >
+                      <Mail size={18} />
+                      <span>amine.abderrahmen@bfc.com.tn</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -411,7 +485,7 @@ organisational management, public policy.</p>
         <div className="ap-container">
           <div className="ap-text-center rev-fade">
             <span className="ap-eyebrow">Our Team</span>
-            <h2 className="ap-heading-lg">Meet The Mangers </h2>
+            <h2 className="ap-heading-lg">Meet The Managers</h2>
           </div>
           <div className="ap-team-scroll-container">
             {teamLoading && (
@@ -438,20 +512,23 @@ organisational management, public policy.</p>
             )}
             {!teamLoading && !teamError && (
             <div className="ap-team-scroll">
-              {teamMembersList.map((member, index) => (
+              {teamMembersList.map((member, index) => {
+                const primaryFlagUrl = getPrimaryFlagUrl(member);
+                const extraFlags = (member.extraFlags || []).filter(f => f.name && f.name.trim() !== '');
+                return (
                 <div className="ap-team-card" key={index}>
                   <div className="ap-team-badges">
-                    {member.showPrimaryFlag !== false && (
+                    {member.showPrimaryFlag !== false && primaryFlagUrl && (
                       <span className="ap-team-flag" title={member.countryName}>
-                        <img src={member.countryFlagUrl} alt={member.countryName + ' flag'} />
+                        <FlagImg src={primaryFlagUrl} alt={member.countryName + ' flag'} title={member.countryName} />
                       </span>
                     )}
-                    {member.extraFlags?.map((flag) => (
-                      <span className="ap-team-flag" key={flag.url} title={flag.name}>
-                        <img src={flag.url} alt={flag.name + ' flag'} />
+                    {extraFlags.map((flag, flagIdx) => (
+                      <span className="ap-team-flag" key={`${flag.name}-${flagIdx}`} title={flag.name}>
+                        <FlagImg src={getFlagBadgeUrl(flag)} alt={flag.name + ' flag'} title={flag.name} />
                       </span>
                     ))}
-                    {member.extraFlags && member.extraFlags.length >= 2 && (
+                    {extraFlags.length >= 1 && (
                       <span className="ap-team-globe" title="Global network member" aria-label="Global network member">
                         <Globe size={14} />
                       </span>
@@ -499,7 +576,7 @@ organisational management, public policy.</p>
                     </div>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
             )}
           </div>

@@ -5,12 +5,13 @@ import {
   Trash2, Edit2, Mail, Phone, Globe, X, 
   Upload, ChevronRight, LayoutDashboard,
   MapPin, Fingerprint, Eye, Search, Filter, ChevronDown,
-  GripVertical, BarChart
+  GripVertical, BarChart, Handshake
 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { API_URL } from '../utils/constants';
 import { getClientLogo, PROJECTS } from './OurProjectsPage';
 import { AdminCertificationsTab } from '../components/AdminCertificationsTab';
+import { COUNTRIES_WITH_FLAGS } from '../utils/countriesWithFlags';
 import './AdminDashboard.css';
 
 interface ExtraFlag { name: string; url: string; }
@@ -91,10 +92,10 @@ const isCountryManagerRole = (roleType: RoleType | null | undefined): boolean =>
   return role?.isCountryRole ?? false;
 };
 
-const buildRoleDisplay = (roleType: RoleType | null | undefined, countryName?: string): string => {
-  if (!roleType) return '';
-  const label = ROLE_LABELS[roleType] || '';
-  if (isCountryManagerRole(roleType) && countryName) {
+const buildRoleDisplay = (roleTypes: string[] | null | undefined, countryName?: string): string => {
+  if (!roleTypes || roleTypes.length === 0) return '';
+  const label = roleTypes.map(rt => ROLE_LABELS[rt] || rt).join(', ');
+  if (isCountryManagerRole(roleTypes[0]) && countryName) {
     return `${label} ${countryName}`;
   }
   return label;
@@ -109,23 +110,46 @@ const getUploadUrl = (url: string | null | undefined): string => {
   return url;
 };
 
-const AVAILABLE_COUNTRIES = [
-  { code: 'TN', name: 'Tunisia', flag: 'https://flagcdn.com/w40/tn.png' },
-  { code: 'DZ', name: 'Algeria', flag: 'https://flagcdn.com/w40/dz.png' },
-  { code: 'LY', name: 'Libya', flag: 'https://flagcdn.com/w40/ly.png' },
-  { code: 'MA', name: 'Morocco', flag: 'https://flagcdn.com/w40/ma.png' },
-  { code: 'EG', name: 'Egypt', flag: 'https://flagcdn.com/w40/eg.png' },
-  { code: 'FR', name: 'France', flag: 'https://flagcdn.com/w40/fr.png' },
-  { code: 'IT', name: 'Italy', flag: 'https://flagcdn.com/w40/it.png' },
-  { code: 'SA', name: 'Saudi Arabia', flag: 'https://flagcdn.com/w40/sa.png' },
-  { code: 'AE', name: 'UAE', flag: 'https://flagcdn.com/w40/ae.png' },
-  { code: 'QA', name: 'Qatar', flag: 'https://flagcdn.com/w40/qa.png' },
-  { code: 'CG', name: 'Republic of the Congo', flag: 'https://flagcdn.com/w40/cg.png' },
-  { code: 'GN', name: 'Guinea', flag: 'https://flagcdn.com/w40/gn.png' },
-  { code: 'SN', name: 'Senegal', flag: 'https://flagcdn.com/w40/sn.png' },
-  { code: 'MR', name: 'Mauritania', flag: 'https://flagcdn.com/w40/mr.png' },
-  { code: 'ML', name: 'Mali', flag: 'https://flagcdn.com/w40/ml.png' },
-];
+// Render a flag image with a fallback if the image fails to load
+const FlagImg = ({ src, alt, title, small, className }: { src: string; alt?: string; title?: string; small?: boolean; className?: string }) => {
+  const [err, setErr] = useState(false);
+  const resolvedSrc = getUploadUrl(src);
+
+  useEffect(() => {
+    setErr(false);
+  }, [src]);
+
+  if (resolvedSrc && !err) {
+    return (
+      <img
+        src={resolvedSrc}
+        alt={alt || title || 'flag'}
+        title={title || alt}
+        className={className}
+        style={className ? undefined : { width: small ? 18 : 24, height: small ? 13 : 16, objectFit: 'cover', borderRadius: 2, display: 'inline-block' }}
+        onError={() => setErr(true)}
+      />
+    );
+  }
+
+  const countryCode = getCountryByName(title || alt)?.code || '';
+  return (
+    <span className={`flag-fallback ${className || ''}`} title={title || alt}>
+      {countryCode ? countryCode.toUpperCase() : (alt || title || '?').charAt(0).toUpperCase()}
+    </span>
+  );
+};
+
+// Full country list (flagcdn w40 flags) used by all country pickers in the dashboard
+const AVAILABLE_COUNTRIES = COUNTRIES_WITH_FLAGS;
+
+// Exact-name lookup — names must match backend countryName values (e.g. "Republic of the Congo")
+const getCountryByName = (countryName: string | null | undefined) =>
+  AVAILABLE_COUNTRIES.find(c => c.name === countryName);
+
+// flagcdn image URL for a country name; '' if not found (FlagImg then shows a code badge)
+const getCountryFlagUrl = (countryName: string | null | undefined) =>
+  getCountryByName(countryName)?.flag || '';
 
 export const AdminDashboard: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -134,6 +158,30 @@ export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTabState] = useState<Tab>(urlTab || 'overview');
   const [isStatsExpanded, setIsStatsExpanded] = useState(false);
   const [statsTab, setStatsTab] = useState<'enrollment' | 'contact'>('enrollment');
+
+  // Partners & Clients State
+  const [isPartnersExpanded, setIsPartnersExpanded] = useState(false);
+  const [partnersTab, setPartnersTab] = useState<'partners' | 'clients'>('partners');
+  const [partnersList, setPartnersList] = useState<any[]>([]);
+  const [clientsList, setClientsList] = useState<any[]>([]);
+
+  // Partner Modal State
+  const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
+  const [editingPartnerId, setEditingPartnerId] = useState<number | null>(null);
+  const [formPartnerName, setFormPartnerName] = useState('');
+  const [formPartnerLogo, setFormPartnerLogo] = useState('');
+  const [formPartnerFile, setFormPartnerFile] = useState<File | null>(null);
+  const [formPartnerPreview, setFormPartnerPreview] = useState('');
+  const [partnerUploading, setPartnerUploading] = useState(false);
+
+  // Client Modal State
+  const [isClientModalOpen, setIsClientModalOpen] = useState(false);
+  const [editingClientId, setEditingClientId] = useState<number | null>(null);
+  const [formClientName, setFormClientName] = useState('');
+  const [formClientLogo, setFormClientLogo] = useState('');
+  const [formClientFile, setFormClientFile] = useState<File | null>(null);
+  const [formClientPreview, setFormClientPreview] = useState('');
+  const [clientUploading, setClientUploading] = useState(false);
   
   useEffect(() => {
     if (urlTab && urlTab !== activeTab) {
@@ -160,6 +208,7 @@ export const AdminDashboard: React.FC = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [formName, setFormName] = useState('');
   const [formRoleType, setFormRoleType] = useState('');
+  const [formRoleTypes, setFormRoleTypes] = useState<string[]>([]);
   const [formRole, setFormRole] = useState('');
   const [formEmail, setFormEmail] = useState('');
   const [formPhone, setFormPhone] = useState('');
@@ -172,6 +221,9 @@ export const AdminDashboard: React.FC = () => {
   const [formCvUploading, setFormCvUploading] = useState(false);
   const [formCvUploadError, setFormCvUploadError] = useState('');
   const [formCountryName, setFormCountryName] = useState('Tunisia');
+  const [formCountryFlagUrl, setFormCountryFlagUrl] = useState('');
+  const [formCountryFlagFile, setFormCountryFlagFile] = useState<File | null>(null);
+  const [formCountryFlagUploading, setFormCountryFlagUploading] = useState(false);
   const [formExtraFlags, setFormExtraFlags] = useState<string[]>([]);
   const [formShowPrimaryFlag, setFormShowPrimaryFlag] = useState(true);
   const [isOrderChanged, setIsOrderChanged] = useState(false);
@@ -244,6 +296,15 @@ export const AdminDashboard: React.FC = () => {
   const [contactForm, setContactForm] = useState({
     fullName: '', email: '', company: '', phone: '', phonePrefix: '+216', service: '', message: ''
   });
+  const [serviceOptions, setServiceOptions] = useState<{ value: string; label: string }[]>([
+    { value: 'Training', label: 'Training' },
+    { value: 'Consulting', label: 'Consulting' },
+    { value: 'Audit', label: 'Audit' },
+    { value: 'Tax and Legal', label: 'Tax and Legal' },
+    { value: 'Expertise', label: 'Expertise' },
+    { value: 'Collaboration', label: 'Collaboration' },
+    { value: 'Other', label: 'Other' },
+  ]);
 
   const [searchTeam, setSearchTeam] = useState('');
   const [searchArticle, setSearchArticle] = useState('');
@@ -258,6 +319,12 @@ export const AdminDashboard: React.FC = () => {
   const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; title: string; message: string; isAlert: boolean; onConfirm: () => void }>({ isOpen: false, title: '', message: '', isAlert: false, onConfirm: () => {} });
 
   const token = localStorage.getItem('bfc_token');
+
+  const handleSessionExpired = () => {
+    localStorage.removeItem('bfc_token');
+    localStorage.removeItem('bfc_user');
+    navigate('/login', { replace: true });
+  };
 
   const fetchMembers = async () => {
     try {
@@ -487,6 +554,7 @@ export const AdminDashboard: React.FC = () => {
       fetchRepresentatives();
       fetchServices();
       fetchContactMessages();
+      fetchServiceOptions();
     }
   }, [token, navigate]);
 
@@ -644,20 +712,21 @@ export const AdminDashboard: React.FC = () => {
 
   const handleSaveMember = async (e: React.FormEvent) => {
     e.preventDefault();
-    const countryObj = AVAILABLE_COUNTRIES.find(c => c.name === formCountryName) || AVAILABLE_COUNTRIES[2];
+    const countryObj = getCountryByName(formCountryName) || AVAILABLE_COUNTRIES[0];
     const extraFlagsData = formExtraFlags.map(cName => ({
       name: cName,
-      url: AVAILABLE_COUNTRIES.find(c => c.name === cName)?.flag || ''
+      url: getCountryFlagUrl(cName)
     }));
 
-    const selectedRoleType = formRoleType as RoleType | null;
-    const finalRole = buildRoleDisplay(formRoleType as RoleType | null | undefined, formCountryName || undefined);
+    const finalRole = buildRoleDisplay(formRoleTypes.length > 0 ? formRoleTypes : [formRoleType], formCountryName || undefined);
     const payload = {
       name: formName, role: finalRole || formRole || formRoleType || '',
-      roleType: selectedRoleType || null,
+      roleType: formRoleTypes.length > 0 ? formRoleTypes[0] : formRoleType || null,
+      roleTypes: formRoleTypes.length > 0 ? formRoleTypes : formRoleType ? [formRoleType] : [],
       img: formImg || 'https://via.placeholder.com/150',
       email: formEmail, phone: formPhone, cvUrl: formCvUrl || '',
-      countryName: countryObj.name, countryFlagUrl: countryObj.flag,
+      countryName: formCountryName,
+      countryFlagUrl: formCountryFlagUrl || countryObj.flag,
       extraFlags: extraFlagsData,
       showPrimaryFlag: formShowPrimaryFlag
     };
@@ -676,11 +745,17 @@ export const AdminDashboard: React.FC = () => {
         }
       );
       if (res.ok) {
-        await fetchMembers();
+        await Promise.all([fetchMembers(), fetchRepresentatives()]);
         setIsModalOpen(false);
+      } else if (res.status === 401 || res.status === 403) {
+        handleSessionExpired();
+      } else {
+        const errData = await res.json().catch(() => null);
+        alert(errData?.message || `Failed to save team member. Server returned: ${res.status}`);
       }
     } catch (err) {
       console.error('Failed to save member:', err);
+      alert('Network error: Failed to save team member.');
     }
   };
 
@@ -689,7 +764,9 @@ export const AdminDashboard: React.FC = () => {
     setEditingId(member.id ?? null);
     setFormName(member.name);
     setFormRole(member.role);
-    setFormRoleType(member.roleType || '');
+    const memberRoleTypes = member.roleTypes && member.roleTypes.length > 0 ? member.roleTypes : (member.roleType ? [member.roleType] : []);
+    setFormRoleTypes(memberRoleTypes);
+    setFormRoleType(memberRoleTypes.length > 0 ? memberRoleTypes[0] : '');
     setFormEmail(member.email || '');
     setFormPhone(member.phone || '');
     setFormImg(member.img || '');
@@ -699,6 +776,8 @@ export const AdminDashboard: React.FC = () => {
     setFormCvFile(null);
     setFormCvUploadError('');
     setFormCountryName(member.countryName || 'Tunisia');
+    setFormCountryFlagUrl(member.countryFlagUrl || getCountryFlagUrl(member.countryName || 'Tunisia'));
+    setFormCountryFlagFile(null);
     setFormExtraFlags(member.extraFlags?.map(f => f.name) || []);
     setFormShowPrimaryFlag(member.showPrimaryFlag !== false);
     setIsModalOpen(true);
@@ -707,6 +786,25 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteMember = (index: number) => {
     const member = teamMembers[index];
     if (!member.id) return;
+
+    // Check if this member is assigned to any country representative branch as manager
+    const managedRep = representatives.find(r => r.manager && r.manager.id === member.id);
+
+    if (managedRep) {
+      setConfirmDialog({
+        isOpen: true,
+        title: 'Delete Team Member',
+        message: `${member.name} is currently assigned as manager for ${managedRep.title || managedRep.location || 'a country branch'}. Would you like to assign this country to another member before deleting?`,
+        isAlert: false,
+        onConfirm: async () => {
+          setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+          // Open representative edit modal to reassign manager first
+          handleOpenEditRepresentative(managedRep);
+        }
+      });
+      return;
+    }
+
     setConfirmDialog({
       isOpen: true,
       title: 'Delete Team Member',
@@ -719,7 +817,9 @@ export const AdminDashboard: React.FC = () => {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
           });
-          if (res.ok) await fetchMembers();
+          if (res.ok) {
+            await Promise.all([fetchMembers(), fetchRepresentatives()]);
+          }
         } catch (err) {
           console.error('Failed to delete member:', err);
         }
@@ -915,7 +1015,141 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  const fetchPartners = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/partners`);
+      if (res.ok) {
+        const data = await res.json();
+        setPartnersList(Array.isArray(data) ? data : []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch partners:', err);
+    }
+  };
+
+  const fetchClients = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/clients`);
+      if (res.ok) {
+        const data = await res.json();
+        setClientsList(Array.isArray(data) ? data : []);
+      }
+    } catch (err) {
+      console.error('Failed to fetch clients:', err);
+    }
+  };
+
+  const handleSavePartner = async (e: React.FormEvent) => {
+    e.preventDefault();
+    let logoUrl = formPartnerLogo;
+
+    if (formPartnerFile) {
+      setPartnerUploading(true);
+      const formData = new FormData();
+      formData.append('file', formPartnerFile);
+      try {
+        const res = await fetch(`${API_URL}/api/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+        const data = await res.json();
+        if (data.url) logoUrl = data.url;
+      } catch (err) {
+        console.error('Partner upload failed:', err);
+      } finally {
+        setPartnerUploading(false);
+      }
+    }
+
+    const payload = { name: formPartnerName, logoUrl };
+    const method = editingPartnerId ? 'PUT' : 'POST';
+    const url = editingPartnerId ? `${API_URL}/api/partners/${editingPartnerId}` : `${API_URL}/api/partners`;
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        setIsPartnerModalOpen(false);
+        fetchPartners();
+      }
+    } catch (err) {
+      console.error('Save partner failed:', err);
+    }
+  };
+
+  const handleDeletePartner = async (id: number) => {
+    if (!window.confirm('Delete this partner?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/partners/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+      if (res.ok) fetchPartners();
+    } catch (err) {
+      console.error('Delete partner failed:', err);
+    }
+  };
+
+  const handleSaveClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    let logoUrl = formClientLogo;
+
+    if (formClientFile) {
+      setClientUploading(true);
+      const formData = new FormData();
+      formData.append('file', formClientFile);
+      try {
+        const res = await fetch(`${API_URL}/api/upload`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
+        const data = await res.json();
+        if (data.url) logoUrl = data.url;
+      } catch (err) {
+        console.error('Client logo upload failed:', err);
+      } finally {
+        setClientUploading(false);
+      }
+    }
+
+    const payload = { name: formClientName || 'Client Logo', logoUrl };
+    const method = editingClientId ? 'PUT' : 'POST';
+    const url = editingClientId ? `${API_URL}/api/clients/${editingClientId}` : `${API_URL}/api/clients`;
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        setIsClientModalOpen(false);
+        fetchClients();
+      }
+    } catch (err) {
+      console.error('Save client failed:', err);
+    }
+  };
+
+  const handleDeleteClient = async (id: number) => {
+    if (!window.confirm('Delete this client logo?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/clients/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+      if (res.ok) fetchClients();
+    } catch (err) {
+      console.error('Delete client failed:', err);
+    }
+  };
+
   // Contact message handlers
+  const fetchServiceOptions = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/contact/service-options`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setServiceOptions(data.map((item: any) => ({ value: item.value, label: item.label })));
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch service options:', err);
+    }
+  };
+
   const fetchContactMessages = async () => {
     try {
       setContactMessagesLoading(true);
@@ -1900,13 +2134,9 @@ export const AdminDashboard: React.FC = () => {
                 <label>Service</label>
                 <select value={contactForm.service} onChange={e => setContactForm({...contactForm, service: e.target.value})}>
                   <option value="">Select a service</option>
-                  <option value="Training">Training</option>
-                  <option value="Consulting">Consulting</option>
-                  <option value="Audit">Audit</option>
-                  <option value="Tax and Legal">Tax and Legal</option>
-                  <option value="Expertise">Expertise</option>
-                  <option value="Collaboration">Collaboration</option>
-                  <option value="Other">Other</option>
+                  {serviceOptions.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
               </div>
               <div className="bfc-field" style={{ marginTop: '1rem' }}>
@@ -1921,6 +2151,349 @@ export const AdminDashboard: React.FC = () => {
               <div className="bfc-id-footer" style={{ marginTop: '1.5rem' }}>
                 <button type="button" className="bfc-btn-outline" onClick={() => setIsContactModalOpen(false)}>Cancel</button>
                 <button type="submit" className="bfc-btn-solid">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Partners & Clients Button */}
+      <button 
+        className={`bfc-admin-partners-float ${isPartnersExpanded ? 'is-hidden' : ''}`} 
+        onClick={() => { setIsPartnersExpanded(true); fetchPartners(); fetchClients(); setPartnersTab('partners'); }}
+        title="Partners & Clients"
+      >
+        <Handshake size={24} />
+      </button>
+
+      {/* Expandable Partners & Clients Overlay (visuals copied from Stats overlay) */}
+      <div className={`bfc-admin-partners-overlay ${isPartnersExpanded ? 'is-expanded' : ''}`}>
+        <button className="bfc-partners-close" onClick={() => setIsPartnersExpanded(false)}>
+          <X size={20} />
+        </button>
+        <div className="bfc-stats-overlay-content" style={{ overflowY: 'auto', paddingBottom: '6rem' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+
+            {/* Partners & Clients Tab Indicators (same as Stats tabs) */}
+            <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.12)', paddingBottom: '1rem' }}>
+              <button
+                onClick={() => { setPartnersTab('partners'); fetchPartners(); }}
+                style={{
+                  padding: '0.6rem 1.5rem',
+                  borderRadius: '8px',
+                  border: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: partnersTab === 'partners' ? 700 : 500,
+                  cursor: 'pointer',
+                  background: partnersTab === 'partners' ? '#99cdb3' : 'rgba(255,255,255,0.08)',
+                  color: partnersTab === 'partners' ? '#0f2a4a' : '#94a3b8',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                <Handshake size={16} /> Partners (Name & Photo)
+              </button>
+              <button
+                onClick={() => { setPartnersTab('clients'); fetchClients(); }}
+                style={{
+                  padding: '0.6rem 1.5rem',
+                  borderRadius: '8px',
+                  border: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: partnersTab === 'clients' ? 700 : 500,
+                  cursor: 'pointer',
+                  background: partnersTab === 'clients' ? '#99cdb3' : 'rgba(255,255,255,0.08)',
+                  color: partnersTab === 'clients' ? '#0f2a4a' : '#94a3b8',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                <Briefcase size={16} /> Global Clients (Photo Only)
+              </button>
+            </div>
+
+            {/* Summary Stats Cards (same as Stats overlay) */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+              <div className="bfc-table-container" style={{ padding: '1.5rem', textAlign: 'center', marginBottom: 0 }}>
+                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#99cdb3' }}>{partnersList.length}</div>
+                <div style={{ fontSize: '0.85rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '0.25rem' }}>Total Partners</div>
+              </div>
+              <div className="bfc-table-container" style={{ padding: '1.5rem', textAlign: 'center', marginBottom: 0 }}>
+                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#99cdb3' }}>{clientsList.length}</div>
+                <div style={{ fontSize: '0.85rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '0.25rem' }}>Total Client Logos</div>
+              </div>
+              <div className="bfc-table-container" style={{ padding: '1.5rem', textAlign: 'center', marginBottom: 0 }}>
+                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#99cdb3' }}>{partnersList.length + clientsList.length}</div>
+                <div style={{ fontSize: '0.85rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '0.25rem' }}>Home Page Items</div>
+              </div>
+            </div>
+
+            {/* ─── Partners Page (Name & Photo) ─── */}
+            <div style={{ display: partnersTab === 'partners' ? 'block' : 'none' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+                <h2 style={{ margin: 0, color: '#fff', fontSize: '2rem', fontWeight: 800 }}>Partners</h2>
+                <button className="bfc-btn-mint" onClick={() => {
+                  setEditingPartnerId(null);
+                  setFormPartnerName('');
+                  setFormPartnerLogo('');
+                  setFormPartnerFile(null);
+                  setFormPartnerPreview('');
+                  setIsPartnerModalOpen(true);
+                }}><Plus size={16} /> Add Partner</button>
+              </div>
+
+              <div className="bfc-table-container">
+                <div className="bfc-table-header">
+                  <h3>Accredited Partners — Name &amp; Photo ({partnersList.length})</h3>
+                </div>
+                <div style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.25rem' }}>
+                  {partnersList.length === 0 ? (
+                    <div style={{ color: '#64748b', gridColumn: '1 / -1', padding: '2rem 0', textAlign: 'center' }}>
+                      No partners added yet. Click &quot;Add Partner&quot; above.
+                    </div>
+                  ) : (
+                    partnersList.map((partner) => {
+                      const logoSrc = partner.logoUrl
+                        ? partner.logoUrl.startsWith('http') || partner.logoUrl.startsWith('/src/')
+                          ? partner.logoUrl
+                          : `${API_URL}${partner.logoUrl}`
+                        : '';
+                      return (
+                        <div key={partner.id} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '16px', padding: '1.25rem', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', textAlign: 'center' }}>
+                          <div style={{ width: '100px', height: '100px', borderRadius: '12px', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.15)' }}>
+                            {logoSrc ? (
+                              <img src={logoSrc} alt={partner.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                            ) : (
+                              <span style={{ color: '#204383', fontWeight: 800 }}>{partner.name?.slice(0, 2).toUpperCase()}</span>
+                            )}
+                          </div>
+                          <div>
+                            <h4 style={{ color: '#fff', fontSize: '1rem', margin: '0 0 0.25rem 0', fontWeight: 700 }}>{partner.name}</h4>
+                            <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Accredited Partner</span>
+                          </div>
+                          <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+                            <button
+                              onClick={() => {
+                                setEditingPartnerId(partner.id);
+                                setFormPartnerName(partner.name);
+                                setFormPartnerLogo(partner.logoUrl);
+                                setFormPartnerFile(null);
+                                setFormPartnerPreview(logoSrc);
+                                setIsPartnerModalOpen(true);
+                              }}
+                              style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem' }}
+                            >
+                              <Edit2 size={14} /> Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeletePartner(partner.id)}
+                              style={{ background: 'rgba(239, 68, 68, 0.2)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem' }}
+                            >
+                              <Trash2 size={14} /> Delete
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* ─── Global Clients Page (Photo Only) ─── */}
+            <div style={{ display: partnersTab === 'clients' ? 'block' : 'none' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
+                <h2 style={{ margin: 0, color: '#fff', fontSize: '2rem', fontWeight: 800 }}>Global Clients</h2>
+                <button className="bfc-btn-mint" onClick={() => {
+                  setEditingClientId(null);
+                  setFormClientName('');
+                  setFormClientLogo('');
+                  setFormClientFile(null);
+                  setFormClientPreview('');
+                  setIsClientModalOpen(true);
+                }}><Plus size={16} /> Add Client Logo</button>
+              </div>
+
+              <div className="bfc-table-container">
+                <div className="bfc-table-header">
+                  <h3>Client Logos — Photo Only ({clientsList.length})</h3>
+                </div>
+                <div style={{ padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.25rem' }}>
+                  {clientsList.length === 0 ? (
+                    <div style={{ color: '#64748b', gridColumn: '1 / -1', padding: '2rem 0', textAlign: 'center' }}>
+                      No client logos added yet. Click &quot;Add Client Logo&quot; above.
+                    </div>
+                  ) : (
+                    clientsList.map((client) => {
+                      const logoSrc = client.logoUrl
+                        ? client.logoUrl.startsWith('http') || client.logoUrl.startsWith('/src/')
+                          ? client.logoUrl
+                          : `${API_URL}${client.logoUrl}`
+                        : '';
+                      return (
+                        <div key={client.id} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '16px', padding: '1.25rem', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', textAlign: 'center' }}>
+                          <div style={{ width: '100%', height: '90px', borderRadius: '10px', background: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem', boxShadow: '0 4px 15px rgba(0,0,0,0.15)' }}>
+                            {logoSrc ? (
+                              <img src={logoSrc} alt={client.name || 'Client Logo'} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                            ) : (
+                              <span style={{ color: '#64748b', fontSize: '0.8rem' }}>No Logo</span>
+                            )}
+                          </div>
+                          <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+                            <button
+                              onClick={() => {
+                                setEditingClientId(client.id);
+                                setFormClientName(client.name || '');
+                                setFormClientLogo(client.logoUrl);
+                                setFormClientFile(null);
+                                setFormClientPreview(logoSrc);
+                                setIsClientModalOpen(true);
+                              }}
+                              style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: '#fff', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem' }}
+                            >
+                              <Edit2 size={14} /> Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteClient(client.id)}
+                              style={{ background: 'rgba(239, 68, 68, 0.2)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.8rem' }}
+                            >
+                              <Trash2 size={14} /> Delete
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* Partner Add/Edit Form */}
+      {isPartnerModalOpen && (
+        <div className="bfc-modal-overlay" onClick={() => setIsPartnerModalOpen(false)}>
+          <div className="bfc-modal-card" style={{ maxWidth: '500px', padding: '2rem' }} onClick={e => e.stopPropagation()}>
+            <h3 style={{ margin: '0 0 1.5rem 0', color: '#204383', fontSize: '1.2rem', fontWeight: 800 }}>
+              {editingPartnerId ? 'Edit Partner' : 'Add New Partner'}
+            </h3>
+            <form onSubmit={handleSavePartner}>
+              <div className="bfc-field">
+                <label>Partner Name (Display Title) *</label>
+                <input value={formPartnerName} onChange={e => setFormPartnerName(e.target.value)} placeholder="e.g. Reanda International Network" required />
+              </div>
+              <div className="bfc-field" style={{ marginTop: '1rem' }}>
+                <label>Partner Logo / Photo *</label>
+                <label className="bfc-logo-upload" htmlFor="partner-file-input">
+                  {formPartnerPreview ? (
+                    <img src={formPartnerPreview} alt="Partner preview" />
+                  ) : (
+                    <>
+                      <Upload size={22} />
+                      <span><strong>Click to upload photo</strong>PNG, JPG or WEBP</span>
+                    </>
+                  )}
+                </label>
+                <input
+                  id="partner-file-input"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={e => {
+                    if (e.target.files && e.target.files[0]) {
+                      const f = e.target.files[0];
+                      setFormPartnerFile(f);
+                      setFormPartnerPreview(URL.createObjectURL(f));
+                    }
+                  }}
+                />
+                <input
+                  type="text"
+                  value={formPartnerLogo}
+                  onChange={e => {
+                    setFormPartnerLogo(e.target.value);
+                    if (e.target.value) {
+                      setFormPartnerFile(null);
+                      setFormPartnerPreview(e.target.value.startsWith('http') || e.target.value.startsWith('/src/') ? e.target.value : `${API_URL}${e.target.value}`);
+                    }
+                  }}
+                  placeholder="Or enter logo URL (/uploads/team/...)"
+                  style={{ marginTop: '0.5rem' }}
+                />
+              </div>
+              <div className="bfc-id-footer" style={{ marginTop: '1.5rem' }}>
+                <button type="button" className="bfc-btn-outline" onClick={() => setIsPartnerModalOpen(false)}>Cancel</button>
+                <button type="submit" className="bfc-btn-navy" disabled={partnerUploading}>
+                  {partnerUploading ? 'Uploading...' : editingPartnerId ? 'Update Partner' : 'Save Partner'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Client Logo Add/Edit Form */}
+      {isClientModalOpen && (
+        <div className="bfc-modal-overlay" onClick={() => setIsClientModalOpen(false)}>
+          <div className="bfc-modal-card" style={{ maxWidth: '500px', padding: '2rem' }} onClick={e => e.stopPropagation()}>
+            <h3 style={{ margin: '0 0 1.5rem 0', color: '#204383', fontSize: '1.2rem', fontWeight: 800 }}>
+              {editingClientId ? 'Edit Client Logo' : 'Add New Client Logo'}
+            </h3>
+            <form onSubmit={handleSaveClient}>
+              <div className="bfc-field">
+                <label>Client Name (Optional Reference)</label>
+                <input value={formClientName} onChange={e => setFormClientName(e.target.value)} placeholder="e.g. World Bank Group" />
+              </div>
+              <div className="bfc-field" style={{ marginTop: '1rem' }}>
+                <label>Client Logo / Photo *</label>
+                <label className="bfc-logo-upload" htmlFor="client-file-input">
+                  {formClientPreview ? (
+                    <img src={formClientPreview} alt="Client logo preview" />
+                  ) : (
+                    <>
+                      <Upload size={22} />
+                      <span><strong>Click to upload logo</strong>PNG, JPG or WEBP</span>
+                    </>
+                  )}
+                </label>
+                <input
+                  id="client-file-input"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={e => {
+                    if (e.target.files && e.target.files[0]) {
+                      const f = e.target.files[0];
+                      setFormClientFile(f);
+                      setFormClientPreview(URL.createObjectURL(f));
+                    }
+                  }}
+                />
+                <input
+                  type="text"
+                  value={formClientLogo}
+                  onChange={e => {
+                    setFormClientLogo(e.target.value);
+                    if (e.target.value) {
+                      setFormClientFile(null);
+                      setFormClientPreview(e.target.value.startsWith('http') || e.target.value.startsWith('/src/') ? e.target.value : `${API_URL}${e.target.value}`);
+                    }
+                  }}
+                  placeholder="Or enter logo URL (/uploads/clients/...)"
+                  style={{ marginTop: '0.5rem' }}
+                />
+              </div>
+              <div className="bfc-id-footer" style={{ marginTop: '1.5rem' }}>
+                <button type="button" className="bfc-btn-outline" onClick={() => setIsClientModalOpen(false)}>Cancel</button>
+                <button type="submit" className="bfc-btn-navy" disabled={clientUploading}>
+                  {clientUploading ? 'Uploading...' : editingClientId ? 'Update Client' : 'Save Client'}
+                </button>
               </div>
             </form>
           </div>
@@ -2111,8 +2684,8 @@ export const AdminDashboard: React.FC = () => {
                           setActiveCategoryIdx(0);
                           setIsServiceModalOpen(true);
                         } else {
-                          setEditingId(null); setFormName(''); setFormRole(''); setFormRoleType(''); setFormEmail(''); setFormPhone('');
-                          setFormImg(''); setFormImgFile(null); setFormImgUploadError(''); setFormCvUrl(null); setFormCvFile(null); setFormCvUploadError(''); setFormCountryName('Tunisia'); setFormExtraFlags([]); setFormShowPrimaryFlag(true); setIsModalOpen(true);
+                          setEditingId(null); setFormName(''); setFormRole(''); setFormRoleType(''); setFormRoleTypes([]); setFormEmail(''); setFormPhone('');
+                          setFormImg(''); setFormImgFile(null); setFormImgUploadError(''); setFormCvUrl(null); setFormCvFile(null); setFormCvUploadError(''); setFormCountryName('Tunisia'); setFormCountryFlagUrl(getCountryFlagUrl('Tunisia')); setFormCountryFlagFile(null); setFormExtraFlags([]); setFormShowPrimaryFlag(true); setIsModalOpen(true);
                         }
                       }}
                     >
@@ -2261,12 +2834,18 @@ export const AdminDashboard: React.FC = () => {
                       <div className="card-image">
                         <img src={getUploadUrl(member.img)} alt={member.name} />
                         <div className="flag-pill">
-                          <img src={member.countryFlagUrl} alt={member.countryName} />
-                          <span className="flag-country">{member.countryName}</span>
-                          {member.extraFlags && member.extraFlags.map((f, i) => (
-                            <img key={i} src={f.url} alt={f.name} style={{ width: 18, height: 13 }} />
+                          {member.countryFlagUrl ? (
+                            <FlagImg src={member.countryFlagUrl} alt={member.countryName} title={member.countryName} />
+                          ) : member.countryName ? (
+                            <FlagImg src={getCountryFlagUrl(member.countryName)} alt={member.countryName} title={member.countryName} />
+                          ) : null}
+                          {(!member.extraFlags || member.extraFlags.filter(f => f.name && f.name.trim() !== '').length === 0) && !member.countryFlagUrl && !member.countryName && (
+                            <span className="flag-country">—</span>
+                          )}
+                          {member.extraFlags && member.extraFlags.filter(f => f.name && f.name.trim() !== '').map((f, i) => (
+                            <FlagImg key={i} src={f.url || getCountryFlagUrl(f.name)} alt={f.name} title={f.name} small />
                           ))}
-                          {(member.extraFlags?.length || 0) >= 2 && <Globe size={14} style={{ color: '#204383' }} />}
+                          {(member.extraFlags?.filter(f => f.name && f.name.trim() !== '').length || 0) >= 1 && <Globe size={14} style={{ color: '#204383' }} />}
                         </div>
                       </div>
                       <div className="card-body">
@@ -3085,12 +3664,15 @@ export const AdminDashboard: React.FC = () => {
               <h4 style={{ color: '#204383', margin: '0.5rem 0 0 0' }}>Branch Manager Info</h4>
               <div className="bfc-field">
                 <label>MANAGER</label>
-                <select
+                  <select
                   value={repForm.manager?.id || ''}
                   onChange={e => {
                     const tmId = e.target.value ? parseInt(e.target.value) : null;
                     const selectedManager = teamMembers.find(m => m.id === tmId) || null;
-                    setRepForm({...repForm, manager: selectedManager});
+                    // Auto-fill the representative's flag from the selected manager's country flag
+                    const managerFlag = selectedManager?.countryFlagUrl || '';
+                    setRepForm({...repForm, manager: selectedManager, flagIconUrl: managerFlag || repForm.flagIconUrl});
+                    if (managerFlag) setRepFormLogoFile(null);
                   }}
                 >
                   <option value="">-- Select Manager --</option>
@@ -3211,9 +3793,10 @@ export const AdminDashboard: React.FC = () => {
                   )}
                 </div>
               </div>
-            </div>
-            
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
+
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
                   <button type="button" onClick={() => setIsRepModalOpen(false)} style={{ padding: '0.5rem 1rem', background: '#e2e8f0', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
                   {editingRepId ? (
                     <button type="submit" style={{ padding: '0.5rem 1rem', background: '#204383', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Save</button>
@@ -3332,28 +3915,32 @@ export const AdminDashboard: React.FC = () => {
                   </button>
                 )}
                 <div className="bfc-id-flags-preview">
-                  {formCountryName && (() => {
-                    const c = AVAILABLE_COUNTRIES.find(cc => cc.name === formCountryName);
-                    return c ? <><img src={c.flag} alt="" className="bfc-id-flag" /><span>{c.name}</span></> : null;
-                  })()}
-                  {formExtraFlags.length > 0 && formExtraFlags.map((cName, i) => {
-                    const c = AVAILABLE_COUNTRIES.find(cc => cc.name === cName);
-                    return c ? <img key={i} src={c.flag} alt="" className="bfc-id-flag small" /> : null;
+                  {formShowPrimaryFlag && (formCountryFlagUrl || formCountryName) && (
+                    <>
+                      <FlagImg src={formCountryFlagUrl || getCountryFlagUrl(formCountryName)} alt={formCountryName} title={formCountryName} className="bfc-id-flag" />
+                      <span>{formCountryName}</span>
+                    </>
+                  )}
+                  {formExtraFlags.map((cName, i) => {
+                    const c = getCountryByName(cName);
+                    return c ? <FlagImg key={i} src={c.flag} alt={c.name} title={c.name} className="bfc-id-flag small" /> : null;
                   })}
-                  {formExtraFlags.length >= 2 && <Globe size={16} className="bfc-id-globe-icon" />}
+                  {formExtraFlags.length >= 1 && <Globe size={16} className="bfc-id-globe-icon" />}
                 </div>
               </div>
 
               {/* RIGHT: Fields Panel */}
               <div className="bfc-id-fields-panel">
                 <div className="bfc-id-header">
-                  <span className="bfc-id-badge">
-                    <Fingerprint size={12} style={{ marginRight: 4 }} />
-                    {formRoleType ? (ROLES.find(r => r.value === formRoleType)?.label ?? 'TEAM MEMBER') : 'TEAM MEMBER'}
-                  </span>
+                    <span className="bfc-id-badge">
+                      <Fingerprint size={12} style={{ marginRight: 4 }} />
+                      {formRoleTypes.length > 0
+                        ? formRoleTypes.map(rt => ROLE_LABELS[rt] || rt).join(', ')
+                        : 'TEAM MEMBER'}
+                    </span>
                   <h3>{formName || 'Full Name'}</h3>
                   <p className="bfc-id-role-preview">
-                    {buildRoleDisplay(formRoleType as RoleType | null | undefined, formCountryName || undefined) || 'Role / Position'}
+                    {buildRoleDisplay(formRoleTypes.length > 0 ? formRoleTypes : formRoleType ? [formRoleType] : null, formCountryName || undefined) || 'Role / Position'}
                   </p>
                 </div>
 
@@ -3364,22 +3951,28 @@ export const AdminDashboard: React.FC = () => {
                     <input value={formName} onChange={e => setFormName(e.target.value)} placeholder="Full name" required />
                   </div>
 
-                  {/* Role dropdown */}
+                  {/* Role multi-select */}
                   <div className="bfc-field">
                     <label><Briefcase size={11} /> ROLE</label>
-                    <select
-                      value={formRoleType}
-                      onChange={e => {
-                        setFormRoleType(e.target.value);
-                        setFormRole('');
-                      }}
-                      required
-                    >
-                      <option value="">-- Select role --</option>
+                    <div className="bfc-id-role-checks">
                       {ROLES.map(r => (
-                        <option key={r.value} value={r.value}>{r.label}</option>
+                        <label key={r.value} className="bfc-id-role-check">
+                          <input
+                            type="checkbox"
+                            checked={formRoleTypes.includes(r.value)}
+                            onChange={e => {
+                              if (e.target.checked) {
+                                setFormRoleTypes(prev => [...prev, r.value]);
+                              } else {
+                                setFormRoleTypes(prev => prev.filter(v => v !== r.value));
+                              }
+                              setFormRoleType(formRoleTypes.includes(r.value) ? r.value : (formRoleTypes.length > 0 ? formRoleTypes[0] : ''));
+                            }}
+                          />
+                          {r.label}
+                        </label>
                       ))}
-                    </select>
+                    </div>
                   </div>
 
                   {/* Email + Phone side by side */}
@@ -3449,7 +4042,7 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Country Section */}
+                                    {/* Country Section */}
                   <div className="bfc-country-section">
                     <div className="bfc-country-section-header">
                       <MapPin size={16} />
@@ -3460,13 +4053,83 @@ export const AdminDashboard: React.FC = () => {
                       <select
                         id="bfc-country-select"
                         value={formCountryName}
-                        onChange={e => setFormCountryName(e.target.value)}
+                        onChange={e => {
+                          const newCountry = e.target.value;
+                          setFormCountryName(newCountry);
+                          if (!formCountryFlagFile) {
+                            setFormCountryFlagUrl(getCountryFlagUrl(newCountry));
+                          }
+                        }}
                       >
                         {AVAILABLE_COUNTRIES.map(c => (
                           <option key={c.code} value={c.name}>{c.name}</option>
                         ))}
                       </select>
                     </div>
+
+                    {/* Main Flag Upload / Preview */}
+                    <div className="bfc-field" style={{ marginTop: '0.5rem' }}>
+                      <label><Upload size={11} /> MAIN FLAG (UPLOADED FLAG OR LINK)</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.25rem' }}>
+                        {(formCountryFlagUrl || getCountryFlagUrl(formCountryName)) && (
+                          <div style={{ width: 34, height: 22, borderRadius: 3, overflow: 'hidden', border: '1px solid #e2e8f0', flexShrink: 0, background: '#fff' }}>
+                            <img
+                              src={getUploadUrl(formCountryFlagUrl || getCountryFlagUrl(formCountryName))}
+                              alt="Main flag preview"
+                              style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                            />
+                          </div>
+                        )}
+                        <label className="bfc-cv-file-label" style={{ position: 'relative', flex: 1, margin: 0, padding: '6px 12px', fontSize: '0.8rem', cursor: 'pointer' }}>
+                          <Upload size={13} />
+                          <span>{formCountryFlagFile ? formCountryFlagFile.name : (formCountryFlagUrl?.startsWith('/uploads') ? 'Custom flag uploaded' : 'Upload custom flag')}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="bfc-id-file-input"
+                            onChange={async e => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              setFormCountryFlagFile(file);
+                              setFormCountryFlagUploading(true);
+                              try {
+                                const fd = new FormData();
+                                fd.append('file', file);
+                                const res = await fetch(`${API_URL}/api/upload`, {
+                                  method: 'POST',
+                                  headers: { 'Authorization': `Bearer ${token}` },
+                                  body: fd
+                                });
+                                if (res.ok) {
+                                  const data = await res.json();
+                                  setFormCountryFlagUrl(data.url);
+                                }
+                              } catch (err) {
+                                console.error('Flag upload failed:', err);
+                              } finally {
+                                setFormCountryFlagUploading(false);
+                              }
+                            }}
+                          />
+                        </label>
+                        {formCountryFlagUrl && formCountryFlagUrl !== getCountryFlagUrl(formCountryName) && (
+                          <button
+                            type="button"
+                            className="bfc-btn-outline"
+                            style={{ padding: '4px 8px', fontSize: '0.75rem' }}
+                            onClick={() => {
+                              setFormCountryFlagFile(null);
+                              setFormCountryFlagUrl(getCountryFlagUrl(formCountryName));
+                            }}
+                            title="Reset to default country flag"
+                          >
+                            Reset
+                          </button>
+                        )}
+                      </div>
+                      {formCountryFlagUploading && <span className="bfc-id-uploading-sm">Uploading flag...</span>}
+                    </div>
+
                     <div className="bfc-field" style={{ marginTop: '0.5rem', flexDirection: 'row', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
                       <input
                         type="checkbox"
@@ -3479,14 +4142,15 @@ export const AdminDashboard: React.FC = () => {
                         SHOW PRIMARY FLAG
                       </label>
                     </div>
+
                     <div className="bfc-field" style={{ marginTop: '0.5rem' }}>
                       <label><Globe size={11} /> ADDITIONAL COUNTRIES</label>
                       <div className="bfc-id-extra-flags">
                         {formExtraFlags.map((cName, i) => {
-                          const c = AVAILABLE_COUNTRIES.find(cc => cc.name === cName);
+                          const c = getCountryByName(cName);
                           return (
                             <span key={i} className="bfc-id-flag-tag">
-                              {c && <img src={c.flag} alt="" />}
+                              {c && <FlagImg src={c.flag} alt={c.name} title={c.name} />}
                               {cName}
                               <button type="button" onClick={() => setFormExtraFlags(prev => prev.filter((_, j) => j !== i))}>&times;</button>
                             </span>
@@ -3523,7 +4187,7 @@ export const AdminDashboard: React.FC = () => {
                     type="button"
                     className="bfc-btn-navy"
                     onClick={handleSaveMember as any}
-                    disabled={!formName || !formRoleType}
+                     disabled={!formName || formRoleTypes.length === 0}
                   >
                     {editingId ? 'UPDATE' : 'SAVE'}
                   </button>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 import './FloatingContactIcon.css';
 
-const WHATSAPP_URL = 'https://wa.me/21698770970';
+const WHATSAPP_URL = 'https://wa.me/21658422199';
 
 // Below this many pixels the bubble stays hidden, so it does not sit over the
 // hero on first load. The gap also stops it flickering on tiny scroll nudges.

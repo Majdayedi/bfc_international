@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './RepresentativeDetail.css';
 import { PROJECTS, getClientLogo, type Project } from './OurProjectsPage';
+import { COUNTRIES_WITH_FLAGS } from '../utils/countriesWithFlags';
 
 import congo from '../src/assets/representatives/congo.png';
 import senegal from '../src/assets/representatives/senegal.png';
@@ -9,6 +10,28 @@ import guinee from '../src/assets/representatives/guinee.png';
 import tunisia from '../src/assets/representatives/tunisia.png';
 import mauritania from '../src/assets/representatives/mauritania.png';
 import { API_URL } from '../utils/constants';
+
+// Returns the CDN flag URL for a given country name
+const getCountryFlagCdnUrl = (countryName: string | null | undefined): string => {
+  if (!countryName) return '';
+  const found = COUNTRIES_WITH_FLAGS.find(
+    c => c.name.toLowerCase() === countryName.toLowerCase() ||
+         c.code.toLowerCase() === countryName.toLowerCase()
+  );
+  return found ? found.flag : '';
+};
+
+// Returns the resolved flag URL: uploaded URL takes priority, then CDN lookup by countryName
+const resolveManagerFlagUrl = (countryFlagUrl: string | null | undefined, countryName: string | null | undefined): string => {
+  if (countryFlagUrl) return countryFlagUrl;
+  return getCountryFlagCdnUrl(countryName);
+};
+
+// Returns extra flag image URL: stored url takes priority, then CDN lookup by name
+const resolveExtraFlagUrl = (url: string | null | undefined, name: string | null | undefined): string => {
+  if (url) return url;
+  return getCountryFlagCdnUrl(name);
+};
 
 
 
@@ -144,7 +167,7 @@ export const RepresentativeDetail: React.FC = () => {
 
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
     setIsGlobeAnimating(false);
     globeAnimStartedRef.current = false;
   }, [id]);
@@ -307,6 +330,22 @@ export const RepresentativeDetail: React.FC = () => {
               <>
                 <div className="rd-manager-photo-wrapper">
                   <img src={data.manager.img?.startsWith('http') ? data.manager.img : `${API_URL}${data.manager.img?.startsWith('/') ? '' : '/'}${data.manager.img || ''}`} alt={data.manager.name} className="rd-manager-photo" />
+                  <div className="rd-manager-flags-overlay">
+                    {data.manager.showPrimaryFlag !== false && resolveManagerFlagUrl(data.manager.countryFlagUrl, data.manager.countryName) && (
+                      <img
+                        src={resolveManagerFlagUrl(data.manager.countryFlagUrl, data.manager.countryName)}
+                        alt={data.manager.countryName || 'flag'}
+                        title={data.manager.countryName || ''}
+                        className="rd-manager-flag-img"
+                      />
+                    )}
+                    {data.manager.extraFlags?.map((f: any, idx: number) => {
+                      const flagSrc = resolveExtraFlagUrl(f.url, f.name);
+                      return flagSrc ? (
+                        <img key={idx} src={flagSrc} alt={f.name} title={f.name} className="rd-manager-flag-img" />
+                      ) : null;
+                    })}
+                  </div>
                 </div>
                 <div className="rd-manager-details">
                   <h4 className="rd-manager-name">{data.manager.name?.toUpperCase() || ''}</h4>

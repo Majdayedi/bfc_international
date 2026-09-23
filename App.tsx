@@ -39,6 +39,12 @@ const App: React.FC = () => {
   const location = useLocation();
 
   useLayoutEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  useLayoutEffect(() => {
     if (location.hash) {
       const target = document.getElementById(location.hash.replace('#', ''));
       if (target) {
@@ -47,9 +53,14 @@ const App: React.FC = () => {
       }
     }
 
-    // Bypass CSS scroll-behavior: smooth so the reset is always instant
-    document.documentElement.scrollTop = 0;
+    // Instantly reset scroll to top without smooth animation on page load/navigation
+    const docEl = document.documentElement;
+    const prevBehavior = docEl.style.scrollBehavior;
+    docEl.style.scrollBehavior = 'auto';
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+    docEl.scrollTop = 0;
     document.body.scrollTop = 0;
+    docEl.style.scrollBehavior = prevBehavior;
   }, [location.pathname, location.search, location.hash]);
 
   useLayoutEffect(() => {

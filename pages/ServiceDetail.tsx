@@ -38,7 +38,7 @@ export const ServiceDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
     if (!serviceId) return;
 
     setLoading(true);
@@ -269,18 +269,18 @@ export const ServiceDetail: React.FC = () => {
             </div>
           )}
 
-          {data.categories ? (
+          {data.categories && data.categories.length > 0 ? (
             <div className="sd-categories-container">
               {data.categories.map((category, index) => (
                 <div key={index} className="sd-category-block">
                   <h2 className="sd-category-title">{category.name}</h2>
-                  {renderCleanCardGrid(category.boxes)}
+                  {renderCleanCardGrid(category.boxes || [])}
                 </div>
               ))}
             </div>
           ) : (
             <>
-              {data.boxes && (
+              {data.boxes && data.boxes.length > 0 && (
                 (serviceId === 'outsourcing' || data.layoutType === 'OUTSOURCING')
                   ? renderOutsourcingLayout(data.boxes)
                   : renderCleanCardGrid(data.boxes)

@@ -788,7 +788,7 @@ export const ArticleDetailPage: React.FC = () => {
   }, [slug]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
     if (data) document.title = data.metaTitle || data.h1 || 'Article';
   }, [data]);
 

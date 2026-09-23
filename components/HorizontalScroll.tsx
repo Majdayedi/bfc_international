@@ -65,7 +65,7 @@ export const HorizontalScroll: React.FC = () => {
         ease: "none",
         scrollTrigger: {
           trigger: section,
-          start: "top top",
+          start: "top 90px",
           end: () => "+=" + getDistance(), // Scrolling distance exactly matches horizontal distance to avoid void
           scrub: 0.1,
           pin: true,

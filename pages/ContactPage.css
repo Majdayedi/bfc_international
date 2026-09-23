@@ -632,6 +632,49 @@
   text-decoration: underline;
 }
 
+.contact-map__socials {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.contact-map__social {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.contact-map__social--linkedin {
+  background: #0a66c2;
+  box-shadow: 0 6px 16px rgba(10, 102, 194, 0.35);
+}
+
+.contact-map__social--youtube {
+  background: #ff0000;
+  box-shadow: 0 6px 16px rgba(255, 0, 0, 0.35);
+}
+
+.contact-map__social:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.08);
+}
+
+.contact-map__social--linkedin:hover {
+  box-shadow: 0 10px 22px rgba(10, 102, 194, 0.45);
+}
+
+.contact-map__social--youtube:hover {
+  box-shadow: 0 10px 22px rgba(255, 0, 0, 0.45);
+}
+
 .contact-join {
   margin: 0 6vw 5rem;
   background: #163868;
