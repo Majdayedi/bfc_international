@@ -1,0 +1,564 @@
+.menu {
+  position: fixed;
+  inset: 0;
+  background: #204383;
+  z-index: 100;
+  transition: transform 0.95s ease-out, opacity 0.95s ease-out;
+  overflow-x: hidden;
+}
+
+.menu--open {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu--closed {
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.menu__header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  z-index: 10;
+}
+
+@media (min-width: 768px) {
+  .menu__header {
+    padding: 1.5rem 3rem;
+  }
+}
+
+.menu__logo {
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.menu__logo--open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.menu__logo--closed {
+  transform: translateX(-10px);
+  opacity: 0;
+}
+
+.menu__logo-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.menu__logo-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 20px;
+  padding: 0.7rem 0.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.menu__logo-img {
+  height: 1.75rem;
+  width: auto;
+}
+
+@media (min-width: 768px) {
+  .menu__logo-img {
+    height: 2.25rem;
+  }
+}
+
+.menu__close {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fff;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease, color 0.3s ease;
+}
+
+.menu__close:hover {
+  color: #99cdb3;
+}
+
+.menu__close--open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.menu__close--closed {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.menu__close-text {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.menu__close-icon {
+  transition: transform 0.3s ease;
+}
+
+.menu__close:hover .menu__close-icon {
+  transform: rotate(90deg);
+}
+
+.menu__content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 0rem;
+}
+
+@media (min-width: 768px) {
+  .menu__content {
+    padding-top: 0rem;
+    padding-bottom: -5rem;
+
+  }
+}
+
+.menu__left {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1), padding 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  width: 100%;
+  padding-left: 0;
+}
+
+@media (min-width: 768px) {
+  .menu__left {
+    justify-content: flex-start;
+  }
+}
+
+.menu__left--expanded {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .menu__left--expanded {
+    width: 35%;
+    padding-left: 3rem;
+  }
+}
+
+.menu__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .menu__list {
+    gap: 0.85rem;
+    text-align: left;
+  }
+}
+
+.menu__list--center {
+  align-items: center;
+}
+
+.menu__list--start {
+  align-items: flex-start;
+}
+
+.menu__item {
+  font-weight: 1000;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.05;
+  padding: 0.1rem 0;
+  transition: color 0.35s ease, transform 0.35s ease, opacity 0.35s ease;
+}
+
+@media (min-width: 768px) {
+  .menu__item {
+    text-align: left;
+  }
+}
+
+.menu__item--open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.menu__item--closed {
+  transform: translateX(-20px);
+  opacity: 0;
+}
+
+.menu__item--large {
+  font-size: clamp(1.6rem, 3.5vw, 4rem);
+  color: rgba(153, 205, 179, 0.3);
+}
+
+.menu__item--expanded {
+  font-size: clamp(1rem, 2vw, 2rem);
+  color: rgba(153, 205, 179, 0.3);
+}
+
+.menu__item--active {
+  color: #fff;
+}
+
+.menu__item--current {
+  color: #fff;
+}
+
+.menu__item--hovered {
+  color: #fff;
+  transform: scale(1.03);
+}
+
+.menu__item-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.menu__chevron {
+  transition: transform 0.3s ease;
+}
+
+.menu__chevron--rotated {
+  transform: rotate(90deg);
+}
+
+.menu__chevron--shift {
+  transform: translateX(4px);
+}
+
+.menu__right {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  transition: transform 0.55s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.4s ease;
+  width: 0;
+  opacity: 0;
+  transform: translateX(100%);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+@media (min-width: 768px) {
+  .menu__right {
+    position: relative;
+  }
+}
+
+.menu__right--open {
+  width: 100%;
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+@media (min-width: 768px) {
+  .menu__right--open {
+    width: 65%;
+  }
+}
+
+.menu__right-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7.5rem 1.5rem 7.5rem;
+  background: #204383;
+}
+
+@media (min-width: 768px) {
+  .menu__right-inner {
+    padding: 5.5rem 3rem 6.5rem;
+    background: #204383;
+  }
+  .menu__right-content {
+    max-height: calc(100% - 12rem);
+  }
+}
+
+.menu__right-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  width: 100%;
+  max-width: 64rem;
+  max-height: calc(100% - 15rem);
+  overflow-x: hidden;
+  padding-right: 0.5rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.menu__right-content::-webkit-scrollbar {
+  display: none;
+}
+
+.menu__right-content * {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.menu__right-content *::-webkit-scrollbar {
+  display: none;
+}
+
+.menu__right-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(153, 205, 179, 0.5);
+  transition: all 0.5s ease;
+}
+
+.menu__right-title--open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.menu__right-title--closed {
+  transform: translateY(4px);
+  opacity: 0;
+}
+
+.menu__subitem {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  color: rgba(153, 205, 179, 0.4);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease, color 0.3s ease;
+  text-decoration: none;
+  font-size: clamp(1.8rem, 4.5vw, 4rem);
+  line-height: 1.05;
+  padding: 0.1rem 0;
+  outline: none;
+  border: none;
+  background: transparent;
+  display: block;
+  width: 100%;
+}
+
+.menu__subitem:focus,
+.menu__subitem:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.menu__subitem:hover {
+  color: #fff;
+  transform: translateX(12px);
+}
+
+.menu__subitem--current {
+  color: #fff;
+}
+
+.menu__subitem--open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.menu__subitem--current.menu__subitem--open {
+  transform: translateY(0) translateX(12px);
+}
+
+.menu__subitem--closed {
+  transform: translateY(12px);
+  opacity: 0;
+}
+
+.menu__subitem-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.menu__subgroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.menu__subgroup-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: rgba(153, 205, 179, 0.65);
+  margin-top: 0.35rem;
+}
+
+.menu__subitem--nested {
+  font-size: clamp(1.1rem, 2.3vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: rgba(214, 236, 225, 0.68);
+  padding-left: 1.8rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.menu__subitem--nested:hover {
+  transform: translateX(8px);
+}
+
+.menu__subitem-icon {
+  opacity: 0;
+  transform: translateX(-16px);
+  transition: all 0.3s ease;
+}
+
+.menu__subitem:hover .menu__subitem-icon,
+.menu__subitem--current .menu__subitem-icon {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.menu__footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.5rem;
+  transition: all 0.5s ease;
+}
+
+@media (min-width: 768px) {
+  .menu__footer {
+    padding: 1.5rem 3rem;
+  }
+}
+
+.menu__footer--open {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.menu__footer--closed {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.menu__footer-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(153, 205, 179, 0.4);
+  font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .menu__footer-inner {
+    flex-direction: row;
+  }
+}
+
+.menu__footer-links {
+  display: flex;
+  gap: 1.5rem;
+  margin-right: 50px;
+}
+
+.menu__footer-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.menu__footer-link:hover {
+  color: #fff;
+}
+
+.menu__mobile-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.5rem 0.3rem 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  transition: color 0.2s;
+}
+
+.menu__mobile-back::before {
+  content: 'Menu';
+}
+
+.menu__mobile-back:hover {
+  color: #fff;
+}
+
+@media (max-width: 767px) {
+  .menu__mobile-back {
+    width: auto;
+    height: auto;
+    padding: 0.3rem 0.5rem 0.3rem 0;
+    justify-content: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .menu__mobile-back::before {
+    display: none;
+  }
+
+  .menu__right-inner {
+    /* Stack the back chevron above the list. Its margin-bottom was written for
+       that, but with the desktop row layout it sat beside the list instead,
+       pinned to the top of the screen. Centring the column keeps the chevron
+       attached to the block it returns from. */
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    padding-top: 6rem;
+  }
+
+  /* No auto margins here: they would absorb the free space and push the back
+     chevron back to the top, defeating the centring on .menu__right-inner. */
+  .menu__right-content {
+    padding-right: 0;
+    max-height: calc(100% - 13.5rem);
+  }
+
+  .menu__subitem {
+    font-size: clamp(1.3rem, 7vw, 2.5rem);
+  }
+}
+

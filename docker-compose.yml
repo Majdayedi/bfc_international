@@ -1,0 +1,81 @@
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    container_name: bfc-mysql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set MYSQL_ROOT_PASSWORD in .env}
+      MYSQL_DATABASE: bfc_db
+      MYSQL_USER: ${MYSQL_USER:-bfc}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set MYSQL_PASSWORD in .env}
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+
+    networks:
+      - bfc
+
+  backend:
+    image: ${DOCKERHUB_USER}/bfc-backend:${IMAGE_TAG}
+
+    restart: unless-stopped
+    container_name: bfc-backend
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/bfc_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-bfc}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      APP_JWT_SECRET: ${APP_JWT_SECRET}
+      APP_CORS_ALLOWED_ORIGINS: ${CORS_ORIGINS:-https://internationalbfc.com,http://internationalbfc.com}
+      APP_FILE_UPLOAD_DIR: uploads
+      APP_SEED_ENABLED: "false"
+      SPRING_JPA_SHOW_SQL: "false"
+
+    volumes:
+      - uploads_data:/app/uploads
+
+    expose:
+      - "8085"
+
+    networks:
+      - bfc
+
+  frontend:
+    image: ${DOCKERHUB_USER}/bfc-frontend:${IMAGE_TAG}
+
+    restart: unless-stopped
+    container_name: bfc-frontend
+
+    depends_on:
+      - backend
+
+    ports:
+      - "80:80"
+
+    networks:
+      - bfc
+
+volumes:
+  mysql_data:
+  uploads_data:
+
+networks:
+  bfc:
+    driver: bridge

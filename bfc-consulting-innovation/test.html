@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#f8fafc]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BFC Creative Article Builder & Compliance Workbook Canvas</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ChartJS CDN for Interactive Dashboards -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="h-full flex flex-col font-sans text-bfc-charcoal select-none antialiased">
+
+    <!-- TOP HEADER UTILITY BAR -->
+    <header class="bg-bfc-blue text-white border-b border-white/10 px-6 py-3 shrink-0 flex items-center justify-between shadow-md relative z-30">
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5 bg-white/5 px-2.5 py-1.5 rounded-[12px_4px_12px_4px] border border-white/10 relative">
+                <span class="font-display font-extrabold text-sm tracking-tighter">BF<span class="text-bfc-sage">C</span></span>
+                <span class="h-3 w-[1px] bg-white/20"></span>
+                <span class="text-[9px] font-mono tracking-widest text-bfc-sage font-bold uppercase">GROUPE</span>
+                <!-- Globe design mimicking logo -->
+                <div class="absolute -right-5 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-gradient-to-br from-bfc-cyan/20 to-bfc-sage/10 flex flex-col justify-between p-0.5 overflow-hidden border border-bfc-cyan/35 shadow-xs">
+                    <div class="h-[1px] bg-bfc-cyan w-full opacity-70"></div>
+                    <div class="h-[1px] bg-white w-5/6 mx-auto"></div>
+                    <div class="h-[1px] bg-bfc-cyan w-2/3 mx-auto opacity-85"></div>
+                    <div class="h-[1px] bg-bfc-sage w-1/2 mx-auto"></div>
+                </div>
+            </div>
+            <div class="ml-5">
+                <h1 class="text-xs font-bold tracking-tight">Creative Canvas Website Builder</h1>
+                <p class="text-[9px] text-bfc-sage font-mono uppercase tracking-wider">Independent Standalone Code Release</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <!-- Mode Toggle Switch -->
+            <div class="bg-white/5 border border-white/10 p-0.5 rounded-[12px_4.5px_12px_4.5px] flex items-center gap-1">
+                <button id="btn-edit" onclick="setMode('edit')" class="px-3.5 py-1.5 rounded-[10px_3px_10px_3px] text-xs font-bold flex items-center gap-1 cursor-pointer transition-all bg-white text-bfc-blue shadow-sm">
+                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                    <span>Editor Mode</span>
+                </button>
+                <button id="btn-preview" onclick="setMode('preview')" class="px-3.5 py-1.5 rounded-[10px_3px_10px_3px] text-xs font-bold flex items-center gap-1 cursor-pointer transition-all text-gray-300 hover:text-white">
+                    <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                    <span>Live Preview</span>
+                </button>
+            </div>
+
+            <!-- Export Code Button -->
+            <button onclick="exportJSON()" class="p-2 bg-white/10 hover:bg-bfc-sage hover:text-bfc-blue border border-white/5 rounded-[10px_3px_10px_3px] text-xs font-bold flex items-center gap-1.5 transition-all text-white cursor-pointer" title="Export current metadata and section block JSON payload data">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span class="hidden sm:inline">Export Workspace</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- WORKSPACE WRAPPER -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- WORKSPACE TOAST NOTIFICATION DIALOG -->
+        <div id="toast-notif" class="absolute bottom-6 right-6 z-50 transform translate-y-12 opacity-0 pointer-events-none transition-all duration-300 bg-bfc-blue text-white border border-bfc-cyan/30 rounded-[14px_4px_14px_4px] p-4 flex gap-3 shadow-lg max-w-sm">
+            <i data-lucide="sparkles" class="w-5 h-5 text-bfc-cyan shrink-0 animate-pulse"></i>
+            <div>
+                <h4 id="toast-title" class="text-xs font-extrabold uppercase tracking-wide text-bfc-sage">Save Complete</h4>
+                <p id="toast-body" class="text-xs text-gray-300 mt-0.5 leading-relaxed">Workspace loaded from cached memory state successfully.</p>
+            </div>
+        </div>
+
+        <!-- LEFT BAR - EDITOR BUILD SHELF (ONLY VISIBLE IN EDIT MODE) -->
+        <aside id="builder-shelf" class="w-72 bg-white border-r border-gray-150 p-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar relative z-20 shrink-0 select-none">
+            <div class="border-b border-gray-100 pb-3 mb-1">
+                <h2 class="text-xs font-bold text-bfc-blue uppercase tracking-wider flex items-center gap-1.5 select-none font-display">
+                    <i data-lucide="grid" class="w-4 h-4 text-bfc-cyan"></i> Component Blocks
+                </h2>
+                <p class="text-[10px] text-gray-400 mt-1 leading-relaxed">
+                    Drag elements onto any highlighted drop zone inside section containers to build layouts. Double-click to instantly append to the first section.
+                </p>
+            </div>
+
+            <!-- DRAGGABLE BLOCKS STORAGE LISTS -->
+            <div class="space-y-2">
+                <div class="text-[9px] uppercase font-bold text-gray-400 tracking-wider">Text & Headings</div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'heading')" ondblclick="handleShelfDoubleClick('heading')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing" title="Double click to append">
+                        <i data-lucide="heading" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Heading</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'text')" ondblclick="handleShelfDoubleClick('text')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing" title="Double click to append">
+                        <i data-lucide="align-left" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Text Body</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'quote')" ondblclick="handleShelfDoubleClick('quote')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing col-span-2" title="Double click to append">
+                        <i data-lucide="quote" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Block Citation Quote</span>
+                    </div>
+                </div>
+
+                <div class="text-[9px] uppercase font-bold text-gray-400 tracking-wider pt-2">Structure & Media</div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'image')" ondblclick="handleShelfDoubleClick('image')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing" title="Double click to append">
+                        <i data-lucide="image" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Graphic Image</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'video')" ondblclick="handleShelfDoubleClick('video')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing" title="Double click to append">
+                        <i data-lucide="video" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Video Embed</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'row')" ondblclick="handleShelfDoubleClick('row')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing col-span-2" title="Double click to append">
+                        <i data-lucide="columns-2" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">2-Column Layout Row</span>
+                    </div>
+                </div>
+
+                <div class="text-[9px] uppercase font-bold text-gray-400 tracking-wider pt-2">Compliance Utilities</div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'stats')" ondblclick="handleShelfDoubleClick('stats')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing col-span-2" title="Double click to append">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Data Chart Visualizer</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'timeline')" ondblclick="handleShelfDoubleClick('timeline')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing" title="Double click to append">
+                        <i data-lucide="list-collapse" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Timeline Block</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'accordion')" ondblclick="handleShelfDoubleClick('accordion')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing" title="Double click to append">
+                        <i data-lucide="help-circle" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Accordion FAQ</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'list')" ondblclick="handleShelfDoubleClick('list')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing" title="Double click to append">
+                        <i data-lucide="check-square" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Managed Lists</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'team-member')" ondblclick="handleShelfDoubleClick('team-member')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing" title="Double click to append">
+                        <i data-lucide="users" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Team Members</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'cta')" ondblclick="handleShelfDoubleClick('cta')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing" title="Double click to append">
+                        <i data-lucide="external-link" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">CTA Block</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'focus-area')" ondblclick="handleShelfDoubleClick('focus-area')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing col-span-2" title="Double click to append">
+                        <i data-lucide="target" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Focus Bento Card</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'divider')" ondblclick="handleShelfDoubleClick('divider')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing col-span-2" title="Double click to append">
+                        <i data-lucide="minus" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Swoosh Divider Line</span>
+                    </div>
+
+                    <div draggable="true" ondragstart="handleShelfDragStart(event, 'callout')" ondblclick="handleShelfDoubleClick('callout')" class="flex flex-col items-center justify-center p-3 py-2.5 bg-[#f8fafc] hover:bg-[#e3e8e7]/30 border border-dashed border-gray-200 hover:border-bfc-cyan rounded-[12px_3px_12px_3px] text-center cursor-grab transition-all group active:cursor-grabbing col-span-2" title="Double click to append">
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-bfc-blue/60 group-hover:text-bfc-cyan group-hover:scale-105 transition-all"></i>
+                        <span class="text-[10px] font-bold text-bfc-blue/80 mt-1 select-none">Information Alert Banner</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HEADER SETTINGS FIELDS PANEL -->
+            <div class="border-t border-gray-150 pt-4 mt-2 space-y-3 bg-[#e3e8e7]/10 p-3 rounded-[20px_5px_20px_5px] border border-bfc-blue/5">
+                <h3 class="text-[10px] font-extrabold text-[#204383] uppercase tracking-widest flex items-center gap-1.5 select-none font-display">
+                    <i data-lucide="settings" class="w-3.5 h-3.5 text-bfc-cyan"></i> Header Settings
+                </h3>
+                
+                <div class="space-y-2.5 text-xs">
+                    <div>
+                        <label class="text-[9px] uppercase font-bold text-gray-400 block mb-0.5">Title Headline</label>
+                        <textarea id="meta-title" rows="2" oninput="updateMetadata('title', this.value)" class="w-full text-xs p-2 bg-bfc-light hover:bg-white border focus:border-bfc-cyan focus:ring-1 focus:ring-bfc-cyan rounded-[14px_4px_14px_4px] focus:outline-none transition-all text-[#204383] font-bold shadow-sm"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="text-[9px] uppercase font-bold text-gray-400 block mb-0.5">Subtitle</label>
+                        <textarea id="meta-subtitle" rows="2" oninput="updateMetadata('subtitle', this.value)" class="w-full text-xs p-2 bg-bfc-light hover:bg-white border focus:border-bfc-cyan focus:ring-1 focus:ring-bfc-cyan rounded-[14px_4px_14px_4px] focus:outline-none transition-all text-gray-500 shadow-sm"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[9px] uppercase font-bold text-gray-400 block mb-0.5">Category</label>
+                            <input id="meta-category" type="text" oninput="updateMetadata('category', this.value)" class="w-full text-xs p-2 bg-bfc-light hover:bg-white border focus:border-bfc-cyan focus:ring-1 focus:ring-bfc-cyan rounded-[8px_2px_8px_2px] focus:outline-none transition-all font-bold text-[#204383] uppercase tracking-wider shadow-sm">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold text-gray-400 block mb-0.5">Reading Estimation</label>
+                            <input id="meta-readtime" type="text" oninput="updateMetadata('readingTime', this.value)" class="w-full text-xs p-2 bg-bfc-light hover:bg-white border focus:border-bfc-cyan focus:ring-1 focus:ring-bfc-cyan rounded-[8px_2px_8px_2px] focus:outline-none transition-all font-bold text-[#204383] uppercase tracking-wider shadow-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[9px] uppercase font-bold text-gray-400 block mb-0.5">Creator / Author</label>
+                            <input id="meta-author" type="text" oninput="updateMetadata('author', this.value)" class="w-full text-xs p-2 bg-bfc-light hover:bg-white border focus:border-bfc-cyan focus:ring-1 focus:ring-bfc-cyan rounded-[8px_2px_8px_2px] focus:outline-none transition-all font-medium text-gray-700 shadow-sm">
+                        </div>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold text-gray-400 block mb-0.5">Publish Date</label>
+                            <input id="meta-date" type="text" oninput="updateMetadata('date', this.value)" class="w-full text-xs p-2 bg-bfc-light hover:bg-white border focus:border-bfc-cyan focus:ring-1 focus:ring-bfc-cyan rounded-[8px_2px_8px_2px] focus:outline-none transition-all font-medium text-gray-700 shadow-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[9px] uppercase font-bold text-gray-400 block mb-0.5">Cover Artwork URL</label>
+                        <div class="flex items-center gap-1 shadow-sm">
+                            <input id="meta-hero" type="text" oninput="updateMetadata('heroImage', this.value)" class="flex-1 text-xs p-2 bg-bfc-light hover:bg-white border focus:border-bfc-cyan rounded-[8px_2px_8px_2px] focus:outline-none transition-all text-gray-600">
+                            <!-- Local upload button -->
+                            <label class="p-2.5 bg-bfc-blue text-white rounded-[14px_4px_14px_4px] hover:bg-bfc-cyan transition-colors cursor-pointer shrink-0">
+                                <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i>
+                                <input type="file" accept="image/*" class="hidden" onchange="uploadMetaCover(event)">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CENTER CHANNELS - ACTIVE EDITING CONTENT CANVAS CONTAINER (Grid System) -->
+        <main class="flex-1 bg-bfc-light/30 p-6 sm:p-10 overflow-y-auto custom-scrollbar relative z-10 select-text">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- LEFT CONTENT AREA: Column span 8 -->
+                <div class="lg:col-span-8 space-y-10">
+                    
+                    <!-- 1. HEADER HERO STYLING CONTAINER CARD -->
+                    <article id="hero-banner-container" class="relative overflow-hidden bg-bfc-blue text-white rounded-[40px_10px_40px_10px] min-h-[380px] flex flex-col justify-end p-8 sm:p-12 shadow-custom border border-white/5">
+                        <!-- Background Cover Backdrop -->
+                        <div id="hero-backdrop" class="absolute inset-0 bg-cover bg-center transition-transform duration-700 scale-100 filter brightness-45 hover:scale-[1.012]" style="background-image: url('https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?auto=format&fit=crop&q=80'); animate-duration:15s;"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#10192d]/95 via-bfc-blue/45 to-transparent pointer-events-none"></div>
+
+                        <!-- FLOATING COVER PHOTO CONTROL (Only in edit mode) -->
+                        <div id="floating-cover-panel" class="absolute top-4 right-4 z-40 bg-white/95 backdrop-blur-md rounded-[16px_4px_16px_4px] p-2.5 shadow-lg border-t-2 border-t-bfc-cyan border-r border-b border-l border-gray-200/80 flex flex-col sm:flex-row items-start sm:items-center gap-2 max-w-sm sm:max-w-md select-none">
+                            <span class="text-[10px] font-extrabold text-[#132c54] uppercase tracking-wider font-mono shrink-0 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-bfc-cyan animate-pulse"></span>
+                                Cover Artwork:
+                            </span>
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <button onclick="openPresetsModal()" class="bg-[#132c54] hover:bg-bfc-cyan text-white text-[10px] font-bold py-1 px-2.5 rounded-[8px_2px_8px_2px] cursor-pointer transition-colors" title="Select a beautifully themed royalty-free header imagery preset">
+                                    Presets
+                                </button>
+                                <label class="bg-bfc-cyan hover:bg-[#132c54] text-white text-[10px] font-bold py-1 px-2.5 rounded-[8px_2px_8px_2px] cursor-pointer transition-colors flex items-center gap-1 shadow-sm">
+                                    <i data-lucide="upload-cloud" class="w-3 h-3"></i>
+                                    <span>Upload Local</span>
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadMetaCover(event)">
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Inner Meta Content Header layout -->
+                        <div class="relative z-10 space-y-4">
+                            <div class="flex flex-wrap items-center gap-3">
+                                <span id="label-category" class="px-3.5 py-1.5 rounded-[12px_4px_12px_4px] bg-bfc-sage/20 border border-bfc-sage/30 text-bfc-sage text-[10px] font-black tracking-widest uppercase"></span>
+                                <span id="label-readtime" class="text-white/60 text-[10px] font-bold tracking-widest uppercase font-mono"></span>
+                            </div>
+
+                            <h1 id="label-title" class="text-xl sm:text-3xl font-extrabold tracking-tight font-display max-w-2xl leading-tight"></h1>
+                            <p id="label-subtitle" class="text-xs sm:text-sm text-gray-300 font-sans max-w-xl font-medium leading-relaxed"></p>
+
+                            <!-- Author card row layout -->
+                            <div class="flex items-center gap-3 pt-3 border-t border-white/10 mt-3">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150" alt="Author avatar" class="w-10 h-10 rounded-[14px_4px_14px_4px] object-cover border border-white/20">
+                                <div>
+                                    <span id="label-author" class="text-xs font-bold text-white block"></span>
+                                    <span id="label-date" class="text-[10px] text-white/50 block font-bold tracking-wider font-mono"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- 2. ARTICLE SUMMARY CARD -->
+                    <section class="bg-white border border-bfc-blue/5 shadow-custom rounded-[32px_8px_32px_8px] p-8 relative">
+                        <div class="absolute top-0 right-10 -translate-y-1/2 p-2 bg-bfc-blue text-white rounded-[14px_4px_14px_4px] shadow-sm select-none">
+                            <i data-lucide="sparkles" class="w-4.5 h-4.5 text-bfc-sage"></i>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h2 class="text-xs uppercase font-extrabold text-[#204383] tracking-widest font-display select-none">Executive Brief Summary</h2>
+                            <div id="meta-summary-block" class="min-h-[40px]">
+                                <!-- Summary text placeholder / textarea in editor mode -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- 3. MAIN BLOCK CONTAINER HOUSING DYNAMIC BLOCKS -->
+                    <div id="sections-canvas" class="space-y-10">
+                        <!-- Loaded dynamically via JS render engines -->
+                    </div>
+
+                    <!-- ADD NEW SECTION INTERIOR CONTROL -->
+                    <div id="add-section-action-pnl" class="flex justify-center border-t border-gray-150 pt-6 select-none">
+                        <button onclick="addNewSection()" class="relative group inline-flex items-center gap-2 px-6 py-3 bg-bfc-blue hover:bg-bfc-cyan text-white text-xs font-bold rounded-[16px_5px_16px_5px] shadow-neo hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all cursor-pointer">
+                            <i data-lucide="plus" class="w-4.5 h-4.5"></i>
+                            <span>Create Custom Layout Sub-Section Segment</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDEBAR AREA: Column span 4 -->
+                <aside class="lg:col-span-4 flex flex-col gap-6 sticky top-6 self-start select-none">
+                    
+                    <!-- Navigation Index Menu -->
+                    <div class="bg-white border border-bfc-blue/5 rounded-[32px_8px_32px_8px] p-6 shadow-sm">
+                        <p class="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-3 flex items-center gap-1.5 font-mono">
+                            <i data-lucide="compass" class="w-3.5 h-3.5 text-bfc-cyan"></i> NAVIGATIVE LAYOUT INDEX
+                        </p>
+                        <div id="sidebar-layout-idx" class="space-y-2 text-xs font-semibold">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Takeaways Overview Panel -->
+                    <div class="bg-white border border-bfc-blue/5 rounded-[32px_8px_32px_8px] p-6 shadow-sm">
+                        <p class="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-3 flex items-center gap-1.5 border-b border-gray-50 pb-2 font-mono">
+                            <i data-lucide="target" class="w-3.5 h-3.5 text-bfc-cyan"></i> OVERVIEW TARGET TAKEAWAYS
+                        </p>
+                        <div id="sidebar-takeaways-container" class="space-y-4">
+                            <!-- Populated dynamically -->
+                        </div>
+                        <div id="takeaway-add-btn-pnl" class="mt-4">
+                            <!-- Added in edit mode -->
+                        </div>
+                    </div>
+
+                    <!-- Bibliography Panel -->
+                    <div class="bg-white border border-bfc-blue/5 rounded-[32px_8px_32px_8px] p-6 shadow-sm">
+                        <p class="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-3 flex items-center gap-1.5 border-b border-gray-50 pb-2 font-mono">
+                            <i data-lucide="book-open" class="w-3.5 h-3.5 text-bfc-cyan animate-pulse"></i> DOCUMENTARY BIBLIOGRAPHY
+                        </p>
+                        <div id="sidebar-references-container" class="space-y-4">
+                            <!-- Populated dynamically -->
+                        </div>
+                        <div id="references-add-btn-pnl" class="mt-4">
+                            <!-- Added in edit mode -->
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- CODE VIEW / EXPORT DIALOG MODEL -->
+    <div id="export-modal" class="hidden fixed inset-0 z-50 bg-[#0f172a]/70 flex items-center justify-center p-4">
+        <div class="bg-white rounded-[24px_6px_24px_6px] p-6 max-w-xl w-full border border-bfc-blue/10 flex flex-col max-h-[85vh] shadow-2xl">
+            <div class="flex items-center justify-between border-b pb-3 mb-4 select-none">
+                <div class="flex items-center gap-1.5 font-display font-bold text-bfc-blue">
+                    <i data-lucide="code-2" class="text-bfc-cyan"></i>
+                    <h3>Export Workspace JSON Payload</h3>
+                </div>
+                <button onclick="closeExportModal()" class="text-gray-400 hover:text-red-500 font-mono font-bold text-lg cursor-pointer">&times;</button>
+            </div>
+            <p class="text-[10px] text-gray-500 mb-2 leading-relaxed select-none">
+                Copy and save this payload. You can load it directly to import complete states.
+            </p>
+            <div class="flex-1 overflow-auto bg-[#0f172a] rounded-[16px_4px_16px_4px] p-4 text-xs font-mono text-bfc-sage custom-scrollbar select-all">
+                <pre id="json-pre-payload"></pre>
+            </div>
+            <div class="flex items-center justify-end gap-2 mt-4 pt-3 border-t select-none">
+                <button onclick="closeExportModal()" class="px-4 py-2 bg-bfc-light text-bfc-blue hover:bg-gray-200 text-xs font-bold rounded-[8px_2px_8px_2px] cursor-pointer">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COVER PRESETS MODAL -->
+    <div id="preset-cover-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-[32px_8px_32px_8px] max-w-lg w-full p-6 shadow-2xl border border-bfc-blue/5 flex flex-col">
+            <div class="flex items-center justify-between border-b pb-3 mb-4 select-none">
+                <h3 class="text-xs font-black text-bfc-blue tracking-wider flex items-center gap-1.5 uppercase font-mono">
+                    <i data-lucide="image" class="w-4 h-4 text-bfc-cyan"></i> Select Cover Photo Preset
+                </h3>
+                <button onclick="closePresetsModal()" class="text-gray-400 hover:text-gray-950 font-bold text-lg cursor-pointer">
+                    &times;
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <button onclick="applyPresetCover('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80', 'Golden Electric Arc')" class="group relative h-28 overflow-hidden rounded-[18px_4px_18px_4px] border hover:border-bfc-cyan transition-all text-left shadow-xs cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80" alt="Golden Electric Arc" class="w-full h-full object-cover filter brightness-[0.70] group-hover:scale-102 duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-bfc-blue/70 to-transparent"></div>
+                    <span class="absolute bottom-2.5 left-2.5 text-[9px] font-bold text-white tracking-widest uppercase font-mono">Golden Electric Arc</span>
+                </button>
+                <button onclick="applyPresetCover('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80', 'Corporate Network Nodes')" class="group relative h-28 overflow-hidden rounded-[18px_4px_18px_4px] border hover:border-bfc-cyan transition-all text-left shadow-xs cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80" alt="Corporate Network Nodes" class="w-full h-full object-cover filter brightness-[0.70] group-hover:scale-102 duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-bfc-blue/70 to-transparent"></div>
+                    <span class="absolute bottom-2.5 left-2.5 text-[9px] font-bold text-white tracking-widest uppercase font-mono">Corporate Nodes</span>
+                </button>
+                <button onclick="applyPresetCover('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80', 'Modern Blueprints')" class="group relative h-28 overflow-hidden rounded-[18px_4px_18px_4px] border hover:border-bfc-cyan transition-all text-left shadow-xs cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&q=80" alt="Modern Blueprints" class="w-full h-full object-cover filter brightness-[0.70] group-hover:scale-102 duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-bfc-blue/70 to-transparent"></div>
+                    <span class="absolute bottom-2.5 left-2.5 text-[9px] font-bold text-white tracking-widest uppercase font-mono">Modern Blueprints</span>
+                </button>
+                <button onclick="applyPresetCover('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80', 'Clean Grid Tech')" class="group relative h-28 overflow-hidden rounded-[18px_4px_18px_4px] border hover:border-bfc-cyan transition-all text-left shadow-xs cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80" alt="Clean Grid Tech" class="w-full h-full object-cover filter brightness-[0.70] group-hover:scale-102 duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-t from-bfc-blue/70 to-transparent"></div>
+                    <span class="absolute bottom-2.5 left-2.5 text-[9px] font-bold text-white tracking-widest uppercase font-mono">Clean Grid Tech</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="tailwind.config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

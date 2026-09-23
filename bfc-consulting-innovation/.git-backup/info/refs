@@ -1,0 +1,12 @@
+2e6900d64342924c426bdd1fa5b131d8d411183f	refs/heads/demo-design
+1d69548a3835c3b3e128876dac90612a59ca1a46	refs/heads/finalisation1.0
+e78f295c8d0b752d36e46984124786c1312b4555	refs/heads/history/ref
+89046626b708149012beb01be780f41bafa1a5be	refs/heads/main
+89046626b708149012beb01be780f41bafa1a5be	refs/heads/version1.0
+8e7c023bfbdb194aace529c3a825f5f7cfafb8e8	refs/heads/version1.1
+23a1c4cb7845bc02517453d22f6a2cb4304e0cf2	refs/remotes/origin/HEAD
+2e6900d64342924c426bdd1fa5b131d8d411183f	refs/remotes/origin/demo-design
+958dcf7fbf075a9a75c6dca0dd41e54eba4eae8a	refs/remotes/origin/finalisation1.0
+7e76a1d7404106df5b84c176e0269c2c4d2ea9a2	refs/remotes/origin/history/ref
+23a1c4cb7845bc02517453d22f6a2cb4304e0cf2	refs/remotes/origin/main
+89046626b708149012beb01be780f41bafa1a5be	refs/remotes/origin/version1.0

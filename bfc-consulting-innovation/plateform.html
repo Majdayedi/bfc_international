@@ -1,0 +1,959 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Lumina - Article Builder</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+      <style>
+          /* Custom styles from index.css */
+          :root {
+              --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+              --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+          }
+
+          body {
+              font-family: var(--font-sans);
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
+          }
+
+          .article-detail {
+              min-height: 100vh;
+              background: #f4f2ed;
+              color: #1f2629;
+              --hero-progress: 0;
+          }
+
+          .article-detail__progress {
+              position: sticky;
+              top: 0;
+              z-index: 50;
+              height: 4px;
+              background: rgba(31, 38, 41, 0.08);
+          }
+
+          .article-detail__progress span {
+              display: block;
+              height: 100%;
+              background: #1f6f5c;
+              transform-origin: left center;
+              transition: transform 0.1s linear;
+          }
+
+          .article-detail__hero {
+              position: relative;
+              min-height: 80vh;
+              display: flex;
+              align-items: flex-end;
+              padding: 4rem 1.5rem 2rem;
+              overflow: hidden;
+              isolation: isolate;
+          }
+
+          .article-detail__hero-media {
+              position: absolute;
+              inset: 0;
+              z-index: 1;
+              overflow: hidden;
+          }
+
+          .article-detail__hero-media img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              filter: saturate(0.85) brightness(0.9);
+              transform: scale(calc(1 - (var(--hero-progress) * 0.05)))
+                  translateY(calc(var(--hero-progress) * -18px));
+              transition: transform 0.2s ease-out;
+          }
+
+          .article-detail__hero-panel {
+              position: relative;
+              z-index: 2;
+              max-width: 72rem;
+              margin: 0 auto;
+              padding: 2.5rem;
+              border-radius: 2rem;
+              background: rgba(255, 255, 255, 0.92);
+              backdrop-filter: blur(12px);
+              box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+              transform: translateY(calc(var(--hero-progress) * -24px));
+              opacity: calc(1 - (var(--hero-progress) * 0.12));
+              transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+          }
+
+          .article-detail__hero-top {
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+              gap: 1rem 1.5rem;
+              justify-content: space-between;
+          }
+
+          .article-detail__eyebrow {
+              font-size: 0.7rem;
+              text-transform: uppercase;
+              letter-spacing: 0.3em;
+              font-weight: 700;
+              color: rgba(31, 38, 41, 0.6);
+          }
+
+          .article-detail__meta {
+              display: flex;
+              gap: 1rem;
+              margin-top: 1.2rem;
+              font-size: 0.75rem;
+              text-transform: uppercase;
+              letter-spacing: 0.2em;
+              color: rgba(31, 38, 41, 0.6);
+              flex-wrap: wrap;
+          }
+
+          .article-detail__title {
+              margin-top: 1rem;
+              font-size: clamp(2rem, 5vw, 4rem);
+              font-weight: 700;
+              line-height: 1.1;
+              letter-spacing: -0.02em;
+          }
+
+          .article-detail__subtitle {
+              margin-top: 1rem;
+              max-width: 40rem;
+              font-size: 1.125rem;
+              color: rgba(31, 38, 41, 0.75);
+          }
+
+          .article-detail__body {
+              max-width: 80rem;
+              margin: 0 auto;
+              padding: 4rem 1.5rem;
+              display: grid;
+              grid-template-columns: 1fr;
+              gap: 2.5rem;
+          }
+
+          @media (min-width: 1024px) {
+              .article-detail__body {
+                  grid-template-columns: 2.2fr 1fr;
+              }
+          }
+
+          .article-detail__content {
+              background: #fff;
+              padding: 2.5rem;
+              border-radius: 2rem;
+              box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08);
+              line-height: 1.8;
+          }
+
+          .article-detail__reveal {
+              opacity: 0;
+              transform: translateY(24px);
+              transition: opacity 0.7s ease, transform 0.7s ease;
+          }
+
+          .article-detail__reveal.is-visible {
+              opacity: 1;
+              transform: translateY(0);
+          }
+
+          .article-detail__callout {
+              background: rgba(31, 111, 92, 0.08);
+              padding: 1.5rem;
+              border-radius: 1.2rem;
+              margin: 2rem 0;
+              border: 1px solid rgba(31, 111, 92, 0.22);
+          }
+
+          .article-detail__callout-title {
+              text-transform: uppercase;
+              letter-spacing: 0.2em;
+              font-weight: 700;
+              color: rgba(31, 38, 41, 0.65);
+              font-size: 0.75rem;
+              margin-bottom: 0.75rem;
+          }
+
+          .article-detail__sidebar {
+              display: flex;
+              flex-direction: column;
+              gap: 1.5rem;
+          }
+
+          @media (min-width: 1024px) {
+              .article-detail__sidebar {
+                  position: sticky;
+                  top: 6rem;
+                  align-self: start;
+              }
+          }
+
+          .article-detail__card {
+              background: #fff;
+              padding: 1.75rem;
+              border-radius: 1.5rem;
+              box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+          }
+
+          .article-detail__card-label {
+              font-size: 0.75rem;
+              text-transform: uppercase;
+              letter-spacing: 0.2em;
+              color: rgba(31, 38, 41, 0.6);
+              margin-bottom: 1rem;
+              font-weight: 700;
+          }
+
+          .article-detail__toc-link {
+              display: block;
+              color: rgba(31, 38, 41, 0.8);
+              text-decoration: none;
+              font-weight: 600;
+              margin-bottom: 0.75rem;
+          }
+
+          .article-detail__toc-link:hover {
+              color: #1f6f5c;
+          }
+
+          .article-detail__related-link {
+              display: block;
+              color: #1f2629;
+              text-decoration: none;
+              font-weight: 700;
+              margin-bottom: 0.75rem;
+          }
+
+          .article-detail__related-link:hover {
+              text-decoration: underline;
+          }
+
+          .article-detail__cta {
+              padding: 3rem 1.5rem 5rem;
+          }
+
+          .article-detail__cta-inner {
+              max-width: 70rem;
+              margin: 0 auto;
+              background: #1f2629;
+              color: #fff;
+              border-radius: 2rem;
+              padding: 2.5rem;
+              display: flex;
+              flex-direction: column;
+              gap: 1.5rem;
+              align-items: flex-start;
+          }
+
+          @media (min-width: 768px) {
+              .article-detail__cta-inner {
+                  flex-direction: row;
+                  justify-content: space-between;
+                  align-items: center;
+              }
+          }
+
+          .article-detail__cta-eyebrow {
+              font-size: 0.75rem;
+              text-transform: uppercase;
+              letter-spacing: 0.3em;
+              color: rgba(126, 244, 115, 0.8);
+              font-weight: 700;
+          }
+
+          .article-detail__cta-button {
+              display: inline-flex;
+              align-items: center;
+              padding: 0.9rem 1.6rem;
+              border-radius: 9999px;
+              background: #7ef473;
+              color: #1f2629;
+              text-decoration: none;
+              font-weight: 800;
+              text-transform: uppercase;
+              letter-spacing: 0.2em;
+              font-size: 0.75rem;
+          }
+
+          .editable-field {
+              background: transparent;
+              border: none;
+              padding: 0;
+              width: 100%;
+              font: inherit;
+              color: inherit;
+              outline: none;
+              resize: none;
+              transition: background 0.2s ease;
+          }
+
+          .editable-field:hover, .editable-field:focus {
+              background: rgba(0, 0, 0, 0.03);
+          }
+
+          .editable-field::placeholder {
+              color: rgba(0, 0, 0, 0.2);
+          }
+      </style>
+  </head>
+  <body>
+      <div id="root"></div>
+
+      <script type="module">
+          import React, { useState, useCallback, useEffect, useMemo, useRef } from 'https://esm.sh/react';
+          import ReactDOM from 'https://esm.sh/react-dom/client';
+          import { 
+            Type, 
+            Image as ImageIcon, 
+            Minus, 
+            Quote, 
+            Heading1, 
+            Plus, 
+            Trash2, 
+            ChevronLeft, 
+            ChevronRight, 
+            Settings2, 
+            Layers,
+            FileText,
+            Eye,
+            Save,
+            Download,
+            GripVertical,
+            List as ListIcon,
+            Code2,
+            AlertCircle,
+            Target,
+            Upload,
+            X
+          } from 'https://esm.sh/lucide-react';
+          import { motion, AnimatePresence } from 'https://esm.sh/motion/react';
+          import { 
+            DndContext, 
+            closestCenter, 
+            KeyboardSensor, 
+            PointerSensor, 
+            useSensor, 
+            useSensors,
+          } from 'https://esm.sh/@dnd-kit/core';
+          import { 
+            arrayMove, 
+            SortableContext, 
+            sortableKeyboardCoordinates, 
+            verticalListSortingStrategy,
+            useSortable
+          } from 'https://esm.sh/@dnd-kit/sortable';
+          import { CSS } from 'https://esm.sh/@dnd-kit/utilities';
+
+          // --- TOOLBOX ITEMS ---
+          const TOOLBOX_ITEMS = [
+            { type: 'heading', label: 'Heading', icon: 'Heading1', description: 'Section titles and headers' },
+            { type: 'text', label: 'Rich Text', icon: 'Type', description: 'Standard paragraph text' },
+            { type: 'media', label: 'Media', icon: 'ImageIcon', description: 'Images and illustrations' },
+            { type: 'list', label: 'List', icon: 'ListIcon', description: 'Bulleted or numbered items' },
+            { type: 'quote', label: 'Blockquote', icon: 'Quote', description: 'Highlight key statements' },
+            { type: 'code', label: 'Code Block', icon: 'Code2', description: 'Code snippets with syntax' },
+            { type: 'callout', label: 'Callout', icon: 'AlertCircle', description: 'Notes and alerts' },
+            { type: 'focus-area', label: 'Focus Area', icon: 'Target', description: 'Key section highlight for TOC' },
+            { type: 'divider', label: 'Divider', icon: 'Minus', description: 'Visual break between sections' },
+          ];
+
+          const IconComponent = ({ name, className }) => {
+            switch (name) {
+              case 'Heading1': return React.createElement(Heading1, { className });
+              case 'Type': return React.createElement(Type, { className });
+              case 'ImageIcon': return React.createElement(ImageIcon, { className });
+              case 'Quote': return React.createElement(Quote, { className });
+              case 'Minus': return React.createElement(Minus, { className });
+              case 'ListIcon': return React.createElement(ListIcon, { className });
+              case 'Code2': return React.createElement(Code2, { className });
+              case 'AlertCircle': return React.createElement(AlertCircle, { className });
+              case 'Target': return React.createElement(Target, { className });
+              default: return React.createElement(FileText, { className });
+            }
+          };
+
+          // --- SORTABLE BLOCK COMPONENT ---
+          const SortableBlock = ({ block, isPreviewMode, isSelected, onSelect, onUpdate, onDelete }) => {
+            const {
+              attributes,
+              listeners,
+              setNodeRef,
+              transform,
+              transition,
+              isDragging
+            } = useSortable({ id: block.id, disabled: isPreviewMode });
+
+            const style = {
+              transform: CSS.Transform.toString(transform),
+              transition,
+              zIndex: isDragging ? 50 : 'auto',
+              opacity: isDragging ? 0.5 : 1,
+            };
+
+            const renderBlockContent = () => {
+              switch (block.type) {
+                case 'heading':
+                  return React.createElement('div', { className: "w-full" },
+                    isPreviewMode ? React.createElement('h2', { 
+                      className: `font-bold tracking-tight ${block.settings.level === 'h1' ? 'text-4xl' : block.settings.level === 'h2' ? 'text-3xl' : 'text-2xl'}`
+                    }, block.content || 'Heading') : React.createElement('input', {
+                      type: "text",
+                      value: block.content,
+                      onChange: (e) => onUpdate(block.id, { content: e.target.value }),
+                      className: `editable-field font-bold tracking-tight ${block.settings.level === 'h1' ? 'text-4xl' : block.settings.level === 'h2' ? 'text-3xl' : 'text-2xl'}`,
+                      placeholder: "Type heading..."
+                    })
+                  );
+                case 'text':
+                  return React.createElement('div', { className: "w-full" },
+                    isPreviewMode ? React.createElement('p', { 
+                      className: "text-lg leading-relaxed text-[#374151] whitespace-pre-wrap"
+                    }, block.content || '...') : React.createElement('textarea', {
+                      value: block.content,
+                      onChange: (e) => onUpdate(block.id, { content: e.target.value }),
+                      className: "editable-field text-lg leading-relaxed text-[#374151]",
+                      placeholder: "Start writing your story...",
+                      rows: Math.max(1, block.content.split('\n').length)
+                    })
+                  );
+                case 'media':
+                  return React.createElement('div', { className: "w-full space-y-3" },
+                    React.createElement('div', { 
+                      className: `relative rounded-xl overflow-hidden bg-[#F3F4F6] flex items-center justify-center transition-all ${block.content ? '' : 'aspect-video border-2 border-dashed border-[#D1D5DB]'}`
+                    }, 
+                      block.content ? React.createElement(React.Fragment, null,
+                        React.createElement('img', { 
+                          src: block.content, 
+                          alt: block.settings.alt, 
+                          className: "w-full h-auto object-cover",
+                          referrerPolicy: "no-referrer"
+                        }),
+                        !isPreviewMode && React.createElement('button', {
+                          onClick: () => onUpdate(block.id, { content: '' }),
+                          className: "absolute top-4 right-4 p-2 bg-white/90 text-black rounded-full shadow-lg hover:bg-white transition-all z-10",
+                          title: "Remove image"
+                        }, React.createElement(X, { className: "w-4 h-4" }))
+                      ) : React.createElement('div', { className: "text-center p-8" },
+                        React.createElement(ImageIcon, { className: "w-12 h-12 text-[#9CA3AF] mx-auto mb-2" }),
+                        React.createElement('p', { className: "text-sm font-medium text-[#6B7280]" }, "No image selected"),
+                        !isPreviewMode && React.createElement('div', { className: "mt-4 flex flex-col items-center gap-3" },
+                          React.createElement('input', {
+                            type: "text",
+                            placeholder: "Paste image URL...",
+                            className: "text-xs p-2.5 rounded-lg border border-[#E5E7EB] w-64 focus:ring-2 focus:ring-black/5 outline-none transition-all",
+                            onChange: (e) => onUpdate(block.id, { content: e.target.value })
+                          }),
+                          React.createElement('div', { className: "flex items-center gap-3 w-full" },
+                            React.createElement('div', { className: "h-px bg-[#E5E7EB] flex-1" }),
+                            React.createElement('span', { className: "text-[10px] font-bold text-[#9CA3AF] uppercase tracking-widest" }, "or"),
+                            React.createElement('div', { className: "h-px bg-[#E5E7EB] flex-1" })
+                          ),
+                          React.createElement('label', { className: "flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg text-xs font-bold cursor-pointer hover:bg-[#333] transition-all shadow-sm" },
+                            React.createElement(Upload, { className: "w-3.5 h-3.5" }),
+                            "Upload Image",
+                            React.createElement('input', {
+                              type: "file",
+                              className: "hidden",
+                              accept: "image/*",
+                              onChange: (e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => onUpdate(block.id, { content: reader.result });
+                                  reader.readAsDataURL(file);
+                                }
+                              }
+                            })
+                          )
+                        )
+                      )
+                    ),
+                    block.settings.caption && React.createElement('p', { className: "text-sm text-center italic text-[#6B7280]" }, block.settings.caption)
+                  );
+                case 'list':
+                  const items = block.content.split('\n').filter(i => i.trim() !== '');
+                  return React.createElement('div', { className: "w-full" },
+                    isPreviewMode ? React.createElement('ul', { 
+                      className: `list-outside pl-6 space-y-2 ${block.settings.listType === 'numbered' ? 'list-decimal' : 'list-disc'}`
+                    }, items.map((item, i) => React.createElement('li', { key: i, className: "text-lg text-[#374151]" }, item))) : React.createElement('textarea', {
+                      value: block.content,
+                      onChange: (e) => onUpdate(block.id, { content: e.target.value }),
+                      className: "editable-field text-lg leading-relaxed text-[#374151]",
+                      placeholder: "Item 1\nItem 2\nItem 3...",
+                      rows: Math.max(3, block.content.split('\n').length)
+                    })
+                  );
+                case 'quote':
+                  return React.createElement('div', { className: "w-full border-l-4 border-black pl-6 py-2" },
+                    isPreviewMode ? React.createElement('blockquote', { 
+                      className: "text-2xl font-serif italic text-[#1A1A1A]"
+                    }, `"${block.content || 'Quote content...'}"`) : React.createElement('textarea', {
+                      value: block.content,
+                      onChange: (e) => onUpdate(block.id, { content: e.target.value }),
+                      className: "editable-field text-2xl font-serif italic text-[#1A1A1A]",
+                      placeholder: "Enter a powerful quote...",
+                      rows: 2
+                    })
+                  );
+                case 'code':
+                  return React.createElement('div', { className: "w-full bg-[#1E1E1E] rounded-xl p-6 font-mono text-sm text-[#D4D4D4] overflow-x-auto" },
+                    isPreviewMode ? React.createElement('pre', null, React.createElement('code', null, block.content || '// Your code here')) : React.createElement('textarea', {
+                      value: block.content,
+                      onChange: (e) => onUpdate(block.id, { content: e.target.value }),
+                      className: "editable-field text-[#D4D4D4] font-mono",
+                      placeholder: "// Paste your code here...",
+                      rows: Math.max(4, block.content.split('\n').length)
+                    })
+                  );
+                case 'callout':
+                  const calloutStyles = {
+                    info: 'bg-[#EFF6FF] border-[#BFDBFE] text-[#1E40AF]',
+                    warning: 'bg-[#FFFBEB] border-[#FEF3C7] text-[#92400E]',
+                    error: 'bg-[#FEF2F2] border-[#FECACA] text-[#991B1B]',
+                    success: 'bg-[#F0FDF4] border-[#BBF7D0] text-[#166534]',
+                  };
+                  return React.createElement('div', { 
+                    className: `w-full p-4 rounded-xl border flex gap-3 ${calloutStyles[block.settings.variant || 'info']}`
+                  },
+                    React.createElement(AlertCircle, { className: "w-5 h-5 flex-shrink-0 mt-0.5" }),
+                    isPreviewMode ? React.createElement('p', { 
+                      className: "text-sm font-medium leading-relaxed"
+                    }, block.content || 'Callout text...') : React.createElement('textarea', {
+                      value: block.content,
+                      onChange: (e) => onUpdate(block.id, { content: e.target.value }),
+                      className: "editable-field text-sm font-medium",
+                      placeholder: "Enter callout message...",
+                      rows: 2
+                    })
+                  );
+                case 'focus-area':
+                  return React.createElement('div', { className: "w-full bg-[#F3F4F6] rounded-[2.5rem] p-10 flex flex-col" },
+                    React.createElement('span', { className: "text-[10px] font-bold tracking-[0.2em] text-[#6B7280] uppercase mb-6" }, "Focus Area"),
+                    isPreviewMode ? React.createElement(React.Fragment, null,
+                      React.createElement('h3', { className: "text-2xl font-bold text-black mb-4 leading-tight" }, block.content || 'Investment momentum'),
+                      React.createElement('p', { className: "text-lg text-[#374151] leading-relaxed" }, block.description || 'Targeted capital in grid modernization...')
+                    ) : React.createElement('div', { className: "space-y-4" },
+                      React.createElement('input', {
+                        type: "text",
+                        value: block.content,
+                        onChange: (e) => onUpdate(block.id, { content: e.target.value }),
+                        className: "editable-field text-2xl font-bold text-black leading-tight w-full bg-transparent border-none focus:ring-0 p-0",
+                        placeholder: "Enter focus area title..."
+                      }),
+                      React.createElement('textarea', {
+                        value: block.description || '',
+                        onChange: (e) => onUpdate(block.id, { description: e.target.value }),
+                        className: "editable-field text-lg text-[#374151] leading-relaxed w-full min-h-[100px] bg-transparent border-none focus:ring-0 p-0 resize-none",
+                        placeholder: "Enter focus area description..."
+                      })
+                    )
+                  );
+                case 'divider':
+                  return React.createElement('div', { className: "w-full py-8 flex justify-center" },
+                    React.createElement('div', { className: "w-24 h-px bg-[#E5E7EB]" })
+                  );
+                default: return null;
+              }
+            };
+
+            return React.createElement('div', {
+              ref: setNodeRef,
+              id: block.type === 'focus-area' ? block.id : undefined,
+              style,
+              onClick: () => onSelect(block.id),
+              className: `group relative rounded-2xl transition-all ${
+                isPreviewMode ? 'py-4' : `p-6 border-2 cursor-pointer ${isSelected ? 'border-black bg-white shadow-xl ring-4 ring-black/5' : 'border-transparent hover:border-[#E5E7EB] hover:bg-white/50'}`
+              }`
+            },
+              !isPreviewMode && React.createElement('div', {
+                ...attributes,
+                ...listeners,
+                className: "absolute -left-10 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-1 cursor-grab active:cursor-grabbing"
+              }, React.createElement(GripVertical, { className: "w-4 h-4 text-[#9CA3AF]" })),
+              renderBlockContent(),
+              !isPreviewMode && isSelected && React.createElement('div', { className: "absolute -right-12 top-1/2 -translate-y-1/2 flex flex-col gap-2" },
+                React.createElement('button', {
+                  onClick: (e) => { e.stopPropagation(); onDelete(block.id); },
+                  className: "p-2 bg-white border border-[#E5E7EB] text-[#EF4444] rounded-full shadow-lg hover:bg-[#FEF2F2] transition-all"
+                }, React.createElement(Trash2, { className: "w-4 h-4" }))
+              )
+            );
+          };
+
+          // --- MAIN APP COMPONENT ---
+          function App() {
+            const [sections, setSections] = useState([
+              { id: 'sec-1', title: 'New Section', blocks: [] }
+            ]);
+            const [metadata, setMetadata] = useState({
+              title: '',
+              subtitle: '',
+              heroImage: 'https://picsum.photos/seed/article/1920/1080',
+              summary: '',
+              takeaways: [],
+              relatedLinks: [],
+              readingTime: '',
+              date: '',
+              author: ''
+            });
+            const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+            const [selectedBlockId, setSelectedBlockId] = useState(null);
+            const [isPreviewMode, setIsPreviewMode] = useState(false);
+            const [scrollProgress, setScrollProgress] = useState(0);
+            const [heroProgress, setHeroProgress] = useState(0);
+
+            useEffect(() => {
+              if (!isPreviewMode) return;
+              const updateProgress = () => {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                setScrollProgress(docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0);
+                setHeroProgress(Math.min(scrollTop / Math.max(window.innerHeight * 0.65, 1), 1));
+              };
+              const handleScroll = () => window.requestAnimationFrame(updateProgress);
+              updateProgress();
+              window.addEventListener('scroll', handleScroll, { passive: true });
+              return () => window.removeEventListener('scroll', handleScroll);
+            }, [isPreviewMode]);
+
+            useEffect(() => {
+              if (!isPreviewMode) return;
+              const elements = document.querySelectorAll('.article-detail__reveal');
+              const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('is-visible'); });
+              }, { threshold: 0.15 });
+              elements.forEach(el => observer.observe(el));
+              return () => observer.disconnect();
+            }, [isPreviewMode, sections]);
+
+            const sensors = useSensors(
+              useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+              useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+            );
+
+            const addBlock = useCallback((type, index) => {
+              const newBlock = { id: `block-${Date.now()}`, type, content: '', settings: {} };
+              if (type === 'heading') { newBlock.content = 'New Heading'; newBlock.settings = { level: 'h2' }; }
+              else if (type === 'media') { newBlock.settings = { alt: '', caption: '', width: '100%' }; }
+              else if (type === 'list') { newBlock.settings = { listType: 'bulleted' }; }
+              else if (type === 'callout') { newBlock.settings = { variant: 'info' }; }
+              else if (type === 'focus-area') {
+                newBlock.content = 'Investment momentum';
+                newBlock.description = 'Targeted capital in grid modernization...';
+              }
+              const updated = [...sections];
+              if (typeof index === 'number') updated[currentSectionIndex].blocks.splice(index, 0, newBlock);
+              else updated[currentSectionIndex].blocks.push(newBlock);
+              setSections(updated);
+              setSelectedBlockId(newBlock.id);
+            }, [sections, currentSectionIndex]);
+
+            const updateBlock = (blockId, updates) => {
+              setSections(sections.map(sec => ({
+                ...sec, blocks: sec.blocks.map(b => b.id === blockId ? { ...b, ...updates } : b)
+              })));
+            };
+
+            const deleteBlock = (blockId) => {
+              setSections(sections.map(sec => ({ ...sec, blocks: sec.blocks.filter(b => b.id !== blockId) })));
+              if (selectedBlockId === blockId) setSelectedBlockId(null);
+            };
+
+            const addSection = () => {
+              const newSec = { id: `sec-${Date.now()}`, title: `Section ${sections.length + 1}`, blocks: [] };
+              setSections([...sections, newSec]);
+              setCurrentSectionIndex(sections.length);
+            };
+
+            const deleteSection = (index) => {
+              if (sections.length <= 1) return;
+              setSections(sections.filter((_, i) => i !== index));
+              setCurrentSectionIndex(Math.max(0, index - 1));
+            };
+
+            const handleToolboxDragStart = (e, type) => e.dataTransfer.setData('blockType', type);
+            const handleCanvasDrop = (e) => {
+              e.preventDefault();
+              const type = e.dataTransfer.getData('blockType');
+              if (type) addBlock(type);
+            };
+
+            const currentSection = sections[currentSectionIndex];
+            const selectedBlock = currentSection.blocks.find(b => b.id === selectedBlockId);
+
+            return React.createElement('div', { className: "flex h-screen bg-[#F8F9FA] text-[#1A1A1A] font-sans overflow-hidden" },
+              !isPreviewMode && React.createElement('aside', { className: "w-72 bg-white border-r border-[#E5E7EB] flex flex-col shadow-sm z-50" },
+                React.createElement('div', { className: "p-6 border-bottom border-[#F3F4F6]" },
+                  React.createElement('h1', { className: "text-xl font-bold tracking-tight flex items-center gap-2" },
+                    React.createElement('div', { className: "w-8 h-8 bg-black rounded-lg flex items-center justify-center" },
+                      React.createElement(FileText, { className: "text-white w-5 h-5" })
+                    ), "Lumina"
+                  ),
+                  React.createElement('p', { className: "text-xs text-[#6B7280] mt-1 font-medium uppercase tracking-wider" }, "Article Builder")
+                ),
+                React.createElement('div', { className: "flex-1 overflow-y-auto p-4 space-y-6" },
+                  React.createElement('section', null,
+                    React.createElement('h3', { className: "text-[11px] font-bold text-[#9CA3AF] uppercase tracking-[0.1em] mb-4 px-2" }, "Components"),
+                    React.createElement('div', { className: "grid grid-cols-1 gap-2" },
+                      TOOLBOX_ITEMS.map(item => React.createElement('div', {
+                        key: item.type, draggable: true,
+                        onDragStart: (e) => handleToolboxDragStart(e, item.type),
+                        onClick: () => addBlock(item.type),
+                        className: "group flex items-center gap-3 p-3 rounded-xl border border-transparent hover:border-[#E5E7EB] hover:bg-[#F9FAFB] transition-all text-left cursor-grab active:cursor-grabbing"
+                      },
+                        React.createElement('div', { className: "w-10 h-10 rounded-lg bg-[#F3F4F6] group-hover:bg-white flex items-center justify-center transition-colors" },
+                          React.createElement(IconComponent, { name: item.icon, className: "w-5 h-5 text-[#4B5563]" })
+                        ),
+                        React.createElement('div', null,
+                          React.createElement('p', { className: "text-sm font-semibold text-[#374151]" }, item.label),
+                          React.createElement('p', { className: "text-[11px] text-[#9CA3AF]" }, item.description)
+                        )
+                      ))
+                    )
+                  ),
+                  React.createElement('section', null,
+                    React.createElement('div', { className: "flex items-center justify-between mb-4 px-2" },
+                      React.createElement('h3', { className: "text-[11px] font-bold text-[#9CA3AF] uppercase tracking-[0.1em]" }, "Sections"),
+                      React.createElement('button', { onClick: addSection, className: "p-1 hover:bg-[#F3F4F6] rounded-md transition-colors" },
+                        React.createElement(Plus, { className: "w-4 h-4 text-[#4B5563]" })
+                      )
+                    ),
+                    React.createElement('div', { className: "space-y-1" },
+                      sections.map((sec, idx) => React.createElement('div', {
+                        key: sec.id,
+                        className: "group flex items-center justify-between p-2.5 rounded-lg transition-all hover:bg-[#F3F4F6] text-[#4B5563]"
+                      },
+                        React.createElement('div', { className: "flex items-center gap-2 overflow-hidden" },
+                          React.createElement(Layers, { className: "w-4 h-4 flex-shrink-0 text-[#9CA3AF]" }),
+                          React.createElement('input', {
+                            type: "text", value: sec.title,
+                            onChange: (e) => { const updated = [...sections]; updated[idx].title = e.target.value; setSections(updated); },
+                            className: "text-sm font-medium truncate bg-transparent border-none focus:ring-0 p-0 w-full"
+                          })
+                        ),
+                        sections.length > 1 && React.createElement('button', {
+                          onClick: (e) => { e.stopPropagation(); deleteSection(idx); },
+                          className: "opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-white/20 transition-all text-[#EF4444]"
+                        }, React.createElement(Trash2, { className: "w-3.5 h-3.5" }))
+                      ))
+                    )
+                  )
+                )
+              ),
+              React.createElement('main', { className: `flex-1 flex flex-col relative overflow-hidden overflow-y-auto ${isPreviewMode ? 'bg-[#f4f2ed]' : 'bg-[#F8F9FA]'}` },
+                React.createElement('header', { className: "h-16 bg-white border-b border-[#E5E7EB] flex items-center justify-between px-8 z-50 sticky top-0" },
+                  React.createElement('div', { className: "flex items-center gap-4" },
+                    React.createElement('div', { className: "flex items-center bg-[#F3F4F6] rounded-lg p-1" },
+                      React.createElement('button', {
+                        onClick: () => setIsPreviewMode(false),
+                        className: `flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${!isPreviewMode ? 'bg-white shadow-sm text-black' : 'text-[#6B7280] hover:text-black'}`
+                      }, React.createElement(Settings2, { className: "w-4 h-4" }), " Edit"),
+                      React.createElement('button', {
+                        onClick: () => setIsPreviewMode(true),
+                        className: `flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${isPreviewMode ? 'bg-white shadow-sm text-black' : 'text-[#6B7280] hover:text-black'}`
+                      }, React.createElement(Eye, { className: "w-4 h-4" }), " Preview")
+                    )
+                  ),
+                  React.createElement('div', { className: "flex items-center gap-3" },
+                    React.createElement('button', { className: "flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#4B5563] hover:bg-[#F3F4F6] rounded-lg transition-all" },
+                      React.createElement(Download, { className: "w-4 h-4" }), " Export"
+                    ),
+                    React.createElement('button', { className: "flex items-center gap-2 px-5 py-2 text-sm font-bold bg-black text-white rounded-lg hover:bg-[#333] transition-all shadow-sm" },
+                      React.createElement(Save, { className: "w-4 h-4" }), " Save Article"
+                    )
+                  )
+                ),
+                React.createElement('article', { className: "article-detail", style: { '--hero-progress': heroProgress } },
+                  isPreviewMode && React.createElement('div', { className: "article-detail__progress" },
+                    React.createElement('span', { style: { transform: `scaleX(${scrollProgress})` } })
+                  ),
+                  React.createElement('header', { className: "article-detail__hero" },
+                    React.createElement('div', { className: "article-detail__hero-media" },
+                      React.createElement('img', { src: metadata.heroImage, alt: metadata.title, referrerPolicy: "no-referrer" }),
+                      !isPreviewMode && React.createElement('div', { className: "absolute inset-0 bg-black/40 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity gap-4" },
+                        React.createElement('div', { className: "flex flex-col items-center gap-2" },
+                          React.createElement('p', { className: "text-[10px] font-bold text-white uppercase tracking-widest mb-1" }, "Hero Image URL"),
+                          React.createElement('input', {
+                            type: "text", value: metadata.heroImage,
+                            onChange: (e) => setMetadata({ ...metadata, heroImage: e.target.value }),
+                            className: "bg-white/90 p-2.5 rounded-lg text-xs w-72 outline-none border-none shadow-xl focus:ring-2 focus:ring-white/50",
+                            placeholder: "Enter hero image URL..."
+                          })
+                        ),
+                        React.createElement('div', { className: "flex items-center gap-4 w-72" },
+                          React.createElement('div', { className: "h-px bg-white/20 flex-1" }),
+                          React.createElement('span', { className: "text-[10px] font-bold text-white/60 uppercase tracking-widest" }, "or"),
+                          React.createElement('div', { className: "h-px bg-white/20 flex-1" })
+                        ),
+                        React.createElement('label', { className: "flex items-center gap-2 px-6 py-2.5 bg-white text-black rounded-lg text-xs font-bold cursor-pointer hover:bg-gray-100 transition-all shadow-xl" },
+                          React.createElement(Upload, { className: "w-4 h-4" }), " Upload Hero Photo",
+                          React.createElement('input', {
+                            type: "file", className: "hidden", accept: "image/*",
+                            onChange: (e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const reader = new FileReader();
+                                reader.onloadend = () => setMetadata({ ...metadata, heroImage: reader.result });
+                                reader.readAsDataURL(file);
+                              }
+                            }
+                          })
+                        )
+                      )
+                    ),
+                    React.createElement('div', { className: "article-detail__hero-panel" },
+                      React.createElement('div', { className: "article-detail__hero-top" },
+                        React.createElement('span', { className: "article-detail__eyebrow" }, "Research report")
+                      ),
+                      isPreviewMode ? React.createElement('h1', { className: "article-detail__title" }, metadata.title) : React.createElement('textarea', {
+                        value: metadata.title, onChange: (e) => setMetadata({ ...metadata, title: e.target.value }),
+                        className: "article-detail__title editable-field", placeholder: "Article Title...", rows: 2
+                      }),
+                      isPreviewMode ? React.createElement('p', { className: "article-detail__subtitle" }, metadata.subtitle) : React.createElement('textarea', {
+                        value: metadata.subtitle, onChange: (e) => setMetadata({ ...metadata, subtitle: e.target.value }),
+                        className: "article-detail__subtitle editable-field", placeholder: "Subtitle...", rows: 2
+                      }),
+                      React.createElement('div', { className: "article-detail__meta" },
+                        isPreviewMode ? React.createElement(React.Fragment, null,
+                          React.createElement('span', null, metadata.readingTime),
+                          React.createElement('span', null, metadata.date),
+                          React.createElement('span', null, `By ${metadata.author}`)
+                        ) : React.createElement('div', { className: "flex gap-4" },
+                          React.createElement('input', { type: "text", value: metadata.readingTime, onChange: (e) => setMetadata({ ...metadata, readingTime: e.target.value }), className: "editable-field w-24", placeholder: "Read time..." }),
+                          React.createElement('input', { type: "text", value: metadata.date, onChange: (e) => setMetadata({ ...metadata, date: e.target.value }), className: "editable-field w-32", placeholder: "Date..." }),
+                          React.createElement('input', { type: "text", value: metadata.author, onChange: (e) => setMetadata({ ...metadata, author: e.target.value }), className: "editable-field w-32", placeholder: "Author..." })
+                        )
+                      )
+                    )
+                  ),
+                  React.createElement('section', { className: "article-detail__body" },
+                    React.createElement('div', { className: "article-detail__content" },
+                      isPreviewMode ? (metadata.summary && React.createElement('div', { className: "article-detail__callout article-detail__reveal" },
+                        React.createElement('p', { className: "article-detail__callout-title" }, "Executive summary"),
+                        React.createElement('p', null, metadata.summary)
+                      )) : React.createElement('div', { className: "article-detail__callout mb-8" },
+                        React.createElement('p', { className: "article-detail__callout-title" }, "Executive summary"),
+                        React.createElement('textarea', {
+                          value: metadata.summary, onChange: (e) => setMetadata({ ...metadata, summary: e.target.value }),
+                          className: "editable-field text-sm", placeholder: "Summary...", rows: 3
+                        })
+                      ),
+                      React.createElement('div', { className: "space-y-12", onDragOver: (e) => e.preventDefault(), onDrop: handleCanvasDrop },
+                        sections.map((section, sIdx) => React.createElement('div', { key: section.id, className: isPreviewMode ? 'article-detail__reveal' : '' },
+                          isPreviewMode ? React.createElement('h2', { id: section.id, className: "text-2xl font-bold mb-6" }, section.title) : React.createElement('div', { className: "flex items-center gap-2 mb-4 group/sec" },
+                            React.createElement('input', {
+                              id: section.id, type: "text", value: section.title,
+                              onChange: (e) => { const updated = [...sections]; updated[sIdx].title = e.target.value; setSections(updated); },
+                              className: "text-2xl font-bold editable-field"
+                            })
+                          ),
+                          React.createElement('div', { className: "space-y-6" },
+                            React.createElement(DndContext, {
+                              collisionDetection: closestCenter,
+                              onDragEnd: (event) => {
+                                const { active, over } = event;
+                                if (over && active.id !== over.id) {
+                                  const updated = [...sections];
+                                  const blocks = updated[sIdx].blocks;
+                                  const oldIdx = blocks.findIndex(b => b.id === active.id);
+                                  const newIdx = blocks.findIndex(b => b.id === over.id);
+                                  updated[sIdx].blocks = arrayMove(blocks, oldIdx, newIdx);
+                                  setSections(updated);
+                                }
+                              }
+                            },
+                              React.createElement(SortableContext, { items: section.blocks.map(b => b.id), strategy: verticalListSortingStrategy },
+                                React.createElement(AnimatePresence, { mode: "popLayout" },
+                                  section.blocks.map(block => React.createElement('div', { key: block.id, className: isPreviewMode ? 'article-detail__reveal' : '' },
+                                    React.createElement(SortableBlock, {
+                                      block, isPreviewMode, isSelected: selectedBlockId === block.id,
+                                      onSelect: setSelectedBlockId, onUpdate: updateBlock, onDelete: deleteBlock
+                                    })
+                                  ))
+                                )
+                              )
+                            ),
+                            !isPreviewMode && section.blocks.length === 0 && React.createElement('div', { className: "py-12 text-center border-2 border-dashed border-[#E5E7EB] rounded-2xl bg-gray-50/50" },
+                              React.createElement('p', { className: "text-xs text-[#9CA3AF] font-bold uppercase tracking-widest" }, "Drop components here")
+                            )
+                          )
+                        ))
+                      ),
+                      isPreviewMode && React.createElement('div', { className: "article-detail__author article-detail__reveal mt-12" },
+                        React.createElement('div', { className: "article-detail__author-avatar" }, metadata.author.split(' ').map(n => n[0]).join('')),
+                        React.createElement('div', null,
+                          React.createElement('p', { className: "article-detail__author-name" }, metadata.author),
+                          React.createElement('p', { className: "article-detail__author-role" }, "Author")
+                        )
+                      )
+                    ),
+                    React.createElement('aside', { className: "article-detail__sidebar" },
+                      React.createElement('div', { className: `article-detail__card ${isPreviewMode ? 'article-detail__reveal' : ''}` },
+                        React.createElement('p', { className: "article-detail__card-label" }, "In this article"),
+                        React.createElement('div', { className: "space-y-4" },
+                          sections.map(sec => {
+                            const focusAreas = sec.blocks.filter(b => b.type === 'focus-area');
+                            return React.createElement('div', { key: sec.id, className: "space-y-2" },
+                              sec.title && React.createElement('a', { href: `#${sec.id}`, className: "article-detail__toc-link text-[#1f6f5c]" }, sec.title),
+                              focusAreas.length > 0 && React.createElement('div', { className: "pl-4 space-y-2 border-l border-[#E5E7EB]" },
+                                focusAreas.map(fa => React.createElement('a', { key: fa.id, href: `#${fa.id}`, className: "block text-xs font-medium text-[#4B5563] hover:text-black transition-colors" }, fa.content || 'Untitled'))
+                              )
+                            );
+                          })
+                        )
+                      ),
+                      React.createElement('div', { className: `article-detail__card ${isPreviewMode ? 'article-detail__reveal' : ''}` },
+                        React.createElement('p', { className: "article-detail__card-label" }, "Key takeaways"),
+                        React.createElement('div', { className: "space-y-3" },
+                          metadata.takeaways.map((t, i) => React.createElement('div', { key: i, className: "flex gap-2 group/take" },
+                            isPreviewMode ? React.createElement('div', { className: "flex gap-2" },
+                              React.createElement('span', { className: "text-[#1f6f5c] font-bold" }, "•"),
+                              React.createElement('p', { className: "text-sm text-[#4B5563]" }, t)
+                            ) : React.createElement(React.Fragment, null,
+                              React.createElement('textarea', { value: t, onChange: (e) => { const nt = [...metadata.takeaways]; nt[i] = e.target.value; setMetadata({ ...metadata, takeaways: nt }); }, className: "editable-field text-sm text-[#4B5563]", rows: 1 }),
+                              React.createElement('button', { onClick: () => setMetadata({ ...metadata, takeaways: metadata.takeaways.filter((_, idx) => idx !== i) }), className: "opacity-0 group-hover/take:opacity-100 p-1 text-[#EF4444]" }, React.createElement(Trash2, { className: "w-3 h-3" }))
+                            )
+                          )),
+                          !isPreviewMode && React.createElement('button', { onClick: () => setMetadata({ ...metadata, takeaways: [...metadata.takeaways, ''] }), className: "w-full py-2 text-[10px] font-bold border border-dashed border-[#E5E7EB] rounded-lg text-[#9CA3AF]" }, "+ Add Takeaway")
+                        )
+                      )
+                    )
+                  )
+                )
+              ),
+              React.createElement('aside', { className: `w-80 bg-white border-l border-[#E5E7EB] flex flex-col shadow-sm transition-all ${selectedBlockId && !isPreviewMode ? 'translate-x-0' : 'translate-x-full absolute right-0'}` },
+                React.createElement('div', { className: "p-6 border-b border-[#F3F4F6] flex items-center justify-between" },
+                  React.createElement('h2', { className: "text-sm font-bold uppercase tracking-widest text-[#9CA3AF]" }, "Block Settings"),
+                  React.createElement('button', { onClick: () => setSelectedBlockId(null) }, React.createElement(ChevronRight, { className: "w-4 h-4" }))
+                ),
+                selectedBlock ? React.createElement('div', { className: "flex-1 overflow-y-auto p-6 space-y-8" },
+                  React.createElement('div', { className: "flex items-center gap-3 p-4 bg-[#F9FAFB] rounded-xl border border-[#F3F4F6]" },
+                    React.createElement('div', { className: "w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm" },
+                      React.createElement(IconComponent, { name: TOOLBOX_ITEMS.find(i => i.type === selectedBlock.type)?.icon || '', className: "w-5 h-5 text-black" })
+                    ),
+                    React.createElement('div', null,
+                      React.createElement('p', { className: "text-xs font-bold text-[#9CA3AF] uppercase tracking-wider" }, "Type"),
+                      React.createElement('p', { className: "text-sm font-bold text-[#1A1A1A] capitalize" }, selectedBlock.type)
+                    )
+                  ),
+                  React.createElement('div', { className: "pt-6 border-t border-[#F3F4F6]" },
+                    React.createElement('button', { onClick: () => deleteBlock(selectedBlock.id), className: "w-full py-3 text-sm font-bold text-[#EF4444] bg-[#FEF2F2] rounded-xl flex items-center justify-center gap-2" },
+                      React.createElement(Trash2, { className: "w-4 h-4" }), " Delete Block"
+                    )
+                  )
+                ) : React.createElement('div', { className: "flex-1 flex flex-col items-center justify-center p-8 text-center" },
+                  React.createElement('div', { className: "w-16 h-16 bg-[#F3F4F6] rounded-2xl flex items-center justify-center mb-4" }, React.createElement(Settings2, { className: "w-8 h-8 text-[#9CA3AF]" })),
+                  React.createElement('h3', { className: "text-sm font-bold text-[#374151]" }, "No block selected")
+                )
+              )
+            );
+          }
+
+          const root = ReactDOM.createRoot(document.getElementById('root'));
+          root.render(React.createElement(App));
+      </script>
+  </body>
+  </html>
