@@ -13,10 +13,10 @@ env:
   IMAGE_TAG: latest
 
 jobs:
-  build:
+   build:
     name: Build and Push Images
     runs-on: ubuntu-24.04
-
+    environment: bfc-international
     steps:
 
       # ==========================================
