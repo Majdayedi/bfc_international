@@ -333,78 +333,9 @@
     margin-top: 0;
   }
 
-  /* Phones show bare flags only — no country names, no "bfc group" label. */
-  .hero__representatives-label,
-  .hero__representative-name {
-    display: none;
-  }
-
+  /* Representative flag strip is desktop-only — hidden on mobile */
   .hero__representatives {
-    position: static;
-    /* Must reset the centred desktop rule's transform: unlike `left`, a
-       transform still applies to statically positioned elements, and it was
-       shifting the whole list half its width off the left edge. */
-    left: auto;
-    top: auto;
-    transform: none;
-    align-items: flex-end;
-    width: auto;
-    padding: 0;
-    gap: 0;
-    /* Cancels .hero__content's 1rem side padding so the plates sit flush
-       against the screen edge instead of stopping 1rem short of it. */
-    margin-right: -1rem;
-  }
-
-  /* Flags butt directly against each other: no gap at all, so the five read as
-     one continuous strip down the edge. */
-  .hero__representative-list {
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0;
-  }
-
-  /* The link is exactly the flag plus a 1px black rule underneath. No padding:
-     any inset would reappear as dead space between neighbours. The rule is what
-     separates the flags, and being part of the box it pushes the next flag down
-     by exactly 1px. */
-  .hero__representative-link {
-    display: block;
-    padding: 0;
-    gap: 0;
-    border-radius: 0;
-    background: none;
-    border: none;
-    border-bottom: 1px solid #000000;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  /* No rule after the last flag — there is nothing below it to separate. */
-  .hero__representative-list li:last-child .hero__representative-link {
-    border-bottom: none;
-  }
-
-  /* No lift and no fill change: the flags are flush, so either would break the
-     strip apart on hover. border-color is restated as black because the base
-     rule's hover sets it transparent, which would erase the separator line the
-     moment a flag is tapped. */
-  .hero__representative-link:hover {
-    background: none;
-    border-bottom-color: #000000;
-    transform: none;
-  }
-
-  .hero__representative-flag {
-    display: block;
-    /* 3:2, matching the source flags exactly, so nothing is cropped. */
-    width: 66px;
-    height: 44px;
-    border-radius: 0;
-    /* No hairline ring — it would draw a line through what is meant to read as
-       one continuous strip. */
-    box-shadow: none;
+    display: none;
   }
 
   .hero__eyebrow {

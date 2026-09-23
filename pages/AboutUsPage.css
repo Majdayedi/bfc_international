@@ -260,6 +260,10 @@
   .ap-leader-info {
     padding: 2rem;
   }
+  /* Hide country flags on the right edge of team cards on mobile */
+  .ap-team-badges {
+    display: none;
+  }
 }
 
 .ap-team-flex { display: flex; justify-content: center; gap: 4rem; margin-top: 5rem; flex-wrap: wrap; z-index: 2; position: relative; }

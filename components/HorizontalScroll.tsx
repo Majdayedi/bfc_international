@@ -65,7 +65,9 @@ export const HorizontalScroll: React.FC = () => {
         ease: "none",
         scrollTrigger: {
           trigger: section,
-          start: "top 90px",
+          // Was "top 90px" — slightly later so the section sits further into
+          // view before the pin engages and horizontal scroll begins.
+          start: "top 50px",
           end: () => "+=" + getDistance(), // Scrolling distance exactly matches horizontal distance to avoid void
           scrub: 0.1,
           pin: true,

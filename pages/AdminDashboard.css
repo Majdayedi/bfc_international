@@ -483,12 +483,22 @@
   background: #0000001a;
   color: var(--dark);
 }
+/* Team member form: cap height to viewport and scroll content */
 .bfc-id-modal-wide {
   max-width: 860px !important;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+/* Keep X button pinned while the form body scrolls */
+.bfc-id-modal-wide .bfc-id-close {
+  position: sticky;
+  top: 1rem;
+  float: right;
+  margin: 1rem 1rem -34px 0;
 }
 .bfc-id-card-redesigned {
   display: flex;
-  min-height: 520px;
+  min-height: 400px;
 }
 .bfc-id-photo-panel {
   width: 300px;
