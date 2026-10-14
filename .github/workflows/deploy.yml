@@ -2,10 +2,7 @@ name: Build, push and deploy Docker images
 
 on:
   push:
-    branches:
-      - main
-      - master
-
+    branches: [main, master]
   workflow_dispatch:
 
 env:
@@ -13,134 +10,37 @@ env:
   IMAGE_TAG: latest
 
 jobs:
-   build:
-    name: Build and Push Images
-    runs-on: ubuntu-24.04
-    environment: bfc-international
+  build:
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # ==========================================
-      # 1. CHECKOUT
-      # ==========================================
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-
-      # ==========================================
-      # 2. VERIFY DOCKER HUB USERNAME
-      # ==========================================
-      - name: Verify Docker Hub Username
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-        run: |
-          echo "=========================================="
-          echo "Checking Docker Hub username..."
-          echo "=========================================="
-
-          if [ -z "$DOCKERHUB_USERNAME" ]; then
-            echo "::error title=Docker Hub Username Missing::DOCKERHUB_USERNAME secret is empty or not configured."
-            exit 1
-          fi
-
-          if [ "$DOCKERHUB_USERNAME" != "${{ env.DOCKERHUB_USER }}" ]; then
-            echo "::error title=Docker Hub Username Mismatch::"
-            echo "The GitHub secret DOCKERHUB_USERNAME does not match the configured Docker Hub username."
-            echo "Expected username: ${{ env.DOCKERHUB_USER }}"
-            exit 1
-          fi
-
-          echo "✓ DOCKERHUB_USERNAME exists"
-          echo "✓ Username is correct: $DOCKERHUB_USERNAME"
-
-
-      # ==========================================
-      # 3. VERIFY DOCKER HUB TOKEN
-      # ==========================================
-      - name: Verify Docker Hub Token
-        env:
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-        run: |
-          echo "=========================================="
-          echo "Checking Docker Hub token..."
-          echo "=========================================="
-
-          if [ -z "$DOCKERHUB_TOKEN" ]; then
-            echo "::error title=Docker Hub Token Missing::DOCKERHUB_TOKEN secret is empty or not configured."
-            exit 1
-          fi
-
-          echo "✓ DOCKERHUB_TOKEN exists"
-          echo "✓ Token is present"
-          echo "✓ Token length: ${#DOCKERHUB_TOKEN} characters"
-
-          # NEVER print the actual token
-
-
-      # ==========================================
-      # 4. SET UP DOCKER BUILDX
-      # ==========================================
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@v3
 
-
-      # ==========================================
-      # 5. LOGIN TO DOCKER HUB
-      # ==========================================
-      - name: Login to Docker Hub
-        uses: docker/login-action@v4
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-
-      # ==========================================
-      # 6. VERIFY DOCKER LOGIN
-      # ==========================================
-      - name: Verify Docker Login
-        run: |
-          echo "=========================================="
-          echo "Verifying Docker Hub authentication..."
-          echo "=========================================="
-
-          docker info > /dev/null 2>&1
-
-          if [ $? -eq 0 ]; then
-            echo "✓ Docker is running"
-          else
-            echo "::error::Docker is not available"
-            exit 1
-          fi
-
-          echo "✓ Docker Hub login step completed"
-
-
-      # ==========================================
-      # 7. BUILD & PUSH BACKEND
-      # ==========================================
-      - name: Build and Push Backend
+      - name: Build and push backend
         uses: docker/build-push-action@v6
         with:
           context: ./bfc-backend/bfc
           push: true
-
           tags: |
             ${{ env.DOCKERHUB_USER }}/bfc-backend:${{ env.IMAGE_TAG }}
             ${{ env.DOCKERHUB_USER }}/bfc-backend:${{ github.sha }}
 
-
-      # ==========================================
-      # 8. BUILD & PUSH FRONTEND
-      # ==========================================
-      - name: Build and Push Frontend
+      - name: Build and push frontend
         uses: docker/build-push-action@v6
         with:
           context: ./bfc-consulting-innovation
-
           push: true
-
           build-args: |
             VITE_API_URL=https://internationalbfc.com
-
           tags: |
             ${{ env.DOCKERHUB_USER }}/bfc-frontend:${{ env.IMAGE_TAG }}
             ${{ env.DOCKERHUB_USER }}/bfc-frontend:${{ github.sha }}
