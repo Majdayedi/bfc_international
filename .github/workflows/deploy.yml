@@ -33,7 +33,6 @@ jobs:
           tags: |
             ${{ env.DOCKERHUB_USER }}/bfc-backend:${{ env.IMAGE_TAG }}
             ${{ env.DOCKERHUB_USER }}/bfc-backend:${{ github.sha }}
-
       - name: Build and push frontend
         uses: docker/build-push-action@v6
         with:
@@ -44,7 +43,6 @@ jobs:
           tags: |
             ${{ env.DOCKERHUB_USER }}/bfc-frontend:${{ env.IMAGE_TAG }}
             ${{ env.DOCKERHUB_USER }}/bfc-frontend:${{ github.sha }}
-
   # Auto-deploy to the server. Opt-in: set the repository variable
   # DEPLOY_ENABLED=true and the three DEPLOY_* secrets. Until then you can
   # deploy manually on the server:
@@ -52,36 +50,18 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: vars.DEPLOY_ENABLED == 'true'
-    steps:
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script: |
-            set -e
-            cd ${{ secrets.DEPLOY_PATH }}
-            git pull origin ${{ github.ref_name }}
-            docker compose -f docker-compose.prod.yml up -d --pull always
 
-      - name: Smoke test the translation endpoint
+    steps:
+      - name: Deploy Docker images on VPS
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
           script: |
             set -e
-            for i in $(seq 1 10); do
-              RESULT=$(curl -s -X POST http://127.0.0.1:8085/api/translate \
-                -H "Content-Type: application/json" \
-                -d '{"texts":["Health check"],"to":"fr","from":"en"}' || true)
-              echo "$RESULT" | grep -q '"configured":true' && {
-                echo "Translation provider OK: $RESULT"; exit 0; }
-              echo "Waiting for backend/LibreTranslate ($i/10)..."
-              sleep 15
-            done
-            echo "::error::Translation provider did not come up after deploy"
-            exit 1
+            cd /opt/bfc
+            docker compose -f docker-compose.yml pull
+            docker compose -f docker-compose.yml up -d --remove-orphans
+            docker image prune -f
