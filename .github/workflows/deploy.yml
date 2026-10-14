@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy over SSH
+      - name: Deploy Docker images on VPS
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -64,31 +64,6 @@ jobs:
           script: |
             set -e
             cd /opt/bfc
-            git pull origin ${{ github.ref_name }}
-            docker compose -f docker-compose.yml up -d --pull always
-
-      - name: Smoke test the translation endpoint
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT }}
-          script: |
-            set -e
-            for i in $(seq 1 10); do
-              RESULT=$(curl -s -X POST http://127.0.0.1:8085/api/translate \
-                -H "Content-Type: application/json" \
-                -d '{"texts":["Health check"],"to":"fr","from":"en"}' || true)
-
-              echo "$RESULT" | grep -q '"configured":true' && {
-                echo "Translation provider OK: $RESULT"
-                exit 0
-              }
-
-              echo "Waiting for backend/LibreTranslate ($i/10)..."
-              sleep 15
-            done
-
-            echo "Translation provider did not come up after deploy"
-            exit 1
+            docker compose -f docker-compose.yml pull
+            docker compose -f docker-compose.yml up -d --remove-orphans
+            docker image prune -f
