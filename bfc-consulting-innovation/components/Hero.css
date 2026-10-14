@@ -526,7 +526,7 @@
    below it is brand navy (#0f172a) with a soft mint glow for depth, and
    the overlay fades the footage into that navy so the caption keeps its
    position on a clean dark band that matches the rest of the page. */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   /* Flat navy reads as "empty". A soft mint-tinted glow near the top gives
      the band depth and ties it to the BFC accent colour.
      The panel is a flex column on mobile: the video sits in flow, the
