@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Mail, Phone } from 'lucide-react';
 import { API_URL } from '../utils/constants';
+import { useTranslatedTexts } from '../src/dynamicTranslation';
 import './Footer.css';
 
 interface Office {
@@ -46,6 +47,17 @@ const OFFICES: Office[] = [
 
 export const Footer: React.FC = () => {
   const [offices, setOffices] = useState<Office[]>([]);
+  const [title1, titleAccent, title2, contact, social, ourOffices, privacy, terms, tagline] = useTranslatedTexts([
+    "Let's build", 
+    'something',
+    'great.',
+    '( CONTACT )',
+    '( SOCIAL )',
+    '( OUR OFFICES )',
+    'Privacy Policy',
+    'Terms of Service',
+    'BORN IN AFRICA'
+  ]);
 
   useEffect(() => {
     const fetchOffices = async () => {
@@ -79,13 +91,13 @@ export const Footer: React.FC = () => {
         <div className="footer__top">
           <div className="footer__top-left">
             <h2 className="footer__title">
-              Let's build <br />
-              <span className="footer__accent">something</span> great.
+              {title1} <br />
+              <span className="footer__accent">{titleAccent}</span> {title2}
             </h2>
           </div>
 
           <div className="footer__top-right">
-            <span className="footer__label">( CONTACT )</span>
+            <span className="footer__label">{contact}</span>
             <a
               href="mailto:international@BFC.com.tn"
               className="footer__email"
@@ -94,7 +106,7 @@ export const Footer: React.FC = () => {
               <span>international@BFC.com.tn</span>
             </a>
             <div className="footer__social">
-              <span className="footer__label">( SOCIAL )</span>
+              <span className="footer__label">{social}</span>
               <div className="footer__social-links">
                 <a
                   href="https://tn.linkedin.com/company/bfc-international-academy"
@@ -121,7 +133,7 @@ export const Footer: React.FC = () => {
 
         {/* ── Countries section ── */}
         <div className="footer__countries">
-          <span className="footer__label">( OUR OFFICES )</span>
+          <span className="footer__label">{ourOffices}</span>
           <div className="footer__countries-grid">
             {offices.map((office) => (
               <div key={office.country} className="footer__country">
@@ -155,10 +167,10 @@ export const Footer: React.FC = () => {
         <div className="footer__bottom">
           <p>&copy; {new Date().getFullYear()} BFC GROUP</p>
           <div className="footer__bottom-links">
-            <a href="#" className="footer__bottom-link">Privacy Policy</a>
-            <a href="#" className="footer__bottom-link">Terms of Service</a>
+            <a href="#" className="footer__bottom-link">{privacy}</a>
+            <a href="#" className="footer__bottom-link">{terms}</a>
           </div>
-          <p className="footer__tagline">BORN IN AFRICA</p>
+          <p className="footer__tagline">{tagline}</p>
         </div>
       </div>
     </footer>

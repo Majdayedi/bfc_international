@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import './Hero.css';
 import contact from '../src/assets/contact2.png';
+import reandaLogo from '../src/assets/reanda.png';
 import { API_URL } from '../utils/constants';
+import { useTranslatedTexts } from '../src/dynamicTranslation';
 
 interface RepLink {
   label: string;
@@ -22,7 +24,25 @@ const FALLBACK_REPRESENTATIVE_LINKS: RepLink[] = [
 const HERO_VIDEO_SRC = '/videos/reanda_accord.mp4';
 
 export const Hero: React.FC = () => {
-  const [repLinks, setRepLinks] = useState<RepLink[]>(FALLBACK_REPRESENTATIVE_LINKS);
+  const [talkToExpert, bookConsultation, videoEyebrow, videoTitle1, videoTitle2, videoSub, statNetwork, statCountries, statOffices, statStaff] = useTranslatedTexts([
+    'Talk to an expert',
+    'Book a Free Consultation',
+    'REANDA INTERNATIONAL',
+    'Connected expertise.',
+    'Local insight.',
+    'One alliance of independent firms — audit, tax, advisory & consulting across 58+ countries.',
+    'Accounting Network',
+    'Countries',
+    'Offices',
+    'Staff'
+  ]);
+  const [repLinksOriginal, setRepLinks] = useState<RepLink[]>(FALLBACK_REPRESENTATIVE_LINKS);
+  const repLabelInputs = repLinksOriginal.map((rep) => rep.label || '');
+  const repLabels = useTranslatedTexts(repLabelInputs);
+  const repLinks: RepLink[] = repLinksOriginal.map((rep, repIndex) => ({
+    ...rep,
+    label: repLabels[repIndex] || rep.label
+  }));
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -177,8 +197,8 @@ export const Hero: React.FC = () => {
               className="hero__card-footer"
             >
               <div>
-                <p className="hero__card-meta">Talk to an expert</p>
-                <p className="hero__card-title">Book a Free Consultation</p>
+                <p className="hero__card-meta">{talkToExpert}</p>
+                <p className="hero__card-title">{bookConsultation}</p>
               </div>
               <span className="hero__card-link" aria-hidden="true">
                 <ArrowRight size={20} />
@@ -205,15 +225,35 @@ export const Hero: React.FC = () => {
           <div className="hero__video-overlay" aria-hidden="true" />
           {/* Modern caption that fades in as the panel takes over */}
           <div ref={videoCaptionRef} className="hero__video-caption">
-            <span className="hero__video-eyebrow">REANDA INTERNATIONAL</span>
+            <span className="hero__video-eyebrow">{videoEyebrow}</span>
             <h2 className="hero__video-title">
-              Connected expertise.<br />
-              <span className="hero__video-title-accent">Local insight.</span>
+              {videoTitle1}<br />
+              <span className="hero__video-title-accent">{videoTitle2}</span>
             </h2>
             <p className="hero__video-sub">
-              One alliance of independent firms — audit, tax, advisory &amp; consulting  
-              across 58+ countries.
+              {videoSub}
             </p>
+            {/* Mobile-only Reanda network stats — same figures as the
+                About page "Reanda International" block */}
+            <div className="hero__video-stats">
+              <img className="hero__video-stats-logo" src={reandaLogo} alt="" aria-hidden="true" />
+              <div className="hero__video-stat">
+                <span className="hero__video-stat-num">23rd</span>
+                <span className="hero__video-stat-label">{statNetwork}</span>
+              </div>
+              <div className="hero__video-stat">
+                <span className="hero__video-stat-num">60</span>
+                <span className="hero__video-stat-label">{statCountries}</span>
+              </div>
+              <div className="hero__video-stat">
+                <span className="hero__video-stat-num">140+</span>
+                <span className="hero__video-stat-label">{statOffices}</span>
+              </div>
+              <div className="hero__video-stat">
+                <span className="hero__video-stat-num">5000+</span>
+                <span className="hero__video-stat-label">{statStaff}</span>
+              </div>
+            </div>
           </div>
         </div>
 

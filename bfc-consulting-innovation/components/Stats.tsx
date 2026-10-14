@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import reandaLogo from '../src/assets/reanda.png';
+import { useTranslatedTexts } from '../src/dynamicTranslation';
 import './Stats.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -16,6 +17,14 @@ const STATS = [
 
 export const Stats: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [networkTitle, labelOffices, labelCountries, labelProfessionals, labelGlobalRank] = useTranslatedTexts([
+    'Reanda International - Our Network',
+    'Offices',
+    'Countries',
+    'professionals',
+    'Global rank'
+  ]);
+  const translatedLabels = [labelOffices, labelCountries, labelProfessionals, labelGlobalRank];
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -46,11 +55,11 @@ export const Stats: React.FC = () => {
     <section className="stats" ref={containerRef}>
       <div className="stats__container">
         <img src={reandaLogo} alt="Reanda International Logo" className="stats__logo" />
-        <h2 className="stats__title">Reanda International - Our Network</h2>
+        <h2 className="stats__title">{networkTitle}</h2>
         <div className="stats__grid">
           {STATS.map((stat, i) => (
             <div key={i} className="stats__item">
-              <span className="stats__label">{stat.label}</span>
+              <span className="stats__label">{translatedLabels[i]}</span>
               <div className="stats__value">
                 <span className="stats__number" id={`counter-${i}`}>0</span>
                 {stat.suffix && <span className="stats__suffix">{stat.suffix}</span>}

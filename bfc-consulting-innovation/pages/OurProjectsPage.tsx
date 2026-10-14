@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../utils/constants';
+import { COUNTRIES_WITH_FLAGS } from '../utils/countriesWithFlags';
 import './OurProjectsPage.css';
 
 /* ─── Logo assets ──────────────────────────────────────────────────── */
@@ -841,6 +842,34 @@ const COUNTRY_FLAGS: Record<string, string> = {
   'Djibouti': 'https://flagcdn.com/w40/dj.png',
 };
 
+// Names used by the backend that don't match COUNTRIES_WITH_FLAGS exactly
+const COUNTRY_FLAG_ALIASES: Record<string, string> = {
+  'Ivory Coast': 'ci',
+  "Côte d'Ivoire": 'ci',
+  "Cote d'Ivoire": 'ci',
+  'Congo': 'cg',
+  'Congo rdc': 'cd',
+  'DR Congo': 'cd',
+  'Guinee': 'gn',
+  'Guinée': 'gn',
+  'Burkina': 'bf',
+};
+
+// Resolve a flag image for any country name (exact match, alias, then partial match)
+const getCountryFlagUrl = (name: string): string => {
+  const alias = COUNTRY_FLAG_ALIASES[name] || COUNTRY_FLAG_ALIASES[name.trim()];
+  if (alias) return `https://flagcdn.com/w40/${alias}.png`;
+  const lower = name.trim().toLowerCase();
+  if (!lower) return '';
+  const exact = COUNTRIES_WITH_FLAGS.find(c => c.name.toLowerCase() === lower);
+  if (exact) return exact.flag;
+  const partial = COUNTRIES_WITH_FLAGS.find(c => {
+    const n = c.name.toLowerCase();
+    return n.includes(lower) || lower.includes(n);
+  });
+  return partial ? partial.flag : '';
+};
+
 /* ─── Component ────────────────────────────────────────────────────── */
 /* ─── Recency ordering ──────────────────────────────────────────────
    The API returns projects in database order, which only roughly tracks
@@ -1240,7 +1269,7 @@ export const OurProjectsPage: React.FC = () => {
             {filterOptions.map((opt) => {
               const colors = filterMode === 'category' ? getCategoryColor(opt) : { bg: '#243c8a', border: '#243c8a', text: '#fff' };
               const isActive = activeFilter === opt;
-              const flagUrl = filterMode === 'country' ? COUNTRY_FLAGS[opt] : null;
+              const flagUrl = filterMode === 'country' ? (COUNTRY_FLAGS[opt] || getCountryFlagUrl(opt)) : null;
               
               return (
                 <button

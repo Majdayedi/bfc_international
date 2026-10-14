@@ -5,7 +5,7 @@ import {
   Trash2, Edit2, Mail, Phone, Globe, X, 
   Upload, ChevronRight, LayoutDashboard,
   MapPin, Fingerprint, Eye, Search, Filter, ChevronDown,
-  GripVertical, BarChart, Handshake
+  GripVertical, BarChart, Handshake, KeyRound
 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { API_URL } from '../utils/constants';
@@ -225,7 +225,6 @@ export const AdminDashboard: React.FC = () => {
   const [formCountryFlagFile, setFormCountryFlagFile] = useState<File | null>(null);
   const [formCountryFlagUploading, setFormCountryFlagUploading] = useState(false);
   const [formExtraFlags, setFormExtraFlags] = useState<string[]>([]);
-  const [formShowPrimaryFlag, setFormShowPrimaryFlag] = useState(true);
   const [isOrderChanged, setIsOrderChanged] = useState(false);
 
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
@@ -319,6 +318,79 @@ export const AdminDashboard: React.FC = () => {
   const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; title: string; message: string; isAlert: boolean; onConfirm: () => void }>({ isOpen: false, title: '', message: '', isAlert: false, onConfirm: () => {} });
 
   const token = localStorage.getItem('bfc_token');
+
+  const [isCredsOpen, setIsCredsOpen] = useState(false);
+  const [credsSaving, setCredsSaving] = useState(false);
+  const [credsError, setCredsError] = useState('');
+  const [credsSuccess, setCredsSuccess] = useState('');
+  const [credsForm, setCredsForm] = useState({
+    name: '', email: '', currentPassword: '', newPassword: '', confirmPassword: ''
+  });
+
+  const openCredentials = () => {
+    let user: { name?: string; email?: string } = {};
+    try { user = JSON.parse(localStorage.getItem('bfc_user') || '{}'); } catch { user = {}; }
+    setCredsForm({
+      name: user.name || '',
+      email: user.email || '',
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    });
+    setCredsError('');
+    setCredsSuccess('');
+    setIsCredsOpen(true);
+  };
+
+  const handleUpdateCredentials = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCredsError('');
+    setCredsSuccess('');
+
+    if (credsForm.newPassword && credsForm.newPassword !== credsForm.confirmPassword) {
+      setCredsError('New password and confirmation do not match');
+      return;
+    }
+    if (credsForm.newPassword && credsForm.newPassword.length < 6) {
+      setCredsError('New password must be at least 6 characters');
+      return;
+    }
+
+    setCredsSaving(true);
+    try {
+      const res = await fetch(`${API_URL}/api/users/me`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+          name: credsForm.name,
+          email: credsForm.email,
+          currentPassword: credsForm.currentPassword,
+          newPassword: credsForm.newPassword
+        })
+      });
+      const data = await res.json().catch(() => ({} as any));
+      if (res.status === 401 || res.status === 403) {
+        handleSessionExpired();
+        return;
+      }
+      if (!res.ok) {
+        setCredsError(data.message || 'Could not update credentials');
+        return;
+      }
+      localStorage.setItem('bfc_token', data.token);
+      localStorage.setItem('bfc_user', JSON.stringify({ name: data.name, email: data.email }));
+      setCredsSuccess('Credentials updated successfully');
+      setTimeout(() => {
+        setIsCredsOpen(false);
+        setCredsSuccess('');
+        setCredsForm(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
+      }, 1200);
+    } catch (err) {
+      setCredsError('Network error — please try again');
+    } finally {
+      setCredsSaving(false);
+    }
+  };
 
   const handleSessionExpired = () => {
     localStorage.removeItem('bfc_token');
@@ -648,6 +720,9 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  // Description is stored as "text::link=...::email=...::managerName=..." — show only the text
+  const stripHistoryMeta = (desc: string) => (desc || '').split('::link=')[0].trim();
+
   const handleOpenHistoryEdit = (event: HistoryEvent) => {
     let desc = event.description || '';
     let path = '';
@@ -728,7 +803,7 @@ export const AdminDashboard: React.FC = () => {
       countryName: formCountryName,
       countryFlagUrl: formCountryFlagUrl || countryObj.flag,
       extraFlags: extraFlagsData,
-      showPrimaryFlag: formShowPrimaryFlag
+      showPrimaryFlag: true
     };
 
     try {
@@ -779,7 +854,6 @@ export const AdminDashboard: React.FC = () => {
     setFormCountryFlagUrl(member.countryFlagUrl || getCountryFlagUrl(member.countryName || 'Tunisia'));
     setFormCountryFlagFile(null);
     setFormExtraFlags(member.extraFlags?.map(f => f.name) || []);
-    setFormShowPrimaryFlag(member.showPrimaryFlag !== false);
     setIsModalOpen(true);
   };
 
@@ -1545,6 +1619,87 @@ export const AdminDashboard: React.FC = () => {
         <div className="bfc-admin-bg-image"></div>
         <div className="bfc-admin-bg-gradient"></div>
       </div>
+
+      {/* Floating Credentials Button */}
+      <button className="bfc-admin-creds-float" title="Update credentials" onClick={openCredentials}>
+        <KeyRound size={20} />
+      </button>
+
+      {/* Update Credentials Modal */}
+      {isCredsOpen && (
+        <div className="bfc-modal-overlay" onClick={() => { if (!credsSaving) setIsCredsOpen(false); }}>
+          <div className="bfc-modal-card" style={{ maxWidth: '520px', padding: '2rem' }} onClick={e => e.stopPropagation()}>
+            <h3 style={{ margin: '0 0 0.35rem 0', color: '#204383', fontSize: '1.2rem', fontWeight: 800 }}>
+              Update credentials
+            </h3>
+            <p style={{ margin: '0 0 1.5rem 0', color: '#6b7280', fontSize: '0.85rem' }}>
+              Change your admin name, email and password.
+            </p>
+
+            {credsError && <div className="bfc-creds-alert bfc-creds-alert--error">{credsError}</div>}
+            {credsSuccess && <div className="bfc-creds-alert bfc-creds-alert--success">{credsSuccess}</div>}
+
+            <form onSubmit={handleUpdateCredentials}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="bfc-field">
+                  <label>Name *</label>
+                  <input
+                    required
+                    value={credsForm.name}
+                    onChange={e => setCredsForm({ ...credsForm, name: e.target.value })}
+                  />
+                </div>
+                <div className="bfc-field">
+                  <label>Email *</label>
+                  <input
+                    required
+                    type="email"
+                    value={credsForm.email}
+                    onChange={e => setCredsForm({ ...credsForm, email: e.target.value })}
+                  />
+                </div>
+                <div className="bfc-field" style={{ gridColumn: '1 / -1' }}>
+                  <label>Current password *</label>
+                  <input
+                    required
+                    type="password"
+                    autoComplete="current-password"
+                    value={credsForm.currentPassword}
+                    onChange={e => setCredsForm({ ...credsForm, currentPassword: e.target.value })}
+                  />
+                </div>
+                <div className="bfc-field">
+                  <label>New password</label>
+                  <input
+                    type="password"
+                    autoComplete="new-password"
+                    placeholder="Leave blank to keep current"
+                    value={credsForm.newPassword}
+                    onChange={e => setCredsForm({ ...credsForm, newPassword: e.target.value })}
+                  />
+                </div>
+                <div className="bfc-field">
+                  <label>Confirm new password</label>
+                  <input
+                    type="password"
+                    autoComplete="new-password"
+                    value={credsForm.confirmPassword}
+                    onChange={e => setCredsForm({ ...credsForm, confirmPassword: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="bfc-id-footer" style={{ marginTop: '1.5rem' }}>
+                <button type="button" className="bfc-btn-outline" disabled={credsSaving} onClick={() => setIsCredsOpen(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="bfc-btn-navy" disabled={credsSaving}>
+                  {credsSaving ? 'Saving…' : 'Save changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Floating Logout Button */}
       <button className="bfc-admin-logout-float" onClick={() => {
@@ -2685,7 +2840,7 @@ export const AdminDashboard: React.FC = () => {
                           setIsServiceModalOpen(true);
                         } else {
                           setEditingId(null); setFormName(''); setFormRole(''); setFormRoleType(''); setFormRoleTypes([]); setFormEmail(''); setFormPhone('');
-                          setFormImg(''); setFormImgFile(null); setFormImgUploadError(''); setFormCvUrl(null); setFormCvFile(null); setFormCvUploadError(''); setFormCountryName('Tunisia'); setFormCountryFlagUrl(getCountryFlagUrl('Tunisia')); setFormCountryFlagFile(null); setFormExtraFlags([]); setFormShowPrimaryFlag(true); setIsModalOpen(true);
+                          setFormImg(''); setFormImgFile(null); setFormImgUploadError(''); setFormCvUrl(null); setFormCvFile(null); setFormCvUploadError(''); setFormCountryName('Tunisia'); setFormCountryFlagUrl(getCountryFlagUrl('Tunisia')); setFormCountryFlagFile(null); setFormExtraFlags([]); setIsModalOpen(true);
                         }
                       }}
                     >
@@ -2800,7 +2955,7 @@ export const AdminDashboard: React.FC = () => {
                             </button>
                           </div>
                         </div>
-                        <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6, margin: 0 }}>{event.description}</p>
+                        <p style={{ color: '#475569', fontSize: '0.95rem', lineHeight: 1.6, margin: 0 }}>{stripHistoryMeta(event.description)}</p>
                       </div>
                     ))}
                     {historyEvents.filter(e => e.eventYear === selectedHistoryYear).length === 0 && selectedHistoryYear !== null && (
@@ -3915,7 +4070,7 @@ export const AdminDashboard: React.FC = () => {
                   </button>
                 )}
                 <div className="bfc-id-flags-preview">
-                  {formShowPrimaryFlag && (formCountryFlagUrl || formCountryName) && (
+                  {(formCountryFlagUrl || formCountryName) && (
                     <>
                       <FlagImg src={formCountryFlagUrl || getCountryFlagUrl(formCountryName)} alt={formCountryName} title={formCountryName} className="bfc-id-flag" />
                       <span>{formCountryName}</span>
@@ -4128,19 +4283,6 @@ export const AdminDashboard: React.FC = () => {
                         )}
                       </div>
                       {formCountryFlagUploading && <span className="bfc-id-uploading-sm">Uploading flag...</span>}
-                    </div>
-
-                    <div className="bfc-field" style={{ marginTop: '0.5rem', flexDirection: 'row', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                      <input
-                        type="checkbox"
-                        id="bfc-show-primary-flag"
-                        checked={formShowPrimaryFlag}
-                        onChange={e => setFormShowPrimaryFlag(e.target.checked)}
-                        style={{ width: 'auto', margin: 0 }}
-                      />
-                      <label htmlFor="bfc-show-primary-flag" style={{ opacity: 1, letterSpacing: '0.05em', cursor: 'pointer', userSelect: 'none' }}>
-                        SHOW PRIMARY FLAG
-                      </label>
                     </div>
 
                     <div className="bfc-field" style={{ marginTop: '0.5rem' }}>

@@ -1,4 +1,4 @@
-name: Build and Push Docker Images
+name: Build, push and deploy Docker images
 
 on:
   push:
@@ -145,37 +145,43 @@ jobs:
             ${{ env.DOCKERHUB_USER }}/bfc-frontend:${{ env.IMAGE_TAG }}
             ${{ env.DOCKERHUB_USER }}/bfc-frontend:${{ github.sha }}
 
-
-      # ==========================================
-      # 9. SUCCESS
-      # ==========================================
-      - name: Pipeline Completed
-        run: |
-          echo "=========================================="
-          echo "       BFC CI/CD PIPELINE SUCCESS"
-          echo "=========================================="
-          echo ""
-          echo "Backend:"
-          echo "  ${{ env.DOCKERHUB_USER }}/bfc-backend:${{ env.IMAGE_TAG }}"
-          echo "  ${{ env.DOCKERHUB_USER }}/bfc-backend:${{ github.sha }}"
-          echo ""
-          echo "Frontend:"
-          echo "  ${{ env.DOCKERHUB_USER }}/bfc-frontend:${{ env.IMAGE_TAG }}"
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@v1.2.2
+  # Auto-deploy to the server. Opt-in: set the repository variable
+  # DEPLOY_ENABLED=true and the three DEPLOY_* secrets. Until then you can
+  # deploy manually on the server:
+  #   docker compose -f docker-compose.prod.yml up -d --pull always
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: vars.DEPLOY_ENABLED == 'true'
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          port: ${{ secrets.SERVER_PORT }}
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
           script: |
-            cd /opt/bfc
-      
-            echo "Pulling latest images..."
-            docker compose pull
-      
-            echo "Updating containers..."
-            docker compose up -d --remove-orphans
-      
-            echo "Container status:"
-            docker compose ps
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+            git pull origin ${{ github.ref_name }}
+            docker compose -f docker-compose.prod.yml up -d --pull always
+
+      - name: Smoke test the translation endpoint
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+            for i in $(seq 1 10); do
+              RESULT=$(curl -s -X POST http://127.0.0.1:8085/api/translate \
+                -H "Content-Type: application/json" \
+                -d '{"texts":["Health check"],"to":"fr","from":"en"}' || true)
+              echo "$RESULT" | grep -q '"configured":true' && {
+                echo "Translation provider OK: $RESULT"; exit 0; }
+              echo "Waiting for backend/LibreTranslate ($i/10)..."
+              sleep 15
+            done
+            echo "::error::Translation provider did not come up after deploy"
+            exit 1

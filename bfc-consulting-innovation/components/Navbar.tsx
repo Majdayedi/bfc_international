@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Menu as MenuIcon } from 'lucide-react';
+import { useTranslatedTexts } from '../src/dynamicTranslation';
 import reandaLogo from '../src/assets/reanda.png';
 import bfcLogo from '../src/assets/bfc.png';
 import bfc_guinee from '../src/assets/bfc.png';
@@ -24,10 +25,11 @@ const COUNTRY_LINKS = [
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenMenu }) => {
+  const [menuLabel] = useTranslatedTexts(['Menu']);
   return (
     <header className="navbar">
       <button onClick={onOpenMenu} className="navbar__menu-button">
-        <span className="navbar__menu-label">Menu</span>
+        <span className="navbar__menu-label">{menuLabel}</span>
         <MenuIcon size={16} />
       </button>
 

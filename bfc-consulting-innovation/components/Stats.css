@@ -93,8 +93,10 @@
 }
 
 @media (max-width: 767px) {
+  /* The Reanda International network block is desktop-only — mobile already
+     shows the same figures inside the hero video caption. */
   .stats {
-    padding: 2.25rem 0;
+    display: none;
   }
 
   .stats__container {
