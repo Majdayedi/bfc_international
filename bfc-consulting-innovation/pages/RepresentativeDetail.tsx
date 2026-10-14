@@ -331,7 +331,7 @@ export const RepresentativeDetail: React.FC = () => {
                 <div className="rd-manager-photo-wrapper">
                   <img src={data.manager.img?.startsWith('http') ? data.manager.img : `${API_URL}${data.manager.img?.startsWith('/') ? '' : '/'}${data.manager.img || ''}`} alt={data.manager.name} className="rd-manager-photo" />
                   <div className="rd-manager-flags-overlay">
-                    {data.manager.showPrimaryFlag !== false && resolveManagerFlagUrl(data.manager.countryFlagUrl, data.manager.countryName) && (
+                    {resolveManagerFlagUrl(data.manager.countryFlagUrl, data.manager.countryName) && (
                       <img
                         src={resolveManagerFlagUrl(data.manager.countryFlagUrl, data.manager.countryName)}
                         alt={data.manager.countryName || 'flag'}

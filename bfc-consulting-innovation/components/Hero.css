@@ -139,6 +139,11 @@
   color: rgba(255, 255, 255, 0.72);
 }
 
+/* Network stats block — phones only (see the max-width block at the end) */
+.hero__video-stats {
+  display: none;
+}
+
 .hero__content {
   position: relative;
   z-index: 1;
@@ -511,5 +516,183 @@
   .hero__card-link svg {
     width: 20px;
     height: 20px;
+  }
+}
+
+/* ── Mobile: full-width, uncropped video strip ──────────────────────
+   On phones the panel used to cover-crop the landscape video, cutting
+   most of the frame away. Instead the video now sits as a wide strip at
+   the top (near-natural aspect, only the outer edges clipped), the panel
+   below it is brand navy (#0f172a) with a soft mint glow for depth, and
+   the overlay fades the footage into that navy so the caption keeps its
+   position on a clean dark band that matches the rest of the page. */
+@media (max-width: 768px) {
+  /* Flat navy reads as "empty". A soft mint-tinted glow near the top gives
+     the band depth and ties it to the BFC accent colour.
+     The panel is a flex column on mobile: the video sits in flow, the
+     caption hugs it directly underneath, and a scroll cue is pinned to the
+     bottom — so video + text read as one block and the leftover space is
+     spent on the cue instead of sitting empty. */
+  .hero__video-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    background:
+      radial-gradient(
+        130% 55% at 50% 26%,
+        rgba(153, 205, 179, 0.12) 0%,
+        rgba(153, 205, 179, 0.04) 38%,
+        rgba(15, 23, 42, 0) 68%
+      ),
+      #0f172a;
+  }
+
+  .hero__video-panel-video {
+    /* In flow now (base rule is position:absolute). Wider than the panel —
+       the hero's overflow:hidden clips a little off each side instead of
+       the whole frame being cropped. */
+    position: relative;
+    left: -6%;
+    width: 112%;
+    height: auto;
+    bottom: auto;
+    flex: 0 0 auto;
+    /* Tall enough that footage + text fill most of the screen. */
+    aspect-ratio: 1.45 / 1;
+    object-fit: cover;
+    object-position: top center;
+    background: #0f172a;
+    z-index: 1;
+  }
+
+  .hero__video-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0) 0%,
+      rgba(15, 23, 42, 0) 18%,
+      rgba(15, 23, 42, 0.4) 26%,
+      rgba(15, 23, 42, 0.9) 33%,
+      rgba(15, 23, 42, 1) 40%,
+      rgba(15, 23, 42, 1) 100%
+    );
+  }
+
+  .hero__video-caption {
+    /* Static in flow, pulled up into the fade so it hugs the video. Any
+       leftover space is pushed below (margin-bottom:auto) and filled by the
+       scroll cue. */
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin: -1.25rem 1.5rem 0;
+    margin-bottom: auto;
+    max-width: 42rem;
+    z-index: 3;
+  }
+
+  /* Scroll cue pins to the bottom of the panel — turns the remaining space
+     into something purposeful instead of an empty band. */
+  .hero__video-panel::after {
+    content: 'SCROLL';
+    align-self: center;
+    margin: 0 auto clamp(1.5rem, 6vh, 3.5rem);
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.42em;
+    text-indent: 0.42em;
+    color: rgba(255, 255, 255, 0.4);
+    padding-top: 1.4rem;
+    background:
+      linear-gradient(#99cdb3, #99cdb3) no-repeat top center / 1px 0.9rem;
+    animation: heroScrollCue 2.2s ease-in-out infinite;
+    z-index: 3;
+  }
+
+  @keyframes heroScrollCue {
+    0%, 100% { opacity: 0.35; transform: translateY(0); }
+    50% { opacity: 0.85; transform: translateY(4px); }
+  }
+
+  /* Mint rule leads the eyebrow — a small brand accent that anchors the
+     text block so it doesn't float in the dark. */
+  .hero__video-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 1.5rem;
+    height: 1px;
+    margin-right: 0.7rem;
+    vertical-align: middle;
+    background: #99cdb3;
+  }
+
+  /* Headline leads the block on phones: tighter eyebrow, bigger type. */
+  .hero__video-eyebrow {
+    font-size: 0.62rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .hero__video-title {
+    text-wrap: balance;
+    font-size: clamp(2.35rem, 10.5vw, 3.5rem);
+    line-height: 0.98;
+  }
+
+  /* The paragraph makes way for the network stats on phones. */
+  .hero__video-sub {
+    display: none;
+  }
+
+  /* Reanda network stats — flat, left-aligned, mint numbers with the label
+     underneath. The Reanda logo sits centred behind as a watermark. */
+  .hero__video-stats {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.15rem 1.25rem;
+    margin: 1.6rem 0 0;
+    padding: 0.2rem 0;
+  }
+
+  .hero__video-stats-logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    max-width: 230px;
+    opacity: 0.1;
+    filter: grayscale(1) brightness(2.4);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero__video-stat {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .hero__video-stat-num {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: clamp(2.2rem, 11vw, 3rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #99cdb3;
+  }
+
+  .hero__video-stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.3;
+    color: rgba(255, 255, 255, 0.88);
   }
 }

@@ -14,6 +14,8 @@ import { Footer } from './components/Footer';
 import { Menu } from './components/Menu';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { FloatingContactIcon } from './components/FloatingContactIcon';
+import { LangSwitcher } from './components/LangSwitcher';
+import AutoTranslate from './components/AutoTranslate';
 import './App.css';
 
 const ArticlesPage = lazy(() => import('./pages/ArticlesPage').then((m) => ({ default: m.ArticlesPage })));
@@ -185,6 +187,12 @@ const App: React.FC = () => {
       )}
 
       {!location.pathname.startsWith('/admin') && !location.pathname.startsWith('/login') && !location.pathname.startsWith('/compliance-composer') && !location.pathname.startsWith('/article-builder') && !location.pathname.startsWith('/project-builder') && <FloatingContactIcon />}
+      {!location.pathname.startsWith('/admin') && !location.pathname.startsWith('/login') && !location.pathname.startsWith('/compliance-composer') && !location.pathname.startsWith('/article-builder') && !location.pathname.startsWith('/project-builder') && (
+        <>
+          <LangSwitcher />
+          <AutoTranslate />
+        </>
+      )}
     </div>
   );
 };

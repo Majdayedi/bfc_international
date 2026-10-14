@@ -6,6 +6,7 @@ import reandaLogo from '../src/assets/reanda.png';
 import gini from '../src/assets/certif/global_innovation_insititute.png';
 import TABC from '../src/assets/certif/TABC.png';
 import { API_URL } from '../utils/constants';
+import { useTranslatedTexts } from '../src/dynamicTranslation';
 
 import './Certifications.css';
 
@@ -20,6 +21,12 @@ const DEFAULT_PARTNERS = [
 export const Certifications: React.FC = () => {
   const logosRef = useRef<HTMLDivElement>(null);
   const [partners, setPartners] = useState<any[]>(DEFAULT_PARTNERS);
+  const [eyebrow, title1, title2, subtitle] = useTranslatedTexts([
+    '( ACCREDITED PARTNERSHIPS )',
+    'Our',
+    'Partners',
+    "BFC's business and training partners around the world."
+  ]);
 
   useEffect(() => {
     fetch(`${API_URL}/api/partners`)
@@ -62,13 +69,13 @@ export const Certifications: React.FC = () => {
       <div className="certif__container">
         <div className="certif__header">
           <span className="certif__eyebrow">
-            ( ACCREDITED PARTNERSHIPS )
+            {eyebrow}
           </span>
           <h2 className="certif__title">
-            Our <span className="certif__title-accent">Partners</span>
+            {title1} <span className="certif__title-accent">{title2}</span>
           </h2>
           <p className="certif__subtitle">
-            BFC&apos;s business and training partners around the world.
+            {subtitle}
           </p>
         </div>
 

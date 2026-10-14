@@ -108,8 +108,9 @@ public class DataSeeder implements CommandLineRunner {
             return;
         }
 
-        // Seed default admin user
-        if (!userRepository.existsByEmail("admin@bfc.com")) {
+        // Seed default admin user — only when there is no user at all, so a
+        // renamed admin email never resurrects a default admin with a known password
+        if (userRepository.count() == 0) {
             User admin = User.builder()
                     .name("Admin")
                     .email("admin@bfc.com")

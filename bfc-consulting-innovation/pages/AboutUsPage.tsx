@@ -518,7 +518,7 @@ organisational management, public policy.</p>
                 return (
                 <div className="ap-team-card" key={index}>
                   <div className="ap-team-badges">
-                    {member.showPrimaryFlag !== false && primaryFlagUrl && (
+                    {primaryFlagUrl && (
                       <span className="ap-team-flag" title={member.countryName}>
                         <FlagImg src={primaryFlagUrl} alt={member.countryName + ' flag'} title={member.countryName} />
                       </span>

@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './HorizontalScroll.css';
 import { API_URL } from '../utils/constants';
+import { useTranslatedTexts } from '../src/dynamicTranslation';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -122,6 +123,22 @@ export const HorizontalScroll: React.FC = () => {
   if (articles.length < 2) return null;
 
   return (
+    <Section articles={articles} sectionRef={sectionRef} triggerRef={triggerRef} />
+  );
+};
+
+const Section: React.FC<{
+  articles: any[];
+  sectionRef: React.Ref<HTMLDivElement>;
+  triggerRef: React.Ref<HTMLDivElement>;
+}> = ({ articles, sectionRef, triggerRef }) => {
+  // All dynamic strings (titles + summaries) go through one batched translate
+  // request; originals stay visible while pending or if the call fails.
+  const translated = useTranslatedTexts(
+    articles.flatMap((article: any) => [article.title, article.description])
+  );
+
+  return (
     <section className="hscroll" ref={triggerRef}>
       <div className="hscroll__header">
         <div className="hscroll__header-inner">
@@ -130,7 +147,7 @@ export const HorizontalScroll: React.FC = () => {
       </div>
 
       <div ref={sectionRef} className="hscroll__track">
-        {articles.map((article) => (
+        {articles.map((article, index) => (
           <div key={article.id} className="hscroll__card">
             <div className="hscroll__card-media">
               <img src={article.image} alt={article.title} className="hscroll__card-image" />
@@ -140,8 +157,8 @@ export const HorizontalScroll: React.FC = () => {
               </div>
             </div>
             <div className="hscroll__card-body">
-              <h3 className="hscroll__card-title">{article.title}</h3>
-              <p className="hscroll__card-desc">{article.description}</p>
+              <h3 className="hscroll__card-title">{translated[index * 2]}</h3>
+              <p className="hscroll__card-desc">{translated[index * 2 + 1]}</p>
             </div>
             <div className="hscroll__card-footer">
               <Link to={`/articles/${article.slug}`} className="hscroll__card-link">

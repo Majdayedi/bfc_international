@@ -57,6 +57,47 @@
   transform: scale(1.1);
   border-color: var(--accent);
 }
+.bfc-admin-creds-float {
+  position: fixed;
+  top: 1.5rem;
+  right: calc(1.5rem + 60px);
+  z-index: 100;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffffff1a;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.bfc-admin-creds-float:hover {
+  background: #99cdb34d;
+  transform: scale(1.1);
+  border-color: var(--accent);
+}
+.bfc-creds-alert {
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.bfc-creds-alert--error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+.bfc-creds-alert--success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+}
 .bfc-history-grid {
   scrollbar-width: thin;
   scrollbar-color: rgba(32, 67, 131, 0.2) transparent;
@@ -446,8 +487,10 @@
   background: var(--white);
   width: 100%;
   max-width: 780px;
+  max-height: 88vh;
   border-radius: 24px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   box-shadow: 0 30px 80px #00000059;
   animation: modalIn 0.3s ease-out;
   position: relative;
@@ -491,6 +534,13 @@
 }
 /* Keep X button pinned while the form body scrolls */
 .bfc-id-modal-wide .bfc-id-close {
+  position: sticky;
+  top: 1rem;
+  float: right;
+  margin: 1rem 1rem -34px 0;
+}
+/* Same for every other scrolling modal (history form, etc.) */
+.bfc-id-modal .bfc-id-close {
   position: sticky;
   top: 1rem;
   float: right;

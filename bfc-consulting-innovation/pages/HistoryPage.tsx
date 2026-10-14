@@ -1,19 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import './HistoryPage.css';
-import bfcLogo    from '../src/assets/bfc.png';
-import MGIBFCImg  from '../src/assets/MGI-BFC.png';
-import guineeLogo from '../src/assets/bfc.png';
-import senegalLogo from '../src/assets/bfc_senegal.png';
-import bfcguinee from '../src/assets/BFC_GUINEE.jpeg';
-import bfc from '../src/assets/bfc.jpg';
-import congoLogo  from '../src/assets/bfc_congo.png';
-import mauritaniaLogo from '../src/assets/bfc_mauritania.png';
-import senegalimg from '../src/assets/history/senegal.png';
-import guineeimg from '../src/assets/history/guinee.png';
-import congoimg from '../src/assets/history/congo.png';
-import tunisiaimg from '../src/assets/history/tunisia.png';
-import tunisiaimg2 from '../src/assets/history/tunisia2.png';
-import comingSoonImg from '../src/assets/history/coming-soon.png';
+
 
 import { API_URL } from '../utils/constants';
 
@@ -91,11 +78,20 @@ export const HistoryPage: React.FC = () => {
       const res = await fetch(`${API_URL}/api/history-events`);
       if (res.ok) {
         const data = await res.json();
-        setHistoryEvents(data);
+        const list = Array.isArray(data) ? data : [];
+        setHistoryEvents(list);
+        // No events left → skip the intro entirely, show the page straight away
+        if (list.length === 0) {
+          setPhase(4);
+          return;
+        }
         setTimeout(() => setPhase(1), 600);
+      } else {
+        setPhase(4);
       }
     } catch (err) {
       console.error('Failed to fetch history events:', err);
+      setPhase(4);
     }
   };
 
@@ -145,20 +141,7 @@ export const HistoryPage: React.FC = () => {
     };
   });
 
-  const STATIC_EN_COURS: Milestone = {
-    year: '2025',
-    title: 'En cours...',
-    location: '',
-    img: comingSoonImg,
-    desc: 'BFC Mauritania is currently being established to provide ongoing local presence and tailored consulting services in Mauritania.',
-    logo: mauritaniaLogo,
-    flag: 'https://flagcdn.com/w80/mr.png',
-    path: '',
-    email: '',
-    managerName: ''
-  };
-
-  MS.push(STATIC_EN_COURS);
+ 
 
   const MS_COLORS = historyEvents.map(e => 
     e.backgroundColor ? hexToRgb(e.backgroundColor) : [255, 255, 255] as const
@@ -175,6 +158,7 @@ export const HistoryPage: React.FC = () => {
 
   useEffect(() => {
     if (phase !== 1) return;
+    if (MS.length === 0) { setPhase(4); return; }
     const iv = setInterval(() => {
       setDotCount(c => {
         const next = c + 1;
@@ -316,7 +300,7 @@ export const HistoryPage: React.FC = () => {
 
   const N = MS.length;
   // fraction fill width for the growing line
-  const lineFrac = dotCount > 0 ? (dotCount - 1) / (N - 1) : 0;
+  const lineFrac = dotCount > 0 && N > 1 ? (dotCount - 1) / (N - 1) : 0;
   const barGradient = MS_COLORS
     .map((rgb, i) => {
       const color = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;

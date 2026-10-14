@@ -62,6 +62,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/contact/list").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/contact/service-options", "/api/contact/service-options/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/contact/**").permitAll()
+                .requestMatchers("/api/translate").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/api/contact/update/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/contact/delete/**").permitAll()
                 .requestMatchers("/uploads/**").permitAll()

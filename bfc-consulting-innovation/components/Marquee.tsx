@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { API_URL } from '../utils/constants';
+import { useTranslatedTexts } from '../src/dynamicTranslation';
 import './Marquee.css';
 
 const logoModules = import.meta.glob('../src/assets/Logo references/*.{png,jpg,jpeg,webp}', { eager: true });
@@ -15,6 +16,7 @@ const DEFAULT_LOGOS = Object.entries(logoModules).map(([path, mod]) => {
 
 export const Marquee: React.FC = () => {
   const [clients, setClients] = useState<any[]>(DEFAULT_LOGOS);
+  const [globalClients] = useTranslatedTexts(['Global Clients']);
 
   useEffect(() => {
     fetch(`${API_URL}/api/clients`)
@@ -43,7 +45,7 @@ export const Marquee: React.FC = () => {
   return (
     <section className="marquee">
       <div className="marquee__header">
-        <span className="marquee__eyebrow">Global Clients</span>
+        <span className="marquee__eyebrow">{globalClients}</span>
       </div>
       
       <div className="marquee__track">

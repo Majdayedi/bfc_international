@@ -1,0 +1,88 @@
+# Production stack for the server — uses the Docker Hub images that
+# .github/workflows/deploy.yml builds and pushes on every push to
+# main/master/test. Nothing is built on the server, so deploys are fast.
+#
+# Server usage:
+#   cp .env.example .env     (fill values — see comments below)
+#   docker compose -f docker-compose.prod.yml up -d --pull always
+#
+# .env values for this stack:
+#   PUBLIC_SITE_URL=https://internationalbfc.com
+#   PUBLIC_API_URL=https://internationalbfc.com   (nginx proxies /api internally)
+#   FRONTEND_PORT=80
+#   AZURE_TRANSLATOR_KEY / REGION optional (Azure wins over LibreTranslate)
+
+services:
+  db:
+    image: mysql:8
+    container_name: bfc-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: bfc_db
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    container_name: bfc-libretranslate
+    # First start downloads language models (~1-2 GB) — one-time.
+    environment:
+      - LT_LOAD_ONLY=en,fr,ar,es
+      - LT_UPDATE_MODELS=true
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/languages', timeout=5)\" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 10m
+    volumes:
+      - lt-models:/home/libretranslate/.local/share/argos-translate
+    # No ports: internal network only. The backend reaches it via
+    # http://libretranslate:5000 (LIBRETRANSLATE_URL env below).
+    restart: unless-stopped
+
+  backend:
+    image: ${DOCKERHUB_USER:-majdayedi}/bfc-backend:${IMAGE_TAG:-latest}
+    container_name: bfc-backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/bfc_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - APP_JWT_SECRET=${JWT_SECRET}
+      - APP_CORS_ALLOWED_ORIGINS=${PUBLIC_SITE_URL}
+      - LIBRETRANSLATE_URL=http://libretranslate:5000
+      - AZURE_TRANSLATOR_KEY=${AZURE_TRANSLATOR_KEY:-}
+      - AZURE_TRANSLATOR_REGION=${AZURE_TRANSLATOR_REGION:-}
+    volumes:
+      - uploads:/app/uploads
+    # Not published to the host: the frontend nginx proxies /api and /uploads
+    # to http://backend:8085 over the internal network (see nginx.conf).
+    # Publish "${BACKEND_PORT:-8085}:8085" only if you need direct API access.
+    depends_on:
+      db:
+        condition: service_healthy
+      libretranslate:
+        condition: service_started
+    restart: unless-stopped
+
+  frontend:
+    image: ${DOCKERHUB_USER:-majdayedi}/bfc-frontend:${IMAGE_TAG:-latest}
+    container_name: bfc-frontend
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    # /api and /uploads are proxied by the frontend's nginx to the backend,
+    # so the browser only ever talks to the frontend origin.
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  db-data:
+  lt-models:
+  uploads:
