@@ -16,6 +16,10 @@ public class Partner {
     @Column(name = "logo_url", nullable = false)
     private String logoUrl;
 
+    /* Content localization: FR/AR display names. */
+    private String nameFr;
+    private String nameAr;
+
     @Column(name = "display_order")
     private Integer displayOrder = 0;
 
@@ -57,5 +61,21 @@ public class Partner {
 
     public void setDisplayOrder(Integer displayOrder) {
         this.displayOrder = displayOrder;
+    }
+
+    public String getNameFr() {
+        return nameFr;
+    }
+
+    public void setNameFr(String nameFr) {
+        this.nameFr = nameFr;
+    }
+
+    public String getNameAr() {
+        return nameAr;
+    }
+
+    public void setNameAr(String nameAr) {
+        this.nameAr = nameAr;
     }
 }

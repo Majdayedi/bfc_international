@@ -12,6 +12,10 @@ public class ProjectRequest {
     @NotBlank(message = "Title is required")
     private String title;
 
+    private String titleFr;
+
+    private String titleAr;
+
     private String category;
 
     private String client;
@@ -26,6 +30,10 @@ public class ProjectRequest {
 
     private String description;
 
+    private String descriptionFr;
+
+    private String descriptionAr;
+
     private String accent;
 
     private String imageUrl;
@@ -37,4 +45,8 @@ public class ProjectRequest {
     private String endDate;
 
     private String contentJson;
+
+    private String contentJsonFr;
+
+    private String contentJsonAr;
 }

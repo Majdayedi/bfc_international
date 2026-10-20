@@ -57,6 +57,8 @@ public class TeamMemberService {
 
         existing.setName(request.getName());
         existing.setRole(request.getRole());
+        existing.setRoleFr(request.getRoleFr());
+        existing.setRoleAr(request.getRoleAr());
         existing.setRoleType(request.getRoleTypes() != null && !request.getRoleTypes().isEmpty()
                 ? request.getRoleTypes().get(0) : existing.getRoleType());
         existing.setImg(request.getImg());
@@ -64,6 +66,8 @@ public class TeamMemberService {
         existing.setPhone(request.getPhone());
         existing.setCvUrl(request.getCvUrl());
         existing.setCountryName(request.getCountryName());
+        existing.setCountryNameFr(request.getCountryNameFr());
+        existing.setCountryNameAr(request.getCountryNameAr());
         existing.setCountryFlagUrl(request.getCountryFlagUrl());
         existing.setDisplayOrder(request.getDisplayOrder());
         existing.setShowPrimaryFlag(request.getShowPrimaryFlag() != null ? request.getShowPrimaryFlag() : true);
@@ -108,6 +112,8 @@ public class TeamMemberService {
                 .id(member.getId())
                 .name(member.getName())
                 .role(member.getRole())
+                .roleFr(member.getRoleFr())
+                .roleAr(member.getRoleAr())
                 .roleType(member.getRoleType())
                 .roleTypes(roleTypes)
                 .img(member.getImg())
@@ -115,6 +121,8 @@ public class TeamMemberService {
                 .phone(member.getPhone())
                 .cvUrl(member.getCvUrl())
                 .countryName(member.getCountryName())
+                .countryNameFr(member.getCountryNameFr())
+                .countryNameAr(member.getCountryNameAr())
                 .countryFlagUrl(member.getCountryFlagUrl())
                 .displayOrder(member.getDisplayOrder())
                 .showPrimaryFlag(member.getShowPrimaryFlag())
@@ -127,6 +135,8 @@ public class TeamMemberService {
         return TeamMember.builder()
                 .name(request.getName())
                 .role(request.getRole())
+                .roleFr(request.getRoleFr())
+                .roleAr(request.getRoleAr())
                 .roleType(roleTypes.isEmpty() ? request.getRoleType() : roleTypes.get(0))
                 .roleTypes(roleTypes)
                 .img(request.getImg())
@@ -134,6 +144,8 @@ public class TeamMemberService {
                 .phone(request.getPhone())
                 .cvUrl(request.getCvUrl())
                 .countryName(request.getCountryName())
+                .countryNameFr(request.getCountryNameFr())
+                .countryNameAr(request.getCountryNameAr())
                 .countryFlagUrl(request.getCountryFlagUrl())
                 .displayOrder(request.getDisplayOrder())
                 .showPrimaryFlag(request.getShowPrimaryFlag() != null ? request.getShowPrimaryFlag() : true)

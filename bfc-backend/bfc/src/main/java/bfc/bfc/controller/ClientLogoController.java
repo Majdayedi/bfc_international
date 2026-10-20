@@ -41,6 +41,8 @@ public class ClientLogoController {
     public ResponseEntity<ClientLogo> updateClient(@PathVariable Long id, @RequestBody ClientLogo details) {
         return clientLogoRepository.findById(id).map(existing -> {
             existing.setName(details.getName());
+            existing.setNameFr(details.getNameFr());
+            existing.setNameAr(details.getNameAr());
             existing.setLogoUrl(details.getLogoUrl());
             if (details.getDisplayOrder() != null) {
                 existing.setDisplayOrder(details.getDisplayOrder());

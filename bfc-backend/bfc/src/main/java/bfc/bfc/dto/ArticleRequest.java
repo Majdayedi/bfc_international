@@ -14,7 +14,15 @@ public class ArticleRequest {
     @NotBlank(message = "Title is required")
     private String title;
 
+    private String titleFr;
+
+    private String titleAr;
+
     private String subtitle;
+
+    private String subtitleFr;
+
+    private String subtitleAr;
 
     private String slug;
 
@@ -28,10 +36,18 @@ public class ArticleRequest {
 
     private String summary;
 
+    private String summaryFr;
+
+    private String summaryAr;
+
     private String heroImage;
 
     @NotBlank(message = "Content JSON is required")
     private String contentJson;
+
+    private String contentJsonFr;
+
+    private String contentJsonAr;
 
     @JsonProperty("topArticle")
     private Boolean isTopArticle;

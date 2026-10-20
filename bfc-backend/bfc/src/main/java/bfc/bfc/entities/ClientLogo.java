@@ -12,6 +12,10 @@ public class ClientLogo {
 
     private String name;
 
+    /* Content localization: FR/AR display names. */
+    private String nameFr;
+    private String nameAr;
+
     @Column(name = "logo_url", nullable = false)
     private String logoUrl;
 
@@ -56,5 +60,21 @@ public class ClientLogo {
 
     public void setDisplayOrder(Integer displayOrder) {
         this.displayOrder = displayOrder;
+    }
+
+    public String getNameFr() {
+        return nameFr;
+    }
+
+    public void setNameFr(String nameFr) {
+        this.nameFr = nameFr;
+    }
+
+    public String getNameAr() {
+        return nameAr;
+    }
+
+    public void setNameAr(String nameAr) {
+        this.nameAr = nameAr;
     }
 }

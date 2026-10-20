@@ -16,12 +16,16 @@ public class TeamMemberResponse {
     private Long id;
     private String name;
     private String role;
+    private String roleFr;
+    private String roleAr;
     private TeamMemberRole roleType;
     private String img;
     private String email;
     private String phone;
     private String cvUrl;
     private String countryName;
+    private String countryNameFr;
+    private String countryNameAr;
     private String countryFlagUrl;
     private Integer displayOrder;
     private Boolean showPrimaryFlag;
