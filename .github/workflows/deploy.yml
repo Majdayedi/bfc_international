@@ -35,7 +35,7 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v6
         with:
-          context: ./bfc-consulting-innovation
+          context: ./bfc-front
           push: true
           build-args: |
             VITE_API_URL=https://internationalbfc.com
