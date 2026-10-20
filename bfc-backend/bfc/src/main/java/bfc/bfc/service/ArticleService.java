@@ -72,15 +72,27 @@ public class ArticleService {
                 .orElseThrow(() -> new RuntimeException("Article not found with id: " + id));
 
         existing.setTitle(request.getTitle());
+        existing.setTitleFr(request.getTitleFr());
+        existing.setTitleAr(request.getTitleAr());
         existing.setSubtitle(request.getSubtitle());
+        existing.setSubtitleFr(request.getSubtitleFr());
+        existing.setSubtitleAr(request.getSubtitleAr());
         existing.setCategory(request.getCategory());
         existing.setAuthor(request.getAuthor());
         existing.setPublishDate(request.getPublishDate());
         existing.setReadingTime(request.getReadingTime());
         existing.setSummary(request.getSummary());
+        existing.setSummaryFr(request.getSummaryFr());
+        existing.setSummaryAr(request.getSummaryAr());
         existing.setHeroImage(request.getHeroImage());
         existing.setContentJson(request.getContentJson());
-        existing.setTopArticle(request.getIsTopArticle() != null && request.getIsTopArticle());
+        existing.setContentJsonFr(request.getContentJsonFr());
+        existing.setContentJsonAr(request.getContentJsonAr());
+        // Omitted (null) means "leave unchanged": saving the article body must
+        // not silently untick the "top article" flag.
+        if (request.getIsTopArticle() != null) {
+            existing.setTopArticle(request.getIsTopArticle());
+        }
 
         // Update slug if a new unique one is requested
         String newSlug = request.getSlug();
@@ -117,15 +129,23 @@ public class ArticleService {
         return ArticleResponse.builder()
                 .id(article.getId())
                 .title(article.getTitle())
+                .titleFr(article.getTitleFr())
+                .titleAr(article.getTitleAr())
                 .subtitle(article.getSubtitle())
+                .subtitleFr(article.getSubtitleFr())
+                .subtitleAr(article.getSubtitleAr())
                 .slug(article.getSlug())
                 .category(article.getCategory())
                 .author(article.getAuthor())
                 .publishDate(article.getPublishDate())
                 .readingTime(article.getReadingTime())
                 .summary(article.getSummary())
+                .summaryFr(article.getSummaryFr())
+                .summaryAr(article.getSummaryAr())
                 .heroImage(article.getHeroImage())
                 .contentJson(article.getContentJson())
+                .contentJsonFr(article.getContentJsonFr())
+                .contentJsonAr(article.getContentJsonAr())
                 .isTopArticle(article.isTopArticle())
                 .build();
     }
@@ -133,15 +153,23 @@ public class ArticleService {
     private Article toEntity(ArticleRequest request) {
         return Article.builder()
                 .title(request.getTitle())
+                .titleFr(request.getTitleFr())
+                .titleAr(request.getTitleAr())
                 .subtitle(request.getSubtitle())
+                .subtitleFr(request.getSubtitleFr())
+                .subtitleAr(request.getSubtitleAr())
                 .slug(request.getSlug())
                 .category(request.getCategory())
                 .author(request.getAuthor())
                 .publishDate(request.getPublishDate())
                 .readingTime(request.getReadingTime())
                 .summary(request.getSummary())
+                .summaryFr(request.getSummaryFr())
+                .summaryAr(request.getSummaryAr())
                 .heroImage(request.getHeroImage())
                 .contentJson(request.getContentJson())
+                .contentJsonFr(request.getContentJsonFr())
+                .contentJsonAr(request.getContentJsonAr())
                 .isTopArticle(request.getIsTopArticle() != null && request.getIsTopArticle())
                 .build();
     }

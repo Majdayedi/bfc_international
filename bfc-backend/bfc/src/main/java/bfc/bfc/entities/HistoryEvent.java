@@ -36,4 +36,14 @@ public class HistoryEvent {
 
     @Column(name = "photo_url")
     private String photoUrl;
+
+    /* Content localization (see Article/Project): FR + AR versions. */
+    private String titleFr;
+    private String titleAr;
+
+    @Column(columnDefinition = "TEXT")
+    private String descriptionFr;
+
+    @Column(columnDefinition = "TEXT")
+    private String descriptionAr;
 }

@@ -19,6 +19,11 @@ public class Project {
     @Column(nullable = false)
     private String title;
 
+    /** Optional French / Arabic versions of the title (content localization). */
+    private String titleFr;
+
+    private String titleAr;
+
     private String category;
 
     private String client;
@@ -35,6 +40,12 @@ public class Project {
     @Column(columnDefinition = "LONGTEXT")
     private String description;
 
+    @Column(columnDefinition = "LONGTEXT")
+    private String descriptionFr;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String descriptionAr;
+
     private String accent;
 
     @Column(columnDefinition = "LONGTEXT")
@@ -49,4 +60,10 @@ public class Project {
 
     @Column(columnDefinition = "LONGTEXT")
     private String contentJson;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String contentJsonFr;
+
+    @Column(columnDefinition = "LONGTEXT")
+    private String contentJsonAr;
 }

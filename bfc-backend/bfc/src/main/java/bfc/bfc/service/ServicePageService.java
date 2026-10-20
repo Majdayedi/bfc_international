@@ -56,6 +56,14 @@ public class ServicePageService {
                 .description(request.getDescription())
                 .layoutType(request.getLayoutType())
                 .contentJson(request.getContentJson())
+                .titleFr(request.getTitleFr())
+                .titleAr(request.getTitleAr())
+                .subtitleFr(request.getSubtitleFr())
+                .subtitleAr(request.getSubtitleAr())
+                .descriptionFr(request.getDescriptionFr())
+                .descriptionAr(request.getDescriptionAr())
+                .contentJsonFr(request.getContentJsonFr())
+                .contentJsonAr(request.getContentJsonAr())
                 .displayOrder(request.getDisplayOrder() != null ? request.getDisplayOrder() : 0)
                 .build();
         
@@ -79,6 +87,14 @@ public class ServicePageService {
         servicePage.setDescription(request.getDescription());
         servicePage.setLayoutType(request.getLayoutType());
         servicePage.setContentJson(request.getContentJson());
+        servicePage.setTitleFr(request.getTitleFr());
+        servicePage.setTitleAr(request.getTitleAr());
+        servicePage.setSubtitleFr(request.getSubtitleFr());
+        servicePage.setSubtitleAr(request.getSubtitleAr());
+        servicePage.setDescriptionFr(request.getDescriptionFr());
+        servicePage.setDescriptionAr(request.getDescriptionAr());
+        servicePage.setContentJsonFr(request.getContentJsonFr());
+        servicePage.setContentJsonAr(request.getContentJsonAr());
         if (request.getDisplayOrder() != null) {
             servicePage.setDisplayOrder(request.getDisplayOrder());
         }
@@ -224,6 +240,14 @@ public class ServicePageService {
                 .description(servicePage.getDescription())
                 .layoutType(servicePage.getLayoutType())
                 .contentJson(servicePage.getContentJson())
+                .titleFr(servicePage.getTitleFr())
+                .titleAr(servicePage.getTitleAr())
+                .subtitleFr(servicePage.getSubtitleFr())
+                .subtitleAr(servicePage.getSubtitleAr())
+                .descriptionFr(servicePage.getDescriptionFr())
+                .descriptionAr(servicePage.getDescriptionAr())
+                .contentJsonFr(servicePage.getContentJsonFr())
+                .contentJsonAr(servicePage.getContentJsonAr())
                 .displayOrder(servicePage.getDisplayOrder())
                 .build();
     }

@@ -25,6 +25,10 @@ public class TeamMember {
     @Column(nullable = false)
     private String role;
 
+    /* Content localization (FR/AR versions of the editorial text). */
+    private String roleFr;
+    private String roleAr;
+
     @Enumerated(EnumType.STRING)
     private TeamMemberRole roleType;
 
@@ -37,6 +41,9 @@ public class TeamMember {
     private String cvUrl;
 
     private String countryName;
+
+    private String countryNameFr;
+    private String countryNameAr;
 
     private String countryFlagUrl;
 

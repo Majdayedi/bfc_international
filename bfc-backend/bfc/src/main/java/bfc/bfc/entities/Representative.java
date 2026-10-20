@@ -33,6 +33,22 @@ public class Representative {
 
     private String location;
 
+    /* Content localization (FR/AR versions of the editorial text). */
+    private String titleFr;
+    private String titleAr;
+
+    private String subtitleFr;
+    private String subtitleAr;
+
+    @Column(columnDefinition = "TEXT")
+    private String descriptionFr;
+
+    @Column(columnDefinition = "TEXT")
+    private String descriptionAr;
+
+    private String locationFr;
+    private String locationAr;
+
     @ManyToOne
     @JoinColumn(name = "manager_id")
     private TeamMember manager;

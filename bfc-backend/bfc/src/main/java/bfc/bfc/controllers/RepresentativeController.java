@@ -53,6 +53,14 @@ public class RepresentativeController {
                     existingRep.setSubtitle(representativeDetails.getSubtitle());
                     existingRep.setDescription(representativeDetails.getDescription());
                     existingRep.setLocation(representativeDetails.getLocation());
+                    existingRep.setTitleFr(representativeDetails.getTitleFr());
+                    existingRep.setTitleAr(representativeDetails.getTitleAr());
+                    existingRep.setSubtitleFr(representativeDetails.getSubtitleFr());
+                    existingRep.setSubtitleAr(representativeDetails.getSubtitleAr());
+                    existingRep.setDescriptionFr(representativeDetails.getDescriptionFr());
+                    existingRep.setDescriptionAr(representativeDetails.getDescriptionAr());
+                    existingRep.setLocationFr(representativeDetails.getLocationFr());
+                    existingRep.setLocationAr(representativeDetails.getLocationAr());
                     existingRep.setManager(representativeDetails.getManager());
                     existingRep.setGlobeMarkerTop(representativeDetails.getGlobeMarkerTop());
                     existingRep.setGlobeMarkerLeft(representativeDetails.getGlobeMarkerLeft());

@@ -19,7 +19,16 @@ public class Article {
     @Column(nullable = false)
     private String title;
 
+    /** Optional French / Arabic versions of the title (content localization). */
+    private String titleFr;
+
+    private String titleAr;
+
     private String subtitle;
+
+    private String subtitleFr;
+
+    private String subtitleAr;
 
     @Column(nullable = false, unique = true)
     private String slug;
@@ -35,6 +44,12 @@ public class Article {
     @Column(length = 2000)
     private String summary;
 
+    @Column(length = 2000)
+    private String summaryFr;
+
+    @Column(length = 2000)
+    private String summaryAr;
+
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String heroImage;
@@ -42,6 +57,14 @@ public class Article {
     @Lob
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String contentJson;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String contentJsonFr;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
+    private String contentJsonAr;
 
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean isTopArticle;

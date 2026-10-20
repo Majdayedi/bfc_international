@@ -58,6 +58,8 @@ public class ProjectService {
                 .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
 
         existing.setTitle(request.getTitle());
+        existing.setTitleFr(request.getTitleFr());
+        existing.setTitleAr(request.getTitleAr());
         existing.setCategory(request.getCategory());
         existing.setClient(request.getClient());
         existing.setCountry(request.getCountry());
@@ -67,10 +69,14 @@ public class ProjectService {
         existing.setStartDate(request.getStartDate());
         existing.setEndDate(request.getEndDate());
         existing.setDescription(request.getDescription());
+        existing.setDescriptionFr(request.getDescriptionFr());
+        existing.setDescriptionAr(request.getDescriptionAr());
         existing.setAccent(request.getAccent());
         existing.setImageUrl(request.getImageUrl());
         existing.setClientImageUrl(request.getClientImageUrl());
         existing.setContentJson(request.getContentJson());
+        existing.setContentJsonFr(request.getContentJsonFr());
+        existing.setContentJsonAr(request.getContentJsonAr());
 
         return toResponse(repository.save(existing));
     }
@@ -123,6 +129,8 @@ public class ProjectService {
         return ProjectResponse.builder()
                 .id(project.getId())
                 .title(project.getTitle())
+                .titleFr(project.getTitleFr())
+                .titleAr(project.getTitleAr())
                 .category(project.getCategory())
                 .client(project.getClient())
                 .country(project.getCountry())
@@ -132,10 +140,14 @@ public class ProjectService {
                 .startDate(project.getStartDate())
                 .endDate(project.getEndDate())
                 .description(project.getDescription())
+                .descriptionFr(project.getDescriptionFr())
+                .descriptionAr(project.getDescriptionAr())
                 .accent(project.getAccent())
                 .imageUrl(project.getImageUrl())
                 .clientImageUrl(project.getClientImageUrl())
                 .contentJson(project.getContentJson())
+                .contentJsonFr(project.getContentJsonFr())
+                .contentJsonAr(project.getContentJsonAr())
                 .relatedArticles(fetchRelatedArticles(project.getContentJson()))
                 .build();
     }
@@ -149,6 +161,8 @@ public class ProjectService {
         }
         return Project.builder()
                 .title(request.getTitle())
+                .titleFr(request.getTitleFr())
+                .titleAr(request.getTitleAr())
                 .category(request.getCategory())
                 .client(request.getClient())
                 .country(request.getCountry())
@@ -158,10 +172,14 @@ public class ProjectService {
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .description(request.getDescription())
+                .descriptionFr(request.getDescriptionFr())
+                .descriptionAr(request.getDescriptionAr())
                 .accent(request.getAccent())
                 .imageUrl(request.getImageUrl())
                 .clientImageUrl(request.getClientImageUrl())
                 .contentJson(request.getContentJson())
+                .contentJsonFr(request.getContentJsonFr())
+                .contentJsonAr(request.getContentJsonAr())
                 .build();
     }
 }

@@ -41,6 +41,8 @@ public class PartnerController {
     public ResponseEntity<Partner> updatePartner(@PathVariable Long id, @RequestBody Partner details) {
         return partnerRepository.findById(id).map(existing -> {
             existing.setName(details.getName());
+            existing.setNameFr(details.getNameFr());
+            existing.setNameAr(details.getNameAr());
             existing.setLogoUrl(details.getLogoUrl());
             if (details.getDisplayOrder() != null) {
                 existing.setDisplayOrder(details.getDisplayOrder());

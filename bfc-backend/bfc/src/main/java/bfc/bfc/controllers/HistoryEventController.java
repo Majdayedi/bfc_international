@@ -42,6 +42,10 @@ public class HistoryEventController {
             event.setCountryFlag(eventDetails.getCountryFlag());
             event.setLogoUrl(eventDetails.getLogoUrl());
             event.setPhotoUrl(eventDetails.getPhotoUrl());
+            event.setTitleFr(eventDetails.getTitleFr());
+            event.setTitleAr(eventDetails.getTitleAr());
+            event.setDescriptionFr(eventDetails.getDescriptionFr());
+            event.setDescriptionAr(eventDetails.getDescriptionAr());
             return ResponseEntity.ok(repository.save(event));
         }).orElse(ResponseEntity.notFound().build());
     }
