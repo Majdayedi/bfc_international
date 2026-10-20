@@ -1,0 +1,106 @@
+BFC Website — Complete Style Guide
+Brand Colors (from  utils/constants.ts )
+┌──────────────────────┬─────────┬──────────────────────────────────────────────────────────────────────────────────────────────┐
+│ Token                │ HEX     │ Usage                                                                                        │
+├──────────────────────┼─────────┼──────────────────────────────────────────────────────────────────────────────────────────────┤
+│ --primary (Navy)     │ #204383 │ Primary backgrounds (Hero, Horizontal Scroll, Footer, Menu, buttons), headings, primary text │
+│ --accent (Mint/Teal) │ #99cdb3 │ Accent text, eyebrow labels, hover states, decorative elements, secondary accents            │
+│ --dark               │ #0f172a │ Dark text                                                                                    │
+│ --light              │ #f8fafc │ Light section backgrounds (expertise section, certifications)                                │
+│ --white              │ #ffffff │ White section backgrounds, cards                                                             │
+│ --black              │ #000000 │ Occasional text                                                                              │
+└──────────────────────┴─────────┴──────────────────────────────────────────────────────────────────────────────────────────────┘
+Additional colors found in components:
+-  #1a365d  — slightly darker navy (used in BFC Academy)
+-  #26c0af  /  #30aeb7  — teal variants (article details, projects)
+-  #9ca3af  /  #6b7280  — gray text, muted descriptions
+-  #f3f4f6  — light borders
+Typography
+- Primary font:  'Inter', sans-serif  (loaded via Google Fonts: weights 300,400,500,600,700,800)
+- Secondary font for code/monospace elements:  ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace 
+- About Us page:  'Montserrat', sans-serif 
+- History page:  'Plus Jakarta Sans', sans-serif 
+- BFC Academy:  'Inter', sans-serif 
+Logo
+- Text logo: "BFC" (Inter, weight 900, navy  #204383 ) + "GROUPE" (mint  #99cdb3 , letter-spacing 15) — from SVG in  utils/constants.ts 
+- PNG logo:  src/assets/bfc.png  (used in Navbar, Menu, etc.)
+Navigation
+Navbar (fixed, z-index 50)
+- Background:  rgba(255,255,255,0.18)  with  backdrop-filter: blur(14px) saturate(140%) 
+- Border:  1px solid rgba(255,255,255,0.35) 
+- Border radius:  999px  (pill shape)
+- Box shadow:  0 10px 30px rgba(0,0,0,0.12) 
+- Text: uppercase, small ( 0.72rem ), weight 700
+- Menu button hover:  scale(1.05) 
+Menu (full-screen overlay, z-index 100)
+- Background:  #204383  (solid navy)
+- Slides down from top with  transform: translateY(-100%)  →  translateY(0) 
+- Menu items: uppercase, font-weight 1000, large ( clamp(1.6rem, 3.5vw, 4rem) )
+- Default color:  rgba(153, 205, 179, 0.3)  (muted mint)
+- Active/current/hovered:  #fff 
+- Transitions:  0.95s ease-out  for menu open/close
+- Chevron rotates 90° on expand
+- Sub-items:  font-size clamp(1.8rem, 4.5vw, 4rem) , hover →  translateX(12px)  and color  #fff 
+- Footer:  rgba(153, 205, 179, 0.4)  text
+Hero Section
+- Full viewport height ( 100svh )
+- Background: image with  filter: grayscale(0.2)  and  linear-gradient(90deg, rgba(0,0,0,0.7), rgba(0,0,0,0.4), transparent)  overlay
+- Eyebrow text: mint  #99cdb3 , monospace,  0.875rem ,  letter-spacing: 0.2em , pulsing animation
+- Title: white,  font-size: clamp(2.5rem, 6vw, 7rem) , weight 900,  line-height: 0.9 ,  letter-spacing: -0.02em 
+- Accent title:  #99cdb3 
+- Card (bottom-right): white,  border-top: 4px solid #204383 ,  box-shadow: 0 25px 60px rgba(0,0,0,0.3) 
+- Card link: navy  #204383  bg, mint  #99cdb3  icon, rounded full, hover rotates 45°
+- Country tags row at top: uppercase, white text
+Sections — Common Patterns
+Eyebrow labels: uppercase, monospace,  0.75rem ,  letter-spacing: 0.4-0.5em , mint  #99cdb3 
+Section titles: navy  #204383 , weight 900,  letter-spacing: -0.02em ,  line-height: 0.9 , responsive  clamp() 
+Body text:  #6b7280  or  #4b5563 ,  font-weight: 500 ,  line-height: 1.7 
+Dividers/Accent lines:  8rem  wide,  0.375rem  tall,  #204383  (or mint)
+Section-Specific Styles
+Philosophy Section: White bg,  14rem  padding. Two-column grid. Floating wheel with circular icons (4.7rem circles, shadow  0 12px 30px rgba(32, 67, 131, 0.16) ).
+Horizontal Scroll (Articles): Navy  #204383  bg. Cards: white/light gradient bg,  80vw  width,  500px  max,  height: 420px . Images:  filter: grayscale(1)  →  grayscale(0)  on hover. Hover:  translateY(-8px) . Uses GSAP ScrollTrigger for horizontal pinning.
+Marquee (Logos): White bg. Infinite scroll animation ( 160s  loop). Logos:  height: 60px , hover  scale(1.05) .
+Stats Section: White bg. Stats in 4-column grid. Counter animation with GSAP ScrollTrigger. Numbers:  font-size clamp(2.5rem, 5vw, 6rem) , weight 900. Suffix: mint  #99cdb3 .
+Certifications/Partners: Gradient bg  #f8fafc → #fff . Logo windows:  90px × 90px , transparent bg, hover  translateY(-3px) . Staggered entrance animation via IntersectionObserver.
+Expertise:  #f8fafc  bg. 4-column grid with 1px gaps. Cards white bg, hover → navy  #204383  bg with white text. Icons transition to mint on hover.
+Show More / CTA: Navy bg, centered text, mint button ( border-radius: 9999px ),  transform: translateY(-4px) scale(1.05)  on hover.
+Footer: Navy  #204383  bg, white text.  border-top: 1px solid rgba(153, 205, 179, 0.2) . Country cards:  rgba(255,255,255,0.05)  bg,  12px  radius. Social icons:  44px  circles, border  rgba(255,255,255,0.15) , hover → mint border/glow. Bottom bar: uppercase monospace,  letter-spacing: 0.5em ,  rgba(153,205,179,0.4) .
+Page-Specific Styles
+About Us: Parallax hero, scroll-reveal animations, 3D CSS globe with rotating wireframe rings, glassmorphism cards ( backdrop-filter: blur(15px) ), leadership cards with grayscale-to-color hover effect on images.
+Articles Page:  #f8fafc  bg. Grid layout  repeat(auto-fit, minmax(400px, 1fr)) . Cards with  1px  border, hover  translateY(-6px) . Badge pills: navy bg, white text, uppercase. Filter toggle: 300px wide, navy active state.
+Article Detail: Progress bar on scroll ( linear-gradient(90deg, #204383, #26c0af) ). Hero with glass panel ( rgba(255,255,255,0.92)  backdrop). Callout boxes with teal borders. Author block with navy avatar.
+Contact Page: Banner image with gradient overlay. Form inputs:  #f8f9fc  bg,  1px solid rgba(21, 50, 90, 0.15) . Focus:  border-color: #99cdb3  with green glow. Custom select dropdown with animations. Dark CTA cards ( #163868 ).
+Our Projects: Gradient hero ( #0d1a4a  →  #1e4280 ). Scroll-driven wheel/slider with smooth transitions. Cards with colored bands and dot indicators. Filter system by category/country with colored tag pills.
+History Page: Interactive timeline with animated dots, floating bar that transitions from center to compact pill position, 3D sphere with orbiting logos (CSS preserve-3d), half-wheel on right side driven by scroll. Background color interpolates between milestones.
+BFC Academy: Sticky hero with Framer Motion (width transforms on scroll), stacking certificate cards with  useScroll , 2-column layout for courses, pagination, filter sidebar.
+Service Details: Multiple layout variants — clean card grid, image grid with hover-reveal overlays, list layout, outsourcing layout with team card and services panel. Subscribe banner with frosted glass style.
+Admin Dashboard: Separate styling — navy/teal theme, grid of menu cards, table-based CRUD data display.
+Animations & Interactions
+- GSAP: Used for horizontal scroll (ScrollTrigger), stats counter animation
+- Framer Motion: Used in BFC Academy for sticky hero scaling
+- CSS keyframes: Pulse, float, fade-in, slide-reveal, marquee scroll, sphere rotation
+- Hover effects: Scale transforms, color transitions, translate shifts, box-shadow elevation
+- Scroll reveals: IntersectionObserver for fade-up/slide-up on scroll
+- Image hover: Grayscale → color, scale transforms
+- Link hover: Arrow rotation (45°), gap expansion, color changes
+Responsive Breakpoints
+- Mobile:  max-width: 768px  (primary breakpoint)
+- Small mobile:  max-width: 480px 
+- Tablet: Various breakpoints at  900px ,  1024px 
+- Desktop:  min-width: 768px 
+- Menu hides on mobile; single-column layouts; reduced font sizes; scrollable content instead of pinned.
+External Dependencies
+- React 19 + TypeScript + Vite
+- React Router DOM 7 for routing
+- GSAP 3 with ScrollTrigger plugin
+- Framer Motion 12
+- Lucide React for icons
+- Tailwind CSS (loaded via CDN in  index.html )
+- Google Fonts: Inter (primary), with local usage of Montserrat, Plus Jakarta Sans
+Stack
+- Framework: React (SPA) with TypeScript
+- Build: Vite
+- Routing: React Router DOM v7
+- Animations: GSAP + Framer Motion + CSS animations
+- Icons: Lucide React
+- Styling: CSS Modules (per-component CSS files) + Tailwind (CDN) for utility classes

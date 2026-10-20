@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 40" role="img" aria-labelledby="title">
+  <title>Mauritania flag</title>
+  <rect width="60" height="40" fill="#006233"/>
+  <rect width="60" height="6" y="0" fill="#D01C1F"/>
+  <rect width="60" height="6" y="34" fill="#D01C1F"/>
+  <path d="M30 12.4a9.5 9.5 0 0 0-9.15 6.95A8.7 8.7 0 0 0 30 27.2a8.7 8.7 0 0 0 9.15-7.85A9.5 9.5 0 0 0 30 12.4zm0 1.9a7.7 7.7 0 0 1 6.85 4.35A7 7 0 0 1 30 25.3a7 7 0 0 1-6.85-6.65A7.7 7.7 0 0 1 30 14.3z" fill="#FFC400"/>
+  <path d="M30 11.5l1.85 5.4h5.65l-4.55 3.3 1.75 5.4-4.7-3.4-4.7 3.4 1.75-5.4-4.55-3.3h5.65z" fill="#FFC400"/>
+</svg>

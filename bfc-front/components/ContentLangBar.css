@@ -1,0 +1,70 @@
+.clb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  background: #204383;
+  border-radius: 999px;
+  width: fit-content;
+  margin-bottom: 1rem;
+}
+
+.clb__label {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0 0.5rem 0 0.65rem;
+}
+
+.clb__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.36rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.clb__btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.clb__btn--active {
+  background: #7fe3c6;
+  border-color: #7fe3c6;
+  color: #14315c;
+}
+
+.clb__btn--add {
+  border-style: dashed;
+  border-color: rgba(127, 227, 198, 0.75);
+  color: #bff4e5;
+}
+
+.clb__plus {
+  font-weight: 800;
+  line-height: 1;
+}
+
+.clb__name {
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+@media (max-width: 640px) {
+  .clb__name {
+    display: none;
+  }
+}

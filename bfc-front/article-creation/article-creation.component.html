@@ -1,0 +1,114 @@
+<div class="edit-mode" id="app-body">
+
+    <div id="main-container">
+        <!-- LEFT SIDEBAR: TOOLBOX -->
+        <aside class="sidebar-left editor-only">
+            <div class="p-6 border-b">
+                
+                <p class="text-[10px] text-gray-400 mt-1 font-bold uppercase tracking-widest">Article Builder</p>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-4 space-y-6">
+                <section>
+                    <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-4 px-2">Components</h3>
+                    <div id="toolbox-items" class="grid grid-cols-1 gap-2"></div>
+                </section>
+                <section>
+                    <div class="flex items-center justify-between mb-4 px-2">
+                        <h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Sections</h3>
+                        <button (click)="callLumina('addSection')" class="p-1 hover:bg-gray-100 rounded-md"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                    </div>
+                    <div id="section-list" class="space-y-1"></div>
+                </section>
+            </div>
+        </aside>
+
+        <!-- MAIN CANVAS -->
+        <main class="canvas" id="canvas-scroll-node">
+            <!-- HEADER CONTROLS -->
+            <header class="h-16 bg-white/90 backdrop-blur-sm border-b flex items-center justify-between px-8 sticky top-0 z-[60]">
+                <div class="flex items-center bg-gray-100 rounded-lg p-1">
+                    <button (click)="callLumina('setMode', 'edit')" id="mode-edit" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium bg-white shadow-sm text-black">
+                        <i data-lucide="settings-2" class="w-4 h-4"></i> Edit
+                    </button>
+                    <button (click)="callLumina('setMode', 'preview')" id="mode-preview" class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium text-gray-500 hover:text-black">
+                        <i data-lucide="eye" class="w-4 h-4"></i> Preview
+                    </button>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-100 rounded-lg">Export</button>
+                    <button (click)="saveArticle()" class="flex items-center gap-2 px-5 py-2 text-sm font-bold bg-black text-white rounded-lg shadow-sm">Save Article</button>
+                </div>
+            </header>
+
+            <div class="article-detail">
+                <div class="article-detail__progress"><span id="scroll-progress-bar"></span></div>
+
+                <!-- HERO SECTION -->
+                <header class="article-detail__hero" id="hero-node">
+                    <div class="article-detail__hero-media">
+                        <img id="hero-image-display" src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80" alt="Hero">
+                        <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-start pt-32 opacity-0 hover:opacity-100 transition-opacity editor-only cursor-pointer pointer-events-auto z-10">
+                               <label class="cursor-pointer bg-black text-white px-4 py-2 rounded-md text-xs font-bold hover:bg-gray-800 transition-colors">
+                                   Upload Local
+                                   <input type="file" accept="image/*" class="hidden" (change)="onHeroImageUpload($event)">
+                               </label>
+                           
+                        </div>
+                    </div>
+                    <div class="article-detail__hero-panel" id="hero-panel">
+                        <span class="text-[0.7rem] uppercase tracking-[0.3em] font-700 text-gray-400">Research Report</span>
+                        <textarea id="meta-title" class="article-detail__title editable-field mt-4" placeholder="Article Title..." rows="2"></textarea>
+                        <textarea id="meta-subtitle" class="article-detail__subtitle editable-field mt-4" placeholder="Subtitle..." rows="2"></textarea>
+                        <div class="flex flex-wrap gap-6 mt-6 text-[0.75rem] uppercase tracking-widest text-gray-400 font-medium">
+                            <input id="meta-time" class="editable-field w-24" placeholder="Read time">
+                            <input id="meta-date" class="editable-field w-32" placeholder="Date">
+                            <input id="meta-author" class="editable-field w-32" placeholder="Author">
+                            <input id="meta-category" class="editable-field w-32" placeholder="Category">
+                        </div>
+                    </div>
+                </header>
+
+                <!-- BODY GRID -->
+                <section class="article-detail__body">
+                    
+                    <!-- LEFT COLUMN: CONTENT -->
+                    <div class="article-detail__content min-h-[600px]">
+                        <div class="p-6 bg-[#EFF6F5] rounded-2xl border border-[#1F6F5C]/10 mb-10">
+                            <p class="text-[0.75rem] uppercase tracking-widest font-bold text-gray-400 mb-3">Executive Summary</p>
+                            <textarea id="meta-summary" class="editable-field text-sm leading-relaxed text-gray-700" placeholder="Brief summary of the article..." rows="3"></textarea>
+                        </div>
+                        
+                        <div id="sections-container" class="space-y-12"></div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: SIDEBAR CARDS -->
+                    <aside class="flex flex-col gap-6 sticky top-24 self-start">
+                        
+                        <!-- CARD 1: TOC -->
+                        <div class="article-detail__card">
+                            <p class="article-detail__card-label">In this article</p>
+                            <nav id="table-of-contents" class="space-y-3"></nav>
+                        </div>
+
+                        <!-- CARD 2: TAKEAWAYS -->
+                        <div class="article-detail__card">
+                            <p class="article-detail__card-label">Key Takeaways</p>
+                            <div id="takeaways-list" class="space-y-3"></div>
+                            <button (click)="callLumina('addArrayItem', 'takeaways')" class="editor-only w-full mt-4 py-2 border-2 border-dashed border-gray-200 rounded-xl text-[10px] font-bold text-gray-400 uppercase hover:border-gray-400 transition-colors">+ Add Takeaway</button>
+                        </div>
+
+                        <!-- CARD 3: REFERENCES -->
+                        <div class="article-detail__card">
+                            <p class="article-detail__card-label">References</p>
+                            <div id="references-list" class="space-y-3"></div>
+                            <button (click)="callLumina('addArrayItem', 'references')" class="editor-only w-full mt-4 py-2 border-2 border-dashed border-gray-200 rounded-xl text-[10px] font-bold text-gray-400 uppercase hover:border-gray-400 transition-colors">+ Add Reference</button>
+                        </div>
+
+                    </aside>
+                </section>
+            </div>
+        </main>
+    </div>
+
+</div>
